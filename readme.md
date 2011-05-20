@@ -30,7 +30,7 @@
 
 ### Query
 
-Simple Query:
+*Simple Query
 
     import com.github.seratch.scalikesolr._
 
@@ -49,7 +49,7 @@ Simple Query:
       }
     }
 
-With Highlightings:
+*With Highlightings
 
     val request = new QueryRequest(
       writerType = WriterType.JSON,
@@ -66,7 +66,7 @@ With Highlightings:
       }
     }
 
-With MoreLikeThis:
+*With MoreLikeThis
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -86,7 +86,7 @@ With MoreLikeThis:
       }
     }
 
-With FacetQuery:
+*With FacetQuery
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -119,7 +119,7 @@ With FacetQuery:
 
 ### Update
 
-Add documents:
+*Add documents
 
      val request = new UpdateRequest()
      val doc1 = SolrDocument(
@@ -155,13 +155,13 @@ Add documents:
      """
      )
      request.documents = List(doc1, doc2)
-     val response = client.doAddDocumentsAndCommit(request)
+     val response = client.doAddDocuments(request)
 
-Commit:
+*Commit
 
      val response = client.doCommit(new UpdateRequest())
 
-Rollback:
+*Rollback
 
      val response = client.doRollback(new UpdateRequest())
 
@@ -205,7 +205,7 @@ This library works fine with Java.
 
 ### Update
 
-Add documements:
+*Add documements
 
     UpdateRequest request = new UpdateRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
@@ -215,17 +215,15 @@ Add documements:
     request.setDocumentsInJava(docs);
     UpdateResponse response = client.doAddDocuments(request);
 
-Commit:
+*Commit
 
-    UpdateRequest request = new UpdateRequest();
-    UpdateResponse response = client.doCommit(request);
+    UpdateResponse response = client.doCommit(new UpdateRequest());
 
-Rollback:
+*Rollback
 
-    UpdateRequest request = new UpdateRequest();
-    UpdateResponse response = client.doRollback(request);
+    UpdateResponse response = client.doRollback(new UpdateRequest());
 
 ### Ping
 
-    PingRequest request = new PingRequest();
-    PingResponse response = client.doPing(request);
+    PingResponse response = client.doPing(new PingRequest());
+
