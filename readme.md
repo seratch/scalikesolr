@@ -32,6 +32,8 @@
 
 * Simple Query
 
+Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) and [Common Query Parameters](http://wiki.apache.org/solr/CommonQueryParameters):
+
     import com.github.seratch.scalikesolr._
 
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient
@@ -51,6 +53,8 @@
 
 * With Highlightings
 
+Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParameters):
+
     val request = new QueryRequest(
       writerType = WriterType.JSON,
       query = Query("author:Rick"),
@@ -67,6 +71,8 @@
     }
 
 * With MoreLikeThis
+
+Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -87,6 +93,8 @@
     }
 
 * With FacetQuery
+
+Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameters):
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -109,6 +117,8 @@
 
 ### DIH Command
 
+Commands for [Data Import Handler](http://wiki.apache.org/solr/DataImportHandler):
+
     val request = new DIHCommandRequest(command = "delta-import")
     val response = client.doDIHCommand(request)
     println(response.initArgs)
@@ -119,7 +129,11 @@
 
 ### Update
 
+[XML Messages for Updating a Solr Index](http://wiki.apache.org/solr/UpdateXmlMessages):
+
 * Add documents
+
+Add documents to Solr:
 
      val request = new UpdateRequest()
      val doc1 = SolrDocument(
@@ -159,9 +173,13 @@
 
 * Commit
 
+Commit the Update request:
+
      val response = client.doCommit(new UpdateRequest())
 
 * Rollback
+
+Rollback the Update request:
 
      val response = client.doRollback(new UpdateRequest())
 
@@ -207,6 +225,8 @@ This library works fine with Java.
 
 * Add documements
 
+Same as Scala:
+
     UpdateRequest request = new UpdateRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
     SolrDocument doc = new SolrDocument(WriterType.JSON(), jsonString);
@@ -217,9 +237,13 @@ This library works fine with Java.
 
 * Commit
 
+Same as Scala:
+
     UpdateResponse response = client.doCommit(new UpdateRequest());
 
 * Rollback
+
+Same as Scala:
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
 
