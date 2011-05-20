@@ -1,0 +1,48 @@
+package com.github.seratch.scalikesolr.response.parser
+
+import com.github.seratch.scalikesolr.request.common.WriterType
+import util.parsing.json.JSON
+import com.github.seratch.scalikesolr.util.JSONUtil
+import com.github.seratch.scalikesolr.response.common.ResponseHeader
+import com.github.seratch.scalikesolr.{SolrDocument, SolrDocumentValue}
+import xml.XML
+
+object ResponseParser {
+
+  def getResponseHeader(writerType: WriterType, rawBody: String) = {
+    writerType match {
+      case WriterType.Standard => {
+        val xml = XML.loadString(rawBody)
+        val intItems = xml \ "lst" \ "int"
+        val paramsCandidates = (xml \ "lst" \ "list").filter(item => (item \ "@name").text == "params")
+        if (paramsCandidates.size > 0) {
+          val params = paramsCandidates(0)
+          new ResponseHeader(
+            intItems.filter(item => (item \ "@name").text == "status")(0).text.toInt,
+            intItems.filter(item => (item \ "@name").text == "QTime")(0).text.toInt,
+            SolrDocument(writerType = writerType, rawBody = params.toString)
+          )
+        } else {
+          new ResponseHeader(
+            intItems.filter(item => (item \ "@name").text == "status")(0).text.toInt,
+            intItems.filter(item => (item \ "@name").text == "QTime")(0).text.toInt
+          )
+        }
+      }
+      case WriterType.JSON => {
+        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+        val responseHeader: Map[String, Option[Any]] = jsonMap.get("responseHeader").get.asInstanceOf[Map[String, Option[Any]]]
+        val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
+        val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
+        val params: Map[String, Option[Any]] = responseHeader.get("params").get.asInstanceOf[Map[String, Option[Any]]]
+        val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
+        params.keysIterator.foreach {
+          case key => docMap.update(key, new SolrDocumentValue(params.getOrElse(key, "").toString))
+        }
+        new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap.toMap))
+      }
+      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+    }
+  }
+
+}

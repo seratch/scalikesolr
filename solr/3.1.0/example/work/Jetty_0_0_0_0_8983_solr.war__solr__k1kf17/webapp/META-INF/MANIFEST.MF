@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Implementation-Vendor: The Apache Software Foundation
+Ant-Version: Apache Ant 1.8.2
+Implementation-Title: org.apache.solr
+Implementation-Version: 3.1.0 1085815 - grantingersoll - 2011-03-26 18
+ :06:55
+Specification-Vendor: The Apache Software Foundation
+Specification-Title: Apache Solr Search Server
+Created-By: 1.6.0_24-b07-334-10M3326 (Apple Inc.)
+Specification-Version: 3.1.0
+Extension-Name: org.apache.solr
+X-Compile-Source-JDK: 1.5
+X-Compile-Target-JDK: 1.5
+
