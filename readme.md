@@ -30,7 +30,7 @@
 
 ### Query
 
-*Simple Query
+* Simple Query
 
     import com.github.seratch.scalikesolr._
 
@@ -49,7 +49,7 @@
       }
     }
 
-*With Highlightings
+* With Highlightings
 
     val request = new QueryRequest(
       writerType = WriterType.JSON,
@@ -66,7 +66,7 @@
       }
     }
 
-*With MoreLikeThis
+* With MoreLikeThis
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -86,7 +86,7 @@
       }
     }
 
-*With FacetQuery
+* With FacetQuery
 
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -119,7 +119,7 @@
 
 ### Update
 
-*Add documents
+* Add documents
 
      val request = new UpdateRequest()
      val doc1 = SolrDocument(
@@ -157,11 +157,11 @@
      request.documents = List(doc1, doc2)
      val response = client.doAddDocuments(request)
 
-*Commit
+* Commit
 
      val response = client.doCommit(new UpdateRequest())
 
-*Rollback
+* Rollback
 
      val response = client.doRollback(new UpdateRequest())
 
@@ -205,7 +205,7 @@ This library works fine with Java.
 
 ### Update
 
-*Add documements
+* Add documements
 
     UpdateRequest request = new UpdateRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
@@ -215,11 +215,11 @@ This library works fine with Java.
     request.setDocumentsInJava(docs);
     UpdateResponse response = client.doAddDocuments(request);
 
-*Commit
+* Commit
 
     UpdateResponse response = client.doCommit(new UpdateRequest());
 
-*Rollback
+* Rollback
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
 
