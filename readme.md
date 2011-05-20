@@ -1,27 +1,28 @@
 # scalikesolr : Apache Solr Client for Scala/Java
 
-## What's this?
+"scalikesolr" is a simple Solr client library for Scala. And it also works fine with Java.
 
-"scalikesolr" is a Solr client library for Scala/Java.
+## Dependencies
 
-## Scala version
+* [Scala 2.9.0.final](http://www.scala-lang.org/)
 
-This library supports Scala 2.9.0.final.
+* [Logback 0.9.x](http://logback.qos.ch/)
+
+* [Joda-Time 1.6.2](http://joda-time.sourceforge.net/)
 
 ## How to install
 
 ### Maven
 
-"3.1.0" is Solr/Lucene version that is supported by scalikesolr. The "x" of "3.1.0.x" will be incremented.
+"3.1" means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.1.x" will be incremented.
 
     <repositories>
-      ...
       <repository>
-        <id>scalikesolr-releases</id>
+        <id>ScalikeSolrClientLibraryReleases</id>
         <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases</url>
       </repository>
       <repository>
-        <id>scalikesolr-snapshots</id>
+        <id>ScalikeSolrClientLibrarySnapshots</id>
         <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/snapshots</url>
       </repository>
       ...
@@ -30,7 +31,7 @@ This library supports Scala 2.9.0.final.
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr</artifactId>
-      <version>[3.1.0.0,)</version>
+      <version>[3.1,)</version>
     </dependency>
 
 ## Usage
@@ -157,7 +158,7 @@ For example:
 
 ## Using in Java
 
-This library works for Java applications well.
+This library works fine with Java.
 
 ### Query
 
@@ -167,22 +168,11 @@ This library works for Java applications well.
     request.setSort(Sort.as("author desc"));
     request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
     QueryResponse response = client.doQuery(request);
-    assertThat(response.getResponseHeader(), is(notNullValue()));
-    assertThat(response.getResponse(), is(notNullValue()));
-    assertThat(response.getHighlightings(), is(notNullValue()));
-    assertThat(response.getMoreLikeThis(), is(notNullValue()));
-    assertThat(response.getFacet(), is(notNullValue()));
 
 ### DIH Command
 
     DIHCommandRequest request = new DIHCommandRequest("delta-import");
     DIHCommandResponse response = client.doDIHCommand(request);
-    assertThat(response.getCommand(), is(notNullValue()));
-    assertThat(response.getImportResponse(), is(notNullValue()));
-    assertThat(response.getRawBody(), is(notNullValue()));
-    assertThat(response.getStatus(), is(notNullValue()));
-    assertThat(response.getStatusMessages().getDefaults(), is(notNullValue()));
-    assertThat(response.getInitArgs().getDefaults(), is(notNullValue()));
 
 ### Update
 
