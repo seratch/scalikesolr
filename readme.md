@@ -1,14 +1,6 @@
 # scalikesolr : Apache Solr Client for Scala/Java
 
-"scalikesolr" is a simple Solr client library for Scala. And it also works fine with Java.
-
-## Dependencies
-
-* [Scala 2.9.0.final](http://www.scala-lang.org/)
-
-* [Logback 0.9.x](http://logback.qos.ch/)
-
-* [Joda-Time 1.6.2](http://joda-time.sourceforge.net/)
+"scalikesolr" is a simple Solr client library for [Scala 2.9.0.final](http://www.scala-lang.org/). And it also works fine with Java.
 
 ## How to install
 
