@@ -2,10 +2,31 @@ package com.github.seratch.scalikesolr
 
 import scala.reflect.BeanProperty
 import java.text.SimpleDateFormat
-import java.util.{Locale, Calendar, Date}
 import org.joda.time.{LocalDate, LocalTime, DateTime}
 
+import collection.JavaConverters._
+import util.JSONUtil
+import java.util.{ArrayList, Locale, Calendar, Date}
+
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
+
+  def toListOrElse(defaultValue: List[String]): List[String] = {
+    try {
+      // List(book, hardcover)
+      val values = rawValue.replaceFirst("List\\(", "").replaceFirst("\\)", "")
+      values.split(",").toList
+    } catch {
+      case _ => defaultValue
+    }
+  }
+
+  def toListInJavaOrElse(defaultValue: java.util.List[String]): java.util.List[String] = {
+    try {
+      toListOrElse(if (defaultValue == null) Nil else defaultValue.asScala.toList).asJava
+    } catch {
+      case _ => defaultValue
+    }
+  }
 
   def toDateOrElse(defaultValue: Date): Date = {
     try {
@@ -84,7 +105,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toIntOrElse(defaultValue: Int): Int = {
     try {
-      rawValue.toInt
+      JSONUtil.normalizeNum(rawValue).toInt
     } catch {
       case _ => defaultValue
     }
@@ -106,7 +127,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     }
   }
 
-  def toNullableNullableBooleanOrElse(defaultValue: java.lang.Boolean): java.lang.Boolean = {
+  def toNullableBooleanOrElse(defaultValue: java.lang.Boolean): java.lang.Boolean = {
     try {
       rawValue.toBoolean
     } catch {
@@ -140,7 +161,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toNullableIntOrElse(defaultValue: java.lang.Integer): java.lang.Integer = {
     try {
-      rawValue.toInt
+      JSONUtil.normalizeNum(rawValue).toInt
     } catch {
       case _ => defaultValue
     }

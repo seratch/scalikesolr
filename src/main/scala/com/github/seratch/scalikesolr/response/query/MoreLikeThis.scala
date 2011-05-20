@@ -5,6 +5,6 @@ import reflect.BeanProperty
 
 case class MoreLikeThis(@BeanProperty val moreLikeThis: Map[String, SolrDocument]) {
 
-  def get(name: String): SolrDocument = moreLikeThis.getOrElse(name, null)
+  def get(name: String): SolrDocument = moreLikeThis.getOrElse(name, new SolrDocument())
 
 }

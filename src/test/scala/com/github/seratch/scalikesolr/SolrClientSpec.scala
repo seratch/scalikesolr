@@ -17,6 +17,7 @@ object SolrClientSpec extends Specification {
   "doQuery" should {
 
     "be available" in {
+
       val request = new QueryRequest(Query("author:Rick"))
       val response = client.doQuery(request)
       log.debug(response.toString)
@@ -25,9 +26,23 @@ object SolrClientSpec extends Specification {
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.responseHeader.params mustNot beNull
       response.response.documents.size must beEqual(2)
+
+      log.debug("-----------------------------")
+      log.debug(response.response.documents.toString)
+      response.response.documents foreach {
+        case doc => {
+          log.debug(doc.get("id").toString()) // "978-1423103349"
+          log.debug(doc.get("cat").toListOrElse(Nil).toString) // List(book, hardcover)
+          log.debug(doc.get("title").toString()) // "The Lightning Thief"
+          log.debug(doc.get("pages_i").toIntOrElse(0).toString) // 384
+          log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
+        }
+      }
+
     }
 
     "be available in JSON" in {
+
       val request = new QueryRequest(
         writerType = WriterType.JSON,
         query = Query("author:Rick"))
@@ -37,6 +52,19 @@ object SolrClientSpec extends Specification {
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.response.documents.size must beEqual(2)
+
+      log.debug("-----------------------------")
+      log.debug(response.response.documents.toString)
+      response.response.documents foreach {
+        case doc => {
+          log.debug(doc.get("id").toString()) // "978-1423103349"
+          log.debug(doc.get("cat").toListOrElse(Nil).toString) // List(book, hardcover)
+          log.debug(doc.get("title").toString()) // "The Lightning Thief"
+          log.debug(doc.get("pages_i").toIntOrElse(0).toString) // 384
+          log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
+        }
+      }
+
     }
 
     "be available with HighlightingParams" in {
@@ -53,6 +81,14 @@ object SolrClientSpec extends Specification {
         doc => log.debug(response.highlightings.get(doc.get("id").toString).toString)
       }
       response.highlightings.size must beEqual(2)
+      log.debug("-----------------------------")
+      log.debug(response.highlightings.toString)
+      response.highlightings.keys() foreach {
+        case key => {
+          log.debug(key + " -> " + response.highlightings.get(key).get("author").toString)
+          // 978-0641723445 -> <em>Rick</em> Riordan
+        }
+      }
     }
 
     "be available with HighlightingParams in JSON" in {
@@ -70,6 +106,13 @@ object SolrClientSpec extends Specification {
         doc => log.debug(response.highlightings.get(doc.get("id").toString).toString)
       }
       response.highlightings.size must beEqual(2)
+      log.debug("-----------------------------")
+      log.debug(response.highlightings.toString)
+      response.highlightings.keys() foreach {
+        case key => {
+          log.debug(key + "->" + response.highlightings.get(key).get("author").toString)
+        }
+      }
     }
 
     "be available with MoreLikeThisParams" in {
@@ -81,8 +124,13 @@ object SolrClientSpec extends Specification {
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.response.documents.size must beEqual(2)
+      log.debug("-----------------------------")
+      log.debug(response.moreLikeThis.toString)
       response.response.documents foreach {
-        doc => log.debug(response.moreLikeThis.get(doc.get("id").toString).toString)
+        doc => {
+          val id = doc.get("id").toString
+          log.debug(id + "->" + response.moreLikeThis.get(id).toString)
+        }
       }
     }
 
@@ -96,8 +144,13 @@ object SolrClientSpec extends Specification {
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.response.documents.size must beEqual(2)
+      log.debug("-----------------------------")
+      log.debug(response.moreLikeThis.toString)
       response.response.documents foreach {
-        doc => log.debug(response.moreLikeThis.get(doc.get("id").toString).toString)
+        doc => {
+          val id = doc.get("id").toString
+          log.debug(id + "->" + response.moreLikeThis.get(id).toString)
+        }
       }
     }
 
@@ -113,9 +166,20 @@ object SolrClientSpec extends Specification {
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.response.documents.size must beEqual(2)
+      log.debug("-----------------------------")
       log.debug("facetFields:" + response.facet.facetFields.toString)
       response.facet.facetFields.keys.size must beEqual(1)
       response.facet.facetFields.get("title").get.keys.size must beEqual(4)
+      response.facet.facetFields.keys foreach {
+        case key => {
+          val facets = response.facet.facetFields.getOrElse(key, new SolrDocument())
+          facets.keys foreach {
+            case facetKey => {
+              log.debug(facetKey + "->" + facets.get(facetKey).toIntOrElse(0))
+            }
+          }
+        }
+      }
     }
 
     "be available with FacetParams in JSON" in {
@@ -138,20 +202,20 @@ object SolrClientSpec extends Specification {
 
   }
 
-//    "doDIHCommand" should {
-//
-//      "be available" in {
-//        val request = new DIHCommandRequest(command = "delta-import")
-//        val response = client.doDIHCommand(request)
-//        println(response)
-//        println(response.initArgs)
-//        println(response.command)
-//        println(response.status)
-//        println(response.importResponse)
-//        println(response.statusMessages)
-//      }
-//
-//    }
+  //    "doDIHCommand" should {
+  //
+  //      "be available" in {
+  //        val request = new DIHCommandRequest(command = "delta-import")
+  //        val response = client.doDIHCommand(request)
+  //        println(response)
+  //        println(response.initArgs)
+  //        println(response.command)
+  //        println(response.status)
+  //        println(response.importResponse)
+  //        println(response.statusMessages)
+  //      }
+  //
+  //    }
 
   "doAddDocumentsAndCommit" should {
 
