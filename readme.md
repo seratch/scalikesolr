@@ -30,7 +30,7 @@
 
 ### Query
 
-* Simple Query
+#### Simple Query
 
 Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) and [Common Query Parameters](http://wiki.apache.org/solr/CommonQueryParameters):
 
@@ -51,7 +51,7 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
       }
     }
 
-* With Highlightings
+#### With Highlightings
 
 Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParameters):
 
@@ -70,7 +70,7 @@ Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParamete
       }
     }
 
-* With MoreLikeThis
+#### With MoreLikeThis
 
 Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
 
@@ -92,7 +92,7 @@ Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
       }
     }
 
-* With FacetQuery
+#### With FacetQuery
 
 Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameters):
 
@@ -131,7 +131,7 @@ Commands for [Data Import Handler](http://wiki.apache.org/solr/DataImportHandler
 
 [XML Messages for Updating a Solr Index](http://wiki.apache.org/solr/UpdateXmlMessages):
 
-* Add documents
+#### Add documents
 
 Add documents to Solr:
 
@@ -171,13 +171,13 @@ Add documents to Solr:
      request.documents = List(doc1, doc2)
      val response = client.doAddDocuments(request)
 
-* Commit
+#### Commit
 
 Commit the Update request:
 
      val response = client.doCommit(new UpdateRequest())
 
-* Rollback
+#### Rollback
 
 Rollback the Update request:
 
@@ -223,9 +223,7 @@ This library works fine with Java.
 
 ### Update
 
-* Add documements
-
-Same as Scala:
+#### Add documements
 
     UpdateRequest request = new UpdateRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
@@ -235,15 +233,11 @@ Same as Scala:
     request.setDocumentsInJava(docs);
     UpdateResponse response = client.doAddDocuments(request);
 
-* Commit
-
-Same as Scala:
+#### Commit
 
     UpdateResponse response = client.doCommit(new UpdateRequest());
 
-* Rollback
-
-Same as Scala:
+#### Rollback
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
 
