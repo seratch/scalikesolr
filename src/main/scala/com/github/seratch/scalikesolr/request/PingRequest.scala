@@ -1,6 +1,6 @@
 package com.github.seratch.scalikesolr.request
 
-import common.{RequestParam, WriterType}
+import common.WriterType
 import reflect.BeanProperty
 
 import com.github.seratch.scalikesolr.SolrCore
@@ -10,7 +10,7 @@ case class PingRequest(@BeanProperty var core: SolrCore = SolrCore(),
                        @BeanProperty var writerType: WriterType = WriterType()) {
 
   def this() = {
-    this(SolrCore(), WriterType())
+    this (SolrCore(), WriterType())
   }
 
   def queryString(): String = {

@@ -3,7 +3,6 @@ package com.github.seratch.scalikesolr.request
 import reflect.BeanProperty
 
 import com.github.seratch.scalikesolr.{SolrDocument, SolrCore}
-import collection.JavaConversions._
 import collection.JavaConverters._
 
 case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
