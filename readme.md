@@ -162,7 +162,10 @@ This library works for Java applications well.
 ### Query
 
     SolrClient client = Solr.httpServer(new URL("http://localhost:8983/solr")).getNewClient();
-    QueryRequest request = new QueryRequest(new Query("author:Rick"));
+    QueryRequest request = new QueryRequest(Query.as("author:Rick")); // or new Query("author:Rick")
+    request.setWriterType(WriterType.JSON());
+    request.setSort(Sort.as("author desc"));
+    request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
     QueryResponse response = client.doQuery(request);
     assertThat(response.getResponseHeader(), is(notNullValue()));
     assertThat(response.getResponse(), is(notNullValue()));
