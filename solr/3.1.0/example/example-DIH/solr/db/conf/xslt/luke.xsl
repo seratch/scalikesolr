@@ -21,9 +21,9 @@
   Display the luke request handler with graphs
  -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" version="1.0">
+                xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" version="1.0">
     <xsl:output method="xml" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN"
-        doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" encoding="UTF-8"/>
+                doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" encoding="UTF-8"/>
 
     <xsl:variable name="title">Solr Luke Request Handler Response</xsl:variable>
 
@@ -72,15 +72,18 @@
                     </ul>
                 </div>
                 <xsl:if test="response/lst[@name='index']">
-                    <h2><a name="index"/>Index statistics</h2>
+                    <h2><a name="index"/>Index statistics
+                    </h2>
                     <xsl:apply-templates select="response/lst[@name='index']"/>
                 </xsl:if>
                 <xsl:if test="response/lst[@name='fields']">
-                    <h2><a name="fields"/>Field statistics</h2>
+                    <h2><a name="fields"/>Field statistics
+                    </h2>
                     <xsl:apply-templates select="response/lst[@name='fields']"/>
                 </xsl:if>
                 <xsl:if test="response/lst[@name='doc']">
-                    <h2><a name="doc"/>Document statistics</h2>
+                    <h2><a name="doc"/>Document statistics
+                    </h2>
                     <xsl:apply-templates select="response/lst[@name='doc']"/>
                 </xsl:if>
             </body>
@@ -120,7 +123,7 @@
                 <tbody>
                     <xsl:choose>
                         <xsl:when
-                            test="@name='histogram' and not(system-property('xsl:vendor')='Microsoft')">
+                                test="@name='histogram' and not(system-property('xsl:vendor')='Microsoft')">
                             <tr>
                                 <td colspan="2">
                                     <xsl:call-template name="histogram"/>
@@ -156,8 +159,12 @@
         <xsl:param name="fill"/>
         <svg:svg viewBox="0 0 {$iwidth} {$iheight}">
             <xsl:if test="system-property('xsl:vendor')='Opera' or system-property('xsl:vendor')='libxslt'">
-                <xsl:attribute name="width"><xsl:value-of select="$iwidth"/></xsl:attribute>
-                <xsl:attribute name="height"><xsl:value-of select="$iwidth"/></xsl:attribute>
+                <xsl:attribute name="width">
+                    <xsl:value-of select="$iwidth"/>
+                </xsl:attribute>
+                <xsl:attribute name="height">
+                    <xsl:value-of select="$iwidth"/>
+                </xsl:attribute>
             </xsl:if>
             <xsl:variable name="x" select="$xoffset + 5"/>
             <xsl:variable name="y" select="$yoffset + 5"/>
@@ -176,25 +183,26 @@
             <svg:g>
                 <xsl:for-each select="int">
                     <svg:rect stroke="none" x="{$x + (position() - 1) * $xRatio + 0.1 * $xRatio}"
-                        y="{($y + $height) - number(.) * $yRatio}" width="{0.8 * $xRatio}"
-                        height="{number(.) * $yRatio}" fill="{$fill}"/>
+                              y="{($y + $height) - number(.) * $yRatio}" width="{0.8 * $xRatio}"
+                              height="{number(.) * $yRatio}" fill="{$fill}"/>
                     <xsl:variable name="yboost">
                         <xsl:choose>
                             <xsl:when
-                                test="($y + $height) - number(.) * $yRatio +40 &gt; $iheight"
-                                >-25</xsl:when>
+                                    test="($y + $height) - number(.) * $yRatio +40 &gt; $iheight"
+                                    >-25
+                            </xsl:when>
                             <xsl:otherwise>0</xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
                     <svg:text
-                        x="{$x + (position() - 1) * $xRatio + 0.1 * $xRatio + (($xRatio * 0.8) div 2)}"
-                        y="{($y + $height) - number(.) * $yRatio +20 + number($yboost)}"
-                        text-anchor="middle" style="fill: red; font-size: 8px;">
+                            x="{$x + (position() - 1) * $xRatio + 0.1 * $xRatio + (($xRatio * 0.8) div 2)}"
+                            y="{($y + $height) - number(.) * $yRatio +20 + number($yboost)}"
+                            text-anchor="middle" style="fill: red; font-size: 8px;">
                         <xsl:value-of select="."/>
                     </svg:text>
                     <svg:text
-                        x="{$x + (position() - 1) * $xRatio + 0.1 * $xRatio + (($xRatio * 0.8) div 2)}"
-                        y="{$y + $height + 20}" text-anchor="middle" style="fill: black; font-size: 8px;">
+                            x="{$x + (position() - 1) * $xRatio + 0.1 * $xRatio + (($xRatio * 0.8) div 2)}"
+                            y="{$y + $height + 20}" text-anchor="middle" style="fill: black; font-size: 8px;">
                         <xsl:value-of select="@name"/>
                     </svg:text>
                 </xsl:for-each>
@@ -281,29 +289,41 @@
         </xsl:variable>
         <xsl:choose>
             <xsl:when test="$char='I'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='I']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='I']"/> -
+            </xsl:when>
             <xsl:when test="$char='T'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='T']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='T']"/> -
+            </xsl:when>
             <xsl:when test="$char='S'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='S']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='S']"/> -
+            </xsl:when>
             <xsl:when test="$char='M'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='M']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='M']"/> -
+            </xsl:when>
             <xsl:when test="$char='V'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='V']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='V']"/> -
+            </xsl:when>
             <xsl:when test="$char='o'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='o']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='o']"/> -
+            </xsl:when>
             <xsl:when test="$char='p'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='p']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='p']"/> -
+            </xsl:when>
             <xsl:when test="$char='O'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='O']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='O']"/> -
+            </xsl:when>
             <xsl:when test="$char='L'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='L']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='L']"/> -
+            </xsl:when>
             <xsl:when test="$char='B'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='B']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='B']"/> -
+            </xsl:when>
             <xsl:when test="$char='C'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='C']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='C']"/> -
+            </xsl:when>
             <xsl:when test="$char='f'">
-                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='f']"/> - </xsl:when>
+                <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='f']"/> -
+            </xsl:when>
             <xsl:when test="$char='l'">
                 <xsl:value-of select="/response/lst[@name='info']/lst/str[@name='l']"/> -
             </xsl:when>
@@ -339,7 +359,8 @@
         <xsl:if test="system-property('xsl:vendor')='Microsoft'">
             <object id="AdobeSVG" classid="clsid:78156a80-c6a1-4bbf-8e6a-3cd390eeb4e2"/>
             <xsl:processing-instruction name="import">namespace="svg"
-            implementation="#AdobeSVG"</xsl:processing-instruction>
+                implementation="#AdobeSVG"
+            </xsl:processing-instruction>
         </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

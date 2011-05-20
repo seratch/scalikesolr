@@ -15,20 +15,20 @@
  limitations under the License.
 -->
 <xsl:stylesheet
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  version="1.0">
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        version="1.0">
 
-  <xsl:output
-    method="html"
-    encoding="utf-8"
-    media-type="text/html"
-    indent="yes"
-    doctype-public="-//W3C//DTD HTML 4.01//EN"
-    doctype-system="http://www.w3.org/TR/html4/strict.dtd" />
+    <xsl:output
+            method="html"
+            encoding="utf-8"
+            media-type="text/html"
+            indent="yes"
+            doctype-public="-//W3C//DTD HTML 4.01//EN"
+            doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
 
-  <xsl:template match="solr/meta">
-    <xsl:value-of select="host" />:<xsl:value-of select="port" />
-    cwd=<xsl:value-of select="cwd" /> SolrHome=<xsl:value-of select="solrHome" />
-  </xsl:template>
+    <xsl:template match="solr/meta">
+        <xsl:value-of select="host"/>:<xsl:value-of select="port"/>
+        cwd=<xsl:value-of select="cwd"/> SolrHome=<xsl:value-of select="solrHome"/>
+    </xsl:template>
 
 </xsl:stylesheet>

@@ -17,25 +17,25 @@
 -->
 
 <schema name="example core zero" version="1.1">
-  <types>
-   <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
-  </types>
+    <types>
+        <fieldtype name="string" class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+    </types>
 
- <fields>   
-  <!-- general -->
-  <field name="id"      type="string"   indexed="true"  stored="true"  multiValued="false" required="true"/>
-  <field name="type"    type="string"   indexed="true"  stored="true"  multiValued="false" /> 
-  <field name="name"    type="string"   indexed="true"  stored="true"  multiValued="false" /> 
-  <field name="core0"   type="string"   indexed="true"  stored="true"  multiValued="false" /> 
- </fields>
+    <fields>
+        <!-- general -->
+        <field name="id" type="string" indexed="true" stored="true" multiValued="false" required="true"/>
+        <field name="type" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="name" type="string" indexed="true" stored="true" multiValued="false"/>
+        <field name="core0" type="string" indexed="true" stored="true" multiValued="false"/>
+    </fields>
 
- <!-- field to use to determine and enforce document uniqueness. -->
- <uniqueKey>id</uniqueKey>
+    <!-- field to use to determine and enforce document uniqueness. -->
+    <uniqueKey>id</uniqueKey>
 
- <!-- field for the QueryParser to use when an explicit fieldname is absent -->
- <defaultSearchField>name</defaultSearchField>
+    <!-- field for the QueryParser to use when an explicit fieldname is absent -->
+    <defaultSearchField>name</defaultSearchField>
 
- <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
- <solrQueryParser defaultOperator="OR"/>
+    <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
+    <solrQueryParser defaultOperator="OR"/>
 </schema>
 

@@ -24,12 +24,12 @@
 -->
 <solr persistent="false">
 
-  <!--
-  adminPath: RequestHandler path to manage cores.  
-    If 'null' (or absent), cores will not be manageable via request handler
-  -->
-  <cores adminPath="/admin/cores">
-    <core name="core0" instanceDir="core0" />
-    <core name="core1" instanceDir="core1" />
-  </cores>
+    <!--
+    adminPath: RequestHandler path to manage cores.
+      If 'null' (or absent), cores will not be manageable via request handler
+    -->
+    <cores adminPath="/admin/cores">
+        <core name="core0" instanceDir="core0"/>
+        <core name="core1" instanceDir="core1"/>
+    </cores>
 </solr>

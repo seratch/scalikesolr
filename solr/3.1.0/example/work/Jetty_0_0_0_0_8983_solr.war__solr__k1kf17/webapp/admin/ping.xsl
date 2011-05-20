@@ -19,53 +19,54 @@
 <!-- $URL$ -->
 
 <xsl:stylesheet
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  version="1.0">
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+        version="1.0">
 
-  <xsl:output
-    method="html"
-    indent="yes"
-    encoding="utf-8"
-    media-type="text/html"
-    doctype-public="-//W3C//DTD HTML 4.01//EN"
-    doctype-system="http://www.w3.org/TR/html4/strict.dtd" />
+    <xsl:output
+            method="html"
+            indent="yes"
+            encoding="utf-8"
+            media-type="text/html"
+            doctype-public="-//W3C//DTD HTML 4.01//EN"
+            doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
 
-  <xsl:template match="/">
-    <html>
-      <head>
-        <link rel="stylesheet" type="text/css" href="solr-admin.css"></link>
-	<link rel="icon" href="favicon.ico" type="image/ico"></link>
-	<link rel="shortcut icon" href="favicon.ico" type="image/ico"></link>
-        <title>Solr Admin: Ping</title>
-      </head>
-      <body>
-        <a href=".">
-	   <img border="0" align="right" height="78" width="142" src="solr_small.png" alt="Apache Solr">
-	   </img>
-	</a>
-        <h1>Solr Admin (<xsl:value-of select="solr/meta/collection" />)</h1>
-        <div style="margin-top: 1em;">
-          <xsl:apply-templates/>
-        <div>
-        </div>
-          <a href=".">Return to Admin Page</a>
-        </div>
-      </body>
-    </html>
-  </xsl:template>
+    <xsl:template match="/">
+        <html>
+            <head>
+                <link rel="stylesheet" type="text/css" href="solr-admin.css"></link>
+                <link rel="icon" href="favicon.ico" type="image/ico"></link>
+                <link rel="shortcut icon" href="favicon.ico" type="image/ico"></link>
+                <title>Solr Admin: Ping</title>
+            </head>
+            <body>
+                <a href=".">
+                    <img border="0" align="right" height="78" width="142" src="solr_small.png" alt="Apache Solr">
+                    </img>
+                </a>
+                <h1>Solr Admin (<xsl:value-of select="solr/meta/collection"/>)
+                </h1>
+                <div style="margin-top: 1em;">
+                    <xsl:apply-templates/>
+                    <div>
+                    </div>
+                    <a href=".">Return to Admin Page</a>
+                </div>
+            </body>
+        </html>
+    </xsl:template>
 
-  <xsl:include href="meta.xsl"/>
+    <xsl:include href="meta.xsl"/>
 
-  <xsl:template match="solr/ping">
-  <table>
-    <tr>
-      <td>
-        <H3>Ping</H3>
-      </td>
-      <td>
-        <xsl:value-of select="error" />
-      </td>
-    </tr>
-  </table>
-  </xsl:template>
+    <xsl:template match="solr/ping">
+        <table>
+            <tr>
+                <td>
+                    <H3>Ping</H3>
+                </td>
+                <td>
+                    <xsl:value-of select="error"/>
+                </td>
+            </tr>
+        </table>
+    </xsl:template>
 </xsl:stylesheet>

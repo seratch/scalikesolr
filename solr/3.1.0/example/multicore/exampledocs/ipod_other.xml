@@ -17,15 +17,15 @@
 
 <add>
 
-<doc>
-  <field name="id">F8V7067-APL-KIT</field>
-  <field name="name">Belkin Mobile Power Cord for iPod w/ Dock</field>
-</doc>
+    <doc>
+        <field name="id">F8V7067-APL-KIT</field>
+        <field name="name">Belkin Mobile Power Cord for iPod w/ Dock</field>
+    </doc>
 
-<doc>
-  <field name="id">IW-02</field>
-  <field name="name">iPod &amp; iPod Mini USB 2.0 Cable</field>
-</doc>
+    <doc>
+        <field name="id">IW-02</field>
+        <field name="name">iPod &amp; iPod Mini USB 2.0 Cable</field>
+    </doc>
 
 
 </add>
