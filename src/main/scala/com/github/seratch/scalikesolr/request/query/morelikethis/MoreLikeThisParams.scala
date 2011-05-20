@@ -32,6 +32,13 @@ case class MoreLikeThisParams(@BeanProperty var enabled: Boolean = false,
 
 }
 
+object MoreLikeThisParams {
+  def as(enabled: Boolean, count: Int, fieldsToUseForSimilarity: FieldsToUseForSimilarity) = {
+    new MoreLikeThisParams(enabled, count, fieldsToUseForSimilarity)
+  }
+}
+
+
 case class FieldsToUseForSimilarity(@BeanProperty val fl: String = "*") extends RequestParam {
 
   override def isEmpty() = fl == null || fl.isEmpty

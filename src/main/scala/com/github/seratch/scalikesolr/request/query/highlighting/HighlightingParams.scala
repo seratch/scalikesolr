@@ -50,6 +50,12 @@ case class HighlightingParams(@BeanProperty var enabled: Boolean = false,
 
 }
 
+object HighlightingParams {
+  def as(enabled: Boolean): HighlightingParams = {
+    new HighlightingParams(enabled)
+  }
+}
+
 case class FieldsHighlighted(@BeanProperty val fl: String = "*") extends RequestParam {
 
   override def isEmpty() = fl == null || fl.isEmpty

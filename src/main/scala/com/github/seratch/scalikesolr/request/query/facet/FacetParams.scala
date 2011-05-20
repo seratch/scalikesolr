@@ -32,6 +32,10 @@ case class FacetParams(@BeanProperty var enabled: Boolean = false,
 
 }
 
+object FacetParams {
+  def as(enabled: Boolean): FacetParams = new FacetParams(enabled)
+}
+
 case class FacetParam(val field: Field = Field(""), val param: Param, val value: Value) {
 
   def this(param: Param, value: Value) = {

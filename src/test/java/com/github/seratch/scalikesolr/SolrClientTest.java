@@ -1,12 +1,13 @@
 package com.github.seratch.scalikesolr;
 
-import com.github.seratch.scalikesolr.request.DIHCommandRequest;
 import com.github.seratch.scalikesolr.request.PingRequest;
 import com.github.seratch.scalikesolr.request.QueryRequest;
 import com.github.seratch.scalikesolr.request.UpdateRequest;
 import com.github.seratch.scalikesolr.request.common.WriterType;
 import com.github.seratch.scalikesolr.request.query.Query;
-import com.github.seratch.scalikesolr.response.DIHCommandResponse;
+import com.github.seratch.scalikesolr.request.query.Sort;
+import com.github.seratch.scalikesolr.request.query.morelikethis.FieldsToUseForSimilarity;
+import com.github.seratch.scalikesolr.request.query.morelikethis.MoreLikeThisParams;
 import com.github.seratch.scalikesolr.response.PingResponse;
 import com.github.seratch.scalikesolr.response.QueryResponse;
 import com.github.seratch.scalikesolr.response.UpdateResponse;
@@ -44,6 +45,8 @@ public class SolrClientTest {
 	public void doQuery_JSON() throws Exception {
 		QueryRequest request = new QueryRequest(new Query("author:Rick"));
 		request.setWriterType(WriterType.JSON());
+		request.setSort(Sort.as("author desc"));
+		request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
 		QueryResponse response = client.doQuery(request);
 		assertThat(response.getResponseHeader(), is(notNullValue()));
 		assertThat(response.getResponse(), is(notNullValue()));
