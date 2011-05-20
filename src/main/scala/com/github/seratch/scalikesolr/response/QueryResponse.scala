@@ -18,6 +18,13 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
 
   @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(writerType, rawBody)
 
+  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
+    writerType match {
+      case WriterType.JSON => JSONUtil.toMap(JSON.parseFull(rawBody))
+      case _ => Map()
+    }
+  }
+
   @BeanProperty lazy val response: Response = {
     writerType match {
       case WriterType.Standard => {
@@ -33,11 +40,10 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         )
       }
       case WriterType.JSON => {
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val response: Map[String, Option[Any]] = jsonMap.get("response").get.asInstanceOf[Map[String, Option[Any]]]
+        val response = JSONUtil.toMap(jsonMapFromRawBody.get("response"))
         val numFound = JSONUtil.normalizeNum(response.get("numFound").getOrElse("0").toString).toInt
         val start = JSONUtil.normalizeNum(response.get("start").getOrElse("0").toString).toInt
-        val docs: List[Map[String, Option[Any]]] = response.get("docs").getOrElse(Nil).asInstanceOf[List[Map[String, Option[Any]]]]
+        val docs = JSONUtil.toList(response.get("docs"))
         val documents: Seq[SolrDocument] = docs map {
           case doc: Map[String, Option[Any]] => {
             val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
@@ -77,12 +83,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         )
       }
       case WriterType.JSON => {
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val highlighting: Map[String, Option[Any]] = jsonMap.get("highlighting").getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+        val highlighting = JSONUtil.toMap(jsonMapFromRawBody.get("highlighting"))
         val hashMap = new collection.mutable.HashMap[String, SolrDocument]
         highlighting.keysIterator.foreach {
           case key => {
-            val doc: Map[String, Option[Any]] = highlighting.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(highlighting.get(key))
             val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
             doc.keysIterator.foreach {
               case docKey => {
@@ -128,12 +133,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         )
       }
       case WriterType.JSON => {
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val moreLikeThis: Map[String, Option[Any]] = jsonMap.get("moreLikeThis").getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+        val moreLikeThis = JSONUtil.toMap(jsonMapFromRawBody.get("moreLikeThis"))
         val hashMap = new collection.mutable.HashMap[String, SolrDocument]
         moreLikeThis.keysIterator.foreach {
           case key => {
-            val doc: Map[String, Option[Any]] = moreLikeThis.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(moreLikeThis.get(key))
             val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
             doc.keysIterator.foreach {
               case docKey => {
@@ -230,16 +234,14 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         val facetDatesMap = new collection.mutable.HashMap[String, SolrDocument]
         val facetRangesMap = new collection.mutable.HashMap[String, SolrDocument]
 
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val facetCounts: Map[String, Option[Any]] = jsonMap.get("facet_counts").getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val hashMap = new collection.mutable.HashMap[String, SolrDocument]
+        val facetCounts = JSONUtil.toMap(jsonMapFromRawBody.get("facet_counts"))
         facetCounts.keysIterator.foreach {
           case key if key == "facet_queries" => {
-            val doc: Map[String, Option[Any]] = facetCounts.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(facetCounts.get(key))
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets: List[Any] = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetQueriesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
@@ -249,11 +251,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             }
           }
           case key if key == "facet_fields" => {
-            val doc: Map[String, Option[Any]] = facetCounts.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(facetCounts.get(key))
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets: List[Any] = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetFieldsMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
@@ -263,11 +265,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             }
           }
           case key if key == "facet_dates" => {
-            val doc: Map[String, Option[Any]] = facetCounts.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(facetCounts.get(key))
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets: List[Any] = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetDatesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
@@ -277,11 +279,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             }
           }
           case key if key == "facet_ranges" => {
-            val doc: Map[String, Option[Any]] = facetCounts.get(key).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
+            val doc = JSONUtil.toMap(facetCounts.get(key))
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets: List[Any] = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetRangesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,

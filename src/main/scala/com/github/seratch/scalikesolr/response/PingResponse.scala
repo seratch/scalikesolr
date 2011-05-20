@@ -6,9 +6,17 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import xml.XML
 import util.parsing.json.JSON
+import com.github.seratch.scalikesolr.util.JSONUtil
 
 case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
                         @BeanProperty val rawBody: String = "") {
+
+  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
+    writerType match {
+      case WriterType.JSON => JSONUtil.toMap(JSON.parseFull(rawBody))
+      case _ => Map()
+    }
+  }
 
   @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(writerType, rawBody)
 
@@ -19,8 +27,7 @@ case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.St
         (xml \ "str").filter(item => (item \ "@name").text == "status")(0).text
       }
       case WriterType.JSON => {
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        jsonMap.get("status").getOrElse("").toString
+        jsonMapFromRawBody.get("status").getOrElse("").toString
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }

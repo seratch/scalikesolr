@@ -17,6 +17,13 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
     this (writerType = writerType, rawBody = "", map = map)
   }
 
+  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
+    writerType match {
+      case WriterType.JSON => JSONUtil.toMap(JSON.parseFull(rawBody))
+      case _ => Map()
+    }
+  }
+
   private lazy val document: Map[String, SolrDocumentValue] = {
     if (map != null && map.size > 0) {
       map
@@ -29,10 +36,9 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
           }
         }
         case WriterType.JSON => {
-          val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-          jsonMap.keys.foreach {
+          jsonMapFromRawBody.keys.foreach {
             case key => {
-              val value = JSONUtil.normalizeNum(jsonMap.get(key).getOrElse("").toString)
+              val value = JSONUtil.normalizeNum(jsonMapFromRawBody.get(key).getOrElse("").toString)
               mutableMap.update(key, new SolrDocumentValue(value))
             }
           }
@@ -45,9 +51,6 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
 
   def keys(): List[String] = document.keys.toList
 
-  def get(key: String): SolrDocumentValue = {
-    val value = document.getOrElse(key, SolrDocumentValue(""))
-    value
-  }
+  def get(key: String): SolrDocumentValue = document.getOrElse(key, SolrDocumentValue(""))
 
 }

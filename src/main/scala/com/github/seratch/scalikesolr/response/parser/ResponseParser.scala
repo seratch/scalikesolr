@@ -30,11 +30,11 @@ object ResponseParser {
         }
       }
       case WriterType.JSON => {
-        val jsonMap: Map[String, Option[Any]] = JSON.parseFull(rawBody).getOrElse(Map()).asInstanceOf[Map[String, Option[Any]]]
-        val responseHeader: Map[String, Option[Any]] = jsonMap.get("responseHeader").get.asInstanceOf[Map[String, Option[Any]]]
+        val jsonMap = JSONUtil.toMap(JSON.parseFull(rawBody))
+        val responseHeader = JSONUtil.toMap(jsonMap.get("responseHeader"))
         val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
         val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
-        val params: Map[String, Option[Any]] = responseHeader.get("params").get.asInstanceOf[Map[String, Option[Any]]]
+        val params = JSONUtil.toMap(responseHeader.get("params"))
         val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
         params.keysIterator.foreach {
           case key => docMap.update(key, new SolrDocumentValue(params.getOrElse(key, "").toString))

@@ -8,6 +8,7 @@ object HttpClient {
   def post(url: String, dataBinary: String, contentType: String, charset: String) = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+
     conn.setConnectTimeout(3000)
     conn.setReadTimeout(10000)
     conn.setRequestMethod("POST")
@@ -46,7 +47,7 @@ object HttpClient {
       HttpResponse(
         conn.getResponseCode,
         mapBuffer.toMap,
-        getResponseCotent(conn, charset))
+        getResponseContent(conn, charset))
     }
     catch {
       case e: IOException => throw e
@@ -54,7 +55,7 @@ object HttpClient {
 
   }
 
-  private def getResponseCotent(conn: HttpURLConnection, charset: String): String = {
+  private def getResponseContent(conn: HttpURLConnection, charset: String): String = {
     var is: InputStream = null
     var br: BufferedReader = null
     try {

@@ -57,28 +57,28 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
     log.debug("doAddDocuments - Request URL : " + requestUrl)
-    val dataBinary = new StringBuilder
-    dataBinary.append("<add>")
+    val body = new StringBuilder
+    body.append("<add>")
     request.documents foreach {
       case doc =>
-        dataBinary.append("<doc>")
+        body.append("<doc>")
         doc.keys map {
           case key => {
-            dataBinary.append("<field name=")
-            dataBinary.append(""""""")
-            dataBinary.append(key.toString)
-            dataBinary.append(""""""")
-            dataBinary.append(">")
-            dataBinary.append(doc.get(key).toString)
-            dataBinary.append("</field>")
+            body.append("<field name=")
+            body.append(""""""")
+            body.append(key.toString)
+            body.append(""""""")
+            body.append(">")
+            body.append(doc.get(key).toString)
+            body.append("</field>")
           }
         }
-        dataBinary.append("</doc>")
+        body.append("</doc>")
     }
-    dataBinary.append("</add>")
-    log.debug("doAddDocuments - DataBinary : " + dataBinary.toString)
+    body.append("</add>")
+    log.debug("doAddDocuments - Body : " + body.toString)
     new UpdateResponse(
-      rawBody = HttpClient.post(requestUrl, dataBinary.toString, "text/xml", "UTF-8").content
+      rawBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
     )
   }
 
