@@ -180,15 +180,15 @@ Add documents to Solr:
 
 #### Commit
 
-Commit the Update request:
-
      val response = client.doCommit(new UpdateRequest())
 
 #### Rollback
 
-Rollback the Update request:
-
      val response = client.doRollback(new UpdateRequest())
+
+#### Optimize
+
+     val response = client.doOptimize(new UpdateRequest())
 
 ### Ping
 
@@ -284,6 +284,10 @@ This library works fine with Java.
 #### Rollback
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
+
+#### Optimize
+
+    UpdateResponse response = client.doOptimize(new UpdateRequest());
 
 ### Ping
 
