@@ -217,7 +217,20 @@ object SolrClientSpec extends Specification {
   //
   //    }
 
-  "doAddDocumentsAndCommit" should {
+  "doDeleteDocuments" should {
+
+    "be available" in {
+      val request = new DeleteRequest(uniqueKeysToDelete = List("978-0641723445"))
+      val response = client.doDeleteDocuments(request)
+      log.debug(response.toString)
+      response.responseHeader.status must greaterThanOrEqualTo(0)
+      response.responseHeader.qTime must greaterThanOrEqualTo(0)
+      client.doCommit(new UpdateRequest())
+    }
+
+  }
+
+  "doAddDocuments" should {
 
     "be available" in {
       val request = new AddRequest()
@@ -313,5 +326,6 @@ object SolrClientSpec extends Specification {
     }
 
   }
+
 
 }

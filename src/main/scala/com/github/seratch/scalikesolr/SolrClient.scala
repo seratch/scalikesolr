@@ -15,6 +15,8 @@ trait SolrClient {
 
   def doAddDocuments(request: AddRequest): AddResponse
 
+  def doDeleteDocuments(request: DeleteRequest): DeleteResponse
+
   def doCommit(request: UpdateRequest): UpdateResponse
 
   def doRollback(request: UpdateRequest): UpdateResponse
@@ -32,9 +34,11 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/select/" + queryString
     log.debug("doQuery - Request URL : " + requestUrl)
+    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    log.debug("doQuery - Response Body : " + responseBody)
     new QueryResponse(
       writerType = request.writerType,
-      rawBody = Source.fromURL(requestUrl, "UTF-8").mkString
+      rawBody = responseBody
     )
   }
 
@@ -43,9 +47,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.toQueryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/dataimport/" + queryString
     log.debug("doDIHCommand - Request URL : " + requestUrl)
-    new DIHCommandResponse(
-      rawBody = Source.fromURL(requestUrl, "UTF-8").mkString
-    )
+    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    log.debug("doDIHCommand - Response Body : " + responseBody)
+    new DIHCommandResponse(rawBody = responseBody)
   }
 
   override def doAddDocuments(request: AddRequest): AddResponse = {
@@ -71,28 +75,57 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
         body.append("</doc>")
     }
     body.append("</add>")
-    log.debug("doAddDocuments - Body : " + body.toString)
-    new AddResponse(
-      rawBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
-    )
+    log.debug("doAddDocuments - Request Body : " + body.toString)
+    val responseBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
+    log.debug("doAddDocuments - Response Body : " + responseBody)
+    new AddResponse(rawBody = responseBody)
+  }
+
+  override def doDeleteDocuments(request: DeleteRequest): DeleteResponse = {
+    val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
+    log.debug("doAddDocuments - Request URL : " + requestUrl)
+    val body = new StringBuilder
+    body.append("<delete>")
+    request.uniqueKeysToDelete foreach {
+      case uniqueKey => {
+        body.append("<id>")
+        body.append(uniqueKey)
+        body.append("</id>")
+      }
+    }
+    request.queries foreach {
+      case query => {
+        body.append("<query>")
+        body.append(query.toString)
+        body.append("</query>")
+      }
+    }
+    body.append("</delete>")
+    log.debug("doDeleteDocuments - Request Body : " + body.toString)
+    val responseBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
+    log.debug("doDeleteDocuments - Response Body : " + responseBody)
+    new DeleteResponse(rawBody = responseBody)
   }
 
   override def doCommit(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
     log.debug("doCommit - Request URL : " + requestUrl)
-    new UpdateResponse(
-      rawBody = HttpClient.post(requestUrl, "<commit/>", "text/xml", "UTF-8").content
-    )
+    log.debug("doCommit - Request Body : <commit/>")
+    val responseBody = HttpClient.post(requestUrl, "<commit/>", "text/xml", "UTF-8").content
+    log.debug("doCommit - Response Body : " + responseBody)
+    new UpdateResponse(rawBody = responseBody)
   }
 
   override def doRollback(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
     log.debug("doRollback - Request URL : " + requestUrl)
-    new UpdateResponse(
-      rawBody = HttpClient.post(requestUrl, "<rollback/>", "text/xml", "UTF-8").content
-    )
+    log.debug("doRollback - Request Body : <rollback/>")
+    val responseBody = HttpClient.post(requestUrl, "<rollback/>", "text/xml", "UTF-8").content
+    log.debug("doRollback - Response Body : " + responseBody)
+    new UpdateResponse(rawBody = responseBody)
   }
 
   override def doPing(request: PingRequest): PingResponse = {
@@ -100,9 +133,11 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/admin/ping/" + queryString
     log.debug("doPing - Request URL : " + requestUrl)
+    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    log.debug("doPing - Response Body : " + responseBody)
     new PingResponse(
       writerType = request.writerType,
-      rawBody = Source.fromURL(requestUrl, "UTF-8").mkString
+      rawBody = responseBody
     )
   }
 
