@@ -1,18 +1,21 @@
 package com.github.seratch.scalikesolr.request
 
+import common.WriterType
 import query.Query
 import reflect.BeanProperty
 
 import com.github.seratch.scalikesolr.{SolrDocument, SolrCore}
 import collection.JavaConverters._
+import util.QueryStringUtil
 
 case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
                          var uniqueKeysToDelete: List[String] = Nil,
                          var queries: List[Query] = Nil,
-                         @BeanProperty var queryString: String = "") {
+                         @BeanProperty var writerType: WriterType = WriterType.Standard,
+                         @BeanProperty var additionalQueryString: String = "") {
 
   def this() = {
-    this (SolrCore(), Nil, Nil, "")
+    this (SolrCore(), Nil, Nil, WriterType.Standard, "")
   }
 
   def getUniqueKeysToDetelteInJava(): java.util.List[String] = uniqueKeysToDelete.asJava
@@ -25,6 +28,12 @@ case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
 
   def setQueriesInJava(queries: java.util.List[Query]): Unit = {
     this.queries = queries.asScala.toList
+  }
+
+  def toQueryString(): String = {
+    val buf = new StringBuilder
+    QueryStringUtil.appendIfExists(buf, writerType)
+    "?" + buf.toString + additionalQueryString
   }
 
 }
