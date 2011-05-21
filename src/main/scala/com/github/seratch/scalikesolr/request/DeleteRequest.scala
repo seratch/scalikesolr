@@ -8,10 +8,11 @@ import collection.JavaConverters._
 
 case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
                          var uniqueKeysToDelete: List[String] = Nil,
-                         var queries: List[Query] = Nil) {
+                         var queries: List[Query] = Nil,
+                         @BeanProperty var queryString: String = "") {
 
   def this() = {
-    this (SolrCore(), Nil)
+    this (SolrCore(), Nil, Nil, "")
   }
 
   def getUniqueKeysToDetelteInJava(): java.util.List[String] = uniqueKeysToDelete.asJava

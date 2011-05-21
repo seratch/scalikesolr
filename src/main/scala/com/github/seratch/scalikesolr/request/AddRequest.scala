@@ -7,10 +7,11 @@ import collection.JavaConverters._
 import util.QueryStringUtil
 
 case class AddRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                      var documents: List[SolrDocument] = Nil) {
+                      var documents: List[SolrDocument] = Nil,
+                      @BeanProperty var queryString: String = "") {
 
   def this() = {
-    this (SolrCore(), Nil)
+    this (SolrCore(), Nil, "")
   }
 
   def getDocumentsInJava(): java.util.List[SolrDocument] = documents.asJava

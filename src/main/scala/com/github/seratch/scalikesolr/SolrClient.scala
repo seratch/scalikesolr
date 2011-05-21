@@ -19,6 +19,8 @@ trait SolrClient {
 
   def doCommit(request: UpdateRequest): UpdateResponse
 
+  def doOptimize(request: UpdateRequest): UpdateResponse
+
   def doRollback(request: UpdateRequest): UpdateResponse
 
   def doPing(request: PingRequest): PingResponse
@@ -32,7 +34,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doQuery(request: QueryRequest): QueryResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val queryString = request.queryString
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/select/" + queryString
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/select" + queryString
     log.debug("doQuery - Request URL : " + requestUrl)
     val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
     log.debug("doQuery - Response Body : " + responseBody)
@@ -45,7 +47,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doDIHCommand(request: DIHCommandRequest): DIHCommandResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val queryString = request.toQueryString
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/dataimport/" + queryString
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/dataimport" + queryString
     log.debug("doDIHCommand - Request URL : " + requestUrl)
     val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
     log.debug("doDIHCommand - Response Body : " + responseBody)
@@ -54,7 +56,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
   override def doAddDocuments(request: AddRequest): AddResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.queryString
     log.debug("doAddDocuments - Request URL : " + requestUrl)
     val body = new StringBuilder
     body.append("<add>")
@@ -83,7 +85,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
   override def doDeleteDocuments(request: DeleteRequest): DeleteResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.queryString
     log.debug("doAddDocuments - Request URL : " + requestUrl)
     val body = new StringBuilder
     body.append("<delete>")
@@ -110,7 +112,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
   override def doCommit(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.queryString
     log.debug("doCommit - Request URL : " + requestUrl)
     log.debug("doCommit - Request Body : <commit/>")
     val responseBody = HttpClient.post(requestUrl, "<commit/>", "text/xml", "UTF-8").content
@@ -118,9 +120,19 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     new UpdateResponse(rawBody = responseBody)
   }
 
+  override def doOptimize(request: UpdateRequest): UpdateResponse = {
+    val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.queryString
+    log.debug("doOptimize - Request URL : " + requestUrl)
+    log.debug("doOptimize - Request Body : <optimize/>")
+    val responseBody = HttpClient.post(requestUrl, "<optimize/>", "text/xml", "UTF-8").content
+    log.debug("doOptimize - Response Body : " + responseBody)
+    new UpdateResponse(rawBody = responseBody)
+  }
+
   override def doRollback(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.queryString
     log.debug("doRollback - Request URL : " + requestUrl)
     log.debug("doRollback - Request Body : <rollback/>")
     val responseBody = HttpClient.post(requestUrl, "<rollback/>", "text/xml", "UTF-8").content
@@ -131,7 +143,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doPing(request: PingRequest): PingResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val queryString = request.queryString
-    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/admin/ping/" + queryString
+    val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/admin/ping" + queryString
     log.debug("doPing - Request URL : " + requestUrl)
     val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
     log.debug("doPing - Response Body : " + responseBody)
