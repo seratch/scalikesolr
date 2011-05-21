@@ -1,5 +1,6 @@
 package com.github.seratch.scalikesolr;
 
+import com.github.seratch.scalikesolr.request.AddRequest;
 import com.github.seratch.scalikesolr.request.PingRequest;
 import com.github.seratch.scalikesolr.request.QueryRequest;
 import com.github.seratch.scalikesolr.request.UpdateRequest;
@@ -8,6 +9,7 @@ import com.github.seratch.scalikesolr.request.query.Query;
 import com.github.seratch.scalikesolr.request.query.Sort;
 import com.github.seratch.scalikesolr.request.query.morelikethis.FieldsToUseForSimilarity;
 import com.github.seratch.scalikesolr.request.query.morelikethis.MoreLikeThisParams;
+import com.github.seratch.scalikesolr.response.AddResponse;
 import com.github.seratch.scalikesolr.response.PingResponse;
 import com.github.seratch.scalikesolr.response.QueryResponse;
 import com.github.seratch.scalikesolr.response.UpdateResponse;
@@ -81,13 +83,13 @@ public class SolrClientTest {
 
     @Test
     public void doAddDocuments() throws Exception {
-        UpdateRequest request = new UpdateRequest();
+        AddRequest request = new AddRequest();
         String jsonString = "{\"id\" : \"978-0641723445\", \"cat\" : [\"book\",\"hardcover\"], \"title\" : \"The Lightning Thief\", \"author\" : \"Rick Riordan\", \"series_t\" : \"Percy Jackson and the Olympians\", \"sequence_i\" : 1, \"genre_s\" : \"fantasy\", \"inStock\" : true, \"price\" : 12.50, \"pages_i\" : 384}";
         SolrDocument doc = new SolrDocument(WriterType.JSON(), jsonString);
         java.util.List<SolrDocument> docs = new ArrayList<SolrDocument>();
         docs.add(doc);
         request.setDocumentsInJava(docs);
-        UpdateResponse response = client.doAddDocuments(request);
+        AddResponse response = client.doAddDocuments(request);
         assertThat(response.responseHeader(), is(notNullValue()));
     }
 

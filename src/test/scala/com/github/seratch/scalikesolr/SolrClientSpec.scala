@@ -220,7 +220,7 @@ object SolrClientSpec extends Specification {
   "doAddDocumentsAndCommit" should {
 
     "be available" in {
-      val request = new UpdateRequest()
+      val request = new AddRequest()
       val doc1 = SolrDocument(
         writerType = WriterType.JSON,
         rawBody = """
@@ -255,7 +255,8 @@ object SolrClientSpec extends Specification {
       """
       )
       request.documents = List(doc1, doc2)
-      val response = client.doAddDocumentsAndCommit(request)
+      val response = client.doAddDocuments(request)
+      client.doCommit(new UpdateRequest())
       log.debug(response.toString)
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)

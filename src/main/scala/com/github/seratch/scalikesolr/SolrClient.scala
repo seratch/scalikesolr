@@ -13,16 +13,11 @@ trait SolrClient {
 
   def doDIHCommand(request: DIHCommandRequest): DIHCommandResponse
 
-  def doAddDocuments(request: UpdateRequest): UpdateResponse
+  def doAddDocuments(request: AddRequest): AddResponse
 
   def doCommit(request: UpdateRequest): UpdateResponse
 
   def doRollback(request: UpdateRequest): UpdateResponse
-
-  def doAddDocumentsAndCommit(request: UpdateRequest): UpdateResponse = {
-    doAddDocuments(request)
-    doCommit(request)
-  }
 
   def doPing(request: PingRequest): PingResponse
 
@@ -53,7 +48,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
-  override def doAddDocuments(request: UpdateRequest): UpdateResponse = {
+  override def doAddDocuments(request: AddRequest): AddResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update/"
     log.debug("doAddDocuments - Request URL : " + requestUrl)
@@ -77,7 +72,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     }
     body.append("</add>")
     log.debug("doAddDocuments - Body : " + body.toString)
-    new UpdateResponse(
+    new AddResponse(
       rawBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
     )
   }
