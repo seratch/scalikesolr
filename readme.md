@@ -278,7 +278,7 @@ This library works fine with Java.
     DIHCommandRequest request = new DIHCommandRequest("delta-import");
     DIHCommandResponse response = client.doDIHCommand(request);
 
-#### Add documements
+### Add documements
 
     AddRequest request = new AddRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
@@ -289,7 +289,7 @@ This library works fine with Java.
     AddResponse response = client.doAddDocuments(request);
     client.doCommit(new UpdateRequest());
 
-#### Delete documents
+### Delete documents
 
     DeleteRequest request = new DeleteRequest();
     List<String> uniqueKeys = new ArrayList<String>();
@@ -298,15 +298,15 @@ This library works fine with Java.
     DeleteResponse response = client.doDeleteDocuments(request);
     client.doCommit(new UpdateRequest());
 
-#### Commit
+### Commit
 
     UpdateResponse response = client.doCommit(new UpdateRequest());
 
-#### Rollback
+### Rollback
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
 
-#### Optimize
+### Optimize
 
     UpdateResponse response = client.doOptimize(new UpdateRequest());
 
