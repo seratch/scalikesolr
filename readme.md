@@ -188,6 +188,33 @@ Rollback the Update request:
      val response = client.doPing(new PingRequest())
      println(response.status) // "OK"
 
+### Loading documents from update format
+
+JSON format is not supported.
+
+#### [XML format](http://wiki.apache.org/solr/UpdateXmlMessages)
+
+     val xmlString = "<add><doc><field name=\"employeeId\">05991</field><field name=\"office\">Bridgewater</field>..."
+     val docs = UpdateFormatLoader.fromXMLString(xmlString)
+     docs foreach {
+       case doc => {
+         println("employeeId:" + doc.get("employeeId").toString()) // "05991"
+         println("office:" + doc.get("office").toString()) // "Bridgewater"
+       }
+     }
+
+#### [CSV format](http://wiki.apache.org/solr/UpdateCSV)
+
+     val csvString = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
+     val docs = UpdateFormatLoader.fromCSVString(csvString)
+     docs foreach {
+       case doc => {
+         println(doc.get("id")) // "0553573403"
+         println(doc.get("name")) // "A Game of Thrones"
+         println(doc.get("sequence_i").toIntOrElse(0)) // 1
+       }
+     }
+
 ### How to know which type is the param mapped?
 
 Name of constructor arg is same as the Solr parameter key.
