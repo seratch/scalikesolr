@@ -195,6 +195,29 @@ Add documents to Solr:
      val response = client.doPing(new PingRequest())
      println(response.status) // "OK"
 
+### Add documents in CSV format
+
+     val request = new UpdateRequest(
+       requestBody = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
+     )
+     val response = client.doAddDocumentsInCSV(request)
+     client.doCommit(new UpdateRequest)
+
+### Update in XML format
+
+     val request = new UpdateRequest(
+       requestBody = "<optimize/>"
+     )
+     val response = client.doUpdateInXML(request)
+
+### Update in JSON format
+
+     val request = new UpdateRequest(
+       writerType = WriterType.JSON,
+       requestBody = "{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }"
+     )
+     val response = client.doUpdateInJSON(request)
+
 ### Loading documents from update format
 
 JSON format is not supported.
@@ -255,8 +278,6 @@ This library works fine with Java.
     DIHCommandRequest request = new DIHCommandRequest("delta-import");
     DIHCommandResponse response = client.doDIHCommand(request);
 
-### Update
-
 #### Add documements
 
     AddRequest request = new AddRequest();
@@ -288,6 +309,27 @@ This library works fine with Java.
 #### Optimize
 
     UpdateResponse response = client.doOptimize(new UpdateRequest());
+
+### Add documents in CSV format
+
+    UpdateRequest request = new UpdateRequest();
+    request.setRequestBody("id,name,sequence_i,...");
+    UpdateResponse response = client.doAddDocumentsInCSV(request);
+    client.doCommit(new UpdateRequest());
+
+### Update in XML format
+
+    UpdateRequest request = new UpdateRequest();
+    request.setRequestBody("<optimize/>");
+    UpdateResponse response = client.doUpdateInXML(request);
+
+### Update in JSON format
+
+    UpdateRequest request = new UpdateRequest();
+    request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
+    request.setWriterType(WriterType.JSON());
+    request.setAdditionalQueryString("&indent=on");
+    UpdateResponse response = client.doUpdateInJSON(request);
 
 ### Ping
 
