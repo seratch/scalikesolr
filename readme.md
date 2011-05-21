@@ -170,6 +170,13 @@ Add documents to Solr:
      )
      request.documents = List(doc1, doc2)
      val response = client.doAddDocuments(request)
+     client.doCommit(new UpdateRequest)
+
+#### Delete documents
+
+     val request = new DeleteRequest(uniqueKeysToDelete = List("978-0641723445"))
+     val response = client.doDeleteDocuments(request)
+     client.doCommit(new UpdateRequest)
 
 #### Commit
 
@@ -259,6 +266,16 @@ This library works fine with Java.
     docs.add(doc);
     request.setDocumentsInJava(docs);
     AddResponse response = client.doAddDocuments(request);
+    client.doCommit(new UpdateRequest());
+
+#### Delete documents
+
+    DeleteRequest request = new DeleteRequest();
+    List<String> uniqueKeys = new ArrayList<String>();
+    uniqueKeys.add("978-0641723445");
+    request.setUniqueKeysToDetelteInJava(uniqueKeys);
+    DeleteResponse response = client.doDeleteDocuments(request);
+    client.doCommit(new UpdateRequest());
 
 #### Commit
 
