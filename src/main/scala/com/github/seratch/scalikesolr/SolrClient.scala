@@ -25,11 +25,11 @@ trait SolrClient {
 
   def doPing(request: PingRequest): PingResponse
 
-  def doAddDocumentsByCSV(request: UpdateRequest): UpdateResponse
+  def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse
 
-  def doUpdateByXML(request: UpdateRequest): UpdateResponse
+  def doUpdateInXML(request: UpdateRequest): UpdateResponse
 
-  def doUpdateByJSON(request: UpdateRequest): UpdateResponse
+  def doUpdateInJSON(request: UpdateRequest): UpdateResponse
 
 }
 
@@ -182,42 +182,42 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
-  def doAddDocumentsByCSV(request: UpdateRequest): UpdateResponse = {
+  def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/csv" + request.toQueryString()
-    log.debug("doAddDocumentsByCSV - Request URL : " + requestUrl)
-    log.debug("doAddDocumentsByCSV - Request Body : " + request.requestBody)
+    log.debug("doAddDocumentsInCSV - Request URL : " + requestUrl)
+    log.debug("doAddDocumentsInCSV - Request Body : " + request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doAddDocumentsByCSV - Response Body : " + responseBody)
+    log.debug("doAddDocumentsInCSV - Response Body : " + responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
     )
   }
 
-  def doUpdateByXML(request: UpdateRequest): UpdateResponse = {
+  def doUpdateInXML(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doUpdateByXML - Request URL : " + requestUrl)
-    log.debug("doUpdateByXML - Request Body : " + request.requestBody)
+    log.debug("doUpdateInXML - Request URL : " + requestUrl)
+    log.debug("doUpdateInXML - Request Body : " + request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doUpdateByXML - Response Body : " + responseBody)
+    log.debug("doUpdateInXML - Response Body : " + responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
     )
   }
 
-  def doUpdateByJSON(request: UpdateRequest): UpdateResponse = {
+  def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/json" + request.toQueryString()
-    log.debug("doUpdateByJSON - Request URL : " + requestUrl)
-    log.debug("doUpdateByJSON - Request Body : " + request.requestBody)
+    log.debug("doUpdateInJSON - Request URL : " + requestUrl)
+    log.debug("doUpdateInJSON - Request Body : " + request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doUpdateByJSON - Response Body : " + responseBody)
+    log.debug("doUpdateInJSON - Response Body : " + responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody

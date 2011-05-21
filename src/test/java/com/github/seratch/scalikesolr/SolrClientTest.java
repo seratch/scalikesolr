@@ -129,29 +129,29 @@ public class SolrClientTest {
 
 
     @Test
-    public void doAddDocumentsByCSV() throws Exception {
+    public void doAddDocumentsInCSV() throws Exception {
         UpdateRequest request = new UpdateRequest();
         request.setRequestBody("id,cat,name,price,inStock,author_t,series_t,sequence_i,genre_s\n0553573403,book,A Game of Thrones,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",1,fantasy\n0553579908,book,A Clash of Kings,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",2,fantasy\n055357342X,book,A Storm of Swords,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",3,fantasy\n0553293354,book,Foundation,7.99,true,Isaac Asimov,Foundation Novels,1,scifi\n0812521390,book,The Black Company,6.99,false,Glen Cook,The Chronicles of The Black Company,1,fantasy\n");
-        UpdateResponse response = client.doAddDocumentsByCSV(request);
+        UpdateResponse response = client.doAddDocumentsInCSV(request);
         assertThat(response.responseHeader(), is(notNullValue()));
         client.doCommit(new UpdateRequest());
     }
 
     @Test
-    public void doUpdateByXML() throws Exception {
+    public void doUpdateInXML() throws Exception {
         UpdateRequest request = new UpdateRequest();
         request.setRequestBody("<optimize/>");
-        UpdateResponse response = client.doUpdateByXML(request);
+        UpdateResponse response = client.doUpdateInXML(request);
         assertThat(response.responseHeader(), is(notNullValue()));
     }
 
     @Test
-    public void doUpdateByJSON() throws Exception {
+    public void doUpdateInJSON() throws Exception {
         UpdateRequest request = new UpdateRequest();
         request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
         request.setWriterType(WriterType.JSON());
         request.setAdditionalQueryString("&indent=on");
-        UpdateResponse response = client.doUpdateByJSON(request);
+        UpdateResponse response = client.doUpdateInJSON(request);
         assertThat(response.responseHeader(), is(notNullValue()));
     }
 
