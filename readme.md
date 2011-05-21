@@ -135,7 +135,7 @@ Commands for [Data Import Handler](http://wiki.apache.org/solr/DataImportHandler
 
 Add documents to Solr:
 
-     val request = new UpdateRequest()
+     val request = new AddRequest()
      val doc1 = SolrDocument(
        writerType = WriterType.JSON,
        rawBody = """
@@ -225,13 +225,13 @@ This library works fine with Java.
 
 #### Add documements
 
-    UpdateRequest request = new UpdateRequest();
+    AddRequest request = new AddRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
     SolrDocument doc = new SolrDocument(WriterType.JSON(), jsonString);
     List<SolrDocument> docs = new ArrayList<SolrDocument>();
     docs.add(doc);
     request.setDocumentsInJava(docs);
-    UpdateResponse response = client.doAddDocuments(request);
+    AddResponse response = client.doAddDocuments(request);
 
 #### Commit
 
