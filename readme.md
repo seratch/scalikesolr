@@ -50,6 +50,31 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
       }
     }
 
+#### Bind from SolrDocuement
+
+It requires no-argument constructor and setters for each fields.
+It is also possible to specify user-defined type that has one argument(String) constructor.
+
+    case class PageI(val value: String = "")
+    case class Book(
+      var id: String = "",
+      var cat: List[String] = Nil,
+      var name: String = "",
+      var price: Double = 0.0,
+      var pageI: PageI = PageI(),
+      var sequenceI: Int = 0) {
+      def this() = {
+        this ("", Nil, "", 0.0, PageI(), 0)
+      }
+    }
+    val book = doc.bind(classOf[Book])
+    println(book.id) // "978-1423103349"
+    println(book.cat.size) // 2
+    println(book.name) // "A Game of Thrones"
+    println(book.price) // 12.5
+    println(book.pageI.value) // 1
+    println(book.sequenceI) // 384
+
 #### With Highlightings
 
 Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParameters):
@@ -271,6 +296,16 @@ This library works fine with Java.
         log.debug(document.get("pages_i").toNullableIntOrElse(null).toString()); // 304
         log.debug(document.get("price").toNullableDoubleOrElse(null).toString()); // 6.49
     }
+
+#### Bind from SolrDocument
+
+    Book book = doc.bindInJava(Book.class);
+    log.debug(book.id); // "978-1423103349"
+    log.debug(book.cat.toString()); // [book]
+    log.debug(book.name); // "A Game of Thrones"
+    log.debug(book.price.toString()); // "7.99"
+    log.debug(book.pageI.getValue()); // "32"
+    log.debug(book.sequenceI.toString()); // "1"
 
 ### DIH Command
 

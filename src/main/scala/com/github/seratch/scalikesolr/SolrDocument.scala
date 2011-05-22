@@ -1,7 +1,7 @@
 package com.github.seratch.scalikesolr
 
 import reflect.BeanProperty
-import util.JSONUtil
+import util.{TypeBinder, JSONUtil}
 import xml.{Node, XML}
 import scala.util.parsing.json.JSON
 
@@ -52,5 +52,9 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
   def keys(): List[String] = document.keys.toList
 
   def get(key: String): SolrDocumentValue = document.getOrElse(key, SolrDocumentValue(""))
+
+  def bind[T](clazz: Class[T]): T = TypeBinder.bind(this, clazz)
+
+  def bindInJava[T](clazz: Class[T]): T = TypeBinder.bindInJava(this, clazz)
 
 }
