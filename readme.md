@@ -79,7 +79,7 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
 
 #### Bind from SolrDocument
 
-It requires no-argument constructor and setters for each fields.
+It requires no-argument constructor and setters for fields.
 It is also possible to specify user-defined type that has one argument(String) constructor.
 
     case class PageI(val value: String = "")
