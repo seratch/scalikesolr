@@ -299,7 +299,26 @@ This library works fine with Java.
 
 #### Bind from SolrDocument
 
-    Book book = doc.bindInJava(Book.class);
+    public class PageI {
+        private String value;
+        public PageI(String value) { this.value = value; }
+        public String getValue() { return value; }
+    }
+
+    public class Book {
+        private String id;
+        private List<String> cat;
+        private String name;
+        private Double price;
+        private PageI pageI;
+        private Integer sequenceI;
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        // ... getter/setter
+    }
+
+    SolrDocument document = ...;
+    Book book = document.bindInJava(Book.class);
     log.debug(book.id); // "978-1423103349"
     log.debug(book.cat.toString()); // [book]
     log.debug(book.name); // "A Game of Thrones"
