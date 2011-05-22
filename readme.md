@@ -17,7 +17,6 @@
         <id>ScalikeSolrClientLibrarySnapshots</id>
         <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/snapshots</url>
       </repository>
-      ...
     </repositories>
 
     <dependency>
@@ -190,12 +189,7 @@ Add documents to Solr:
 
      val response = client.doOptimize(new UpdateRequest())
 
-### Ping
-
-     val response = client.doPing(new PingRequest())
-     println(response.status) // "OK"
-
-### Add documents in CSV format
+#### Add documents in CSV format
 
      val request = new UpdateRequest(
        requestBody = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
@@ -203,14 +197,14 @@ Add documents to Solr:
      val response = client.doAddDocumentsInCSV(request)
      client.doCommit(new UpdateRequest)
 
-### Update in XML format
+#### Update in XML format
 
      val request = new UpdateRequest(
        requestBody = "<optimize/>"
      )
      val response = client.doUpdateInXML(request)
 
-### Update in JSON format
+#### Update in JSON format
 
      val request = new UpdateRequest(
        writerType = WriterType.JSON,
@@ -218,7 +212,7 @@ Add documents to Solr:
      )
      val response = client.doUpdateInJSON(request)
 
-### Loading documents from update format
+### Load documents from Update format
 
 JSON format is not supported.
 
@@ -244,6 +238,11 @@ JSON format is not supported.
          println(doc.get("sequence_i").toIntOrElse(0)) // 1
        }
      }
+
+### Ping
+
+     val response = client.doPing(new PingRequest())
+     println(response.status) // "OK"
 
 ### How to know which type is the param mapped?
 
@@ -278,7 +277,9 @@ This library works fine with Java.
     DIHCommandRequest request = new DIHCommandRequest("delta-import");
     DIHCommandResponse response = client.doDIHCommand(request);
 
-### Add documements
+### Update
+
+#### Add documements
 
     AddRequest request = new AddRequest();
     String jsonString = "{\"id\" : \"978-0641723445\", ... }";
@@ -289,7 +290,7 @@ This library works fine with Java.
     AddResponse response = client.doAddDocuments(request);
     client.doCommit(new UpdateRequest());
 
-### Delete documents
+#### Delete documents
 
     DeleteRequest request = new DeleteRequest();
     List<String> uniqueKeys = new ArrayList<String>();
@@ -298,38 +299,58 @@ This library works fine with Java.
     DeleteResponse response = client.doDeleteDocuments(request);
     client.doCommit(new UpdateRequest());
 
-### Commit
+#### Commit
 
     UpdateResponse response = client.doCommit(new UpdateRequest());
 
-### Rollback
+#### Rollback
 
     UpdateResponse response = client.doRollback(new UpdateRequest());
 
-### Optimize
+#### Optimize
 
     UpdateResponse response = client.doOptimize(new UpdateRequest());
 
-### Add documents in CSV format
+#### Add documents in CSV format
 
     UpdateRequest request = new UpdateRequest();
     request.setRequestBody("id,name,sequence_i,...");
     UpdateResponse response = client.doAddDocumentsInCSV(request);
     client.doCommit(new UpdateRequest());
 
-### Update in XML format
+#### Update in XML format
 
     UpdateRequest request = new UpdateRequest();
     request.setRequestBody("<optimize/>");
     UpdateResponse response = client.doUpdateInXML(request);
 
-### Update in JSON format
+#### Update in JSON format
 
     UpdateRequest request = new UpdateRequest();
     request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
     request.setWriterType(WriterType.JSON());
     request.setAdditionalQueryString("&indent=on");
     UpdateResponse response = client.doUpdateInJSON(request);
+
+### Load documents from Update format
+
+JSON format is not supported.
+
+#### [XML format](http://wiki.apache.org/solr/UpdateXmlMessages)
+
+     String xmlString = "<add><doc><field name=\"employeeId\">05991</field><field name=\"office\">Bridgewater</field>..."
+     List<SolrDocument> docs = UpdateFormatLoader.fromXMLStringInJava(xmlString);
+     for (SolrDocument doc : docs) {
+       log.debug(doc.toString());
+     }
+
+#### [CSV format](http://wiki.apache.org/solr/UpdateCSV)
+
+     String csvString = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
+     List<SolrDocument> docs = UpdateFormatLoader.fromCSVStringInJava(csvString);
+     for (SolrDocument doc : docs) {
+       log.debug(doc.toString());
+     }
 
 ### Ping
 
