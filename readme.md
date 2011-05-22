@@ -319,12 +319,12 @@ This library works fine with Java.
 
     SolrDocument document = ...;
     Book book = document.bindInJava(Book.class);
-    log.debug(book.id); // "978-1423103349"
-    log.debug(book.cat.toString()); // [book]
-    log.debug(book.name); // "A Game of Thrones"
-    log.debug(book.price.toString()); // "7.99"
-    log.debug(book.pageI.getValue()); // "32"
-    log.debug(book.sequenceI.toString()); // "1"
+    log.debug(book.getId()); // "978-1423103349"
+    log.debug(book.getCat().toString()); // [book]
+    log.debug(book.getName()); // "A Game of Thrones"
+    log.debug(book.getPrice().toString()); // "7.99"
+    log.debug(book.getPageI().getValue()); // "32"
+    log.debug(book.getSequenceI().toString()); // "1"
 
 ### DIH Command
 
