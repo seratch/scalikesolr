@@ -71,9 +71,9 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
       case doc => {
         println(doc.get("id").toString()) // "978-1423103349"
         println(doc.get("cat").toListOrElse(Nil).toString) // List(book, hardcover)
-        println(doc.get("title").toString()) // "The Lightning Thief"
-        println(doc.get("pages_i").toIntOrElse(0).toString) // 384
-        println(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
+        println(doc.get("title").toString()) // "The Sea of Monsters"
+        println(doc.get("pages_i").toIntOrElse(0).toString) // 304
+        println(doc.get("price").toDoubleOrElse(0.0).toString) // 6.49
       }
     }
 
@@ -86,21 +86,19 @@ It is also possible to specify user-defined type that has one argument(String) c
     case class Book(
       var id: String = "",
       var cat: List[String] = Nil,
-      var name: String = "",
       var price: Double = 0.0,
       var pageI: PageI = PageI(),
       var sequenceI: Int = 0) {
       def this() = {
-        this ("", Nil, "", 0.0, PageI(), 0)
+        this ("", Nil, 0.0, PageI(), 0)
       }
     }
     val book = doc.bind(classOf[Book])
     println(book.id) // "978-1423103349"
     println(book.cat.size) // 2
-    println(book.name) // "A Game of Thrones"
-    println(book.price) // 12.5
-    println(book.pageI.value) // 1
-    println(book.sequenceI) // 384
+    println(book.price) // 6.49
+    println(book.pageI.value) // 304
+    println(book.sequenceI) // 2
 
 #### With Highlightings
 
@@ -335,7 +333,6 @@ This library works fine with Java.
     public class Book {
         private String id;
         private List<String> cat;
-        private String name;
         private Double price;
         private PageI pageI;
         private Integer sequenceI;
@@ -348,10 +345,9 @@ This library works fine with Java.
     Book book = document.bindInJava(Book.class);
     log.debug(book.getId()); // "978-1423103349"
     log.debug(book.getCat().toString()); // [book]
-    log.debug(book.getName()); // "A Game of Thrones"
-    log.debug(book.getPrice().toString()); // "7.99"
-    log.debug(book.getPageI().getValue()); // "32"
-    log.debug(book.getSequenceI().toString()); // "1"
+    log.debug(book.getPrice().toString()); // "6.49"
+    log.debug(book.getPageI().getValue()); // "304"
+    log.debug(book.getSequenceI().toString()); // "2"
 
 ### DIH Command
 
