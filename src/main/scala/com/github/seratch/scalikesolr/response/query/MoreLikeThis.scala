@@ -3,8 +3,14 @@ package com.github.seratch.scalikesolr.response.query
 import com.github.seratch.scalikesolr.SolrDocument
 import reflect.BeanProperty
 
-case class MoreLikeThis(@BeanProperty val moreLikeThis: Map[String, SolrDocument]) {
+import collection.JavaConverters._
 
-  def get(name: String): SolrDocument = moreLikeThis.getOrElse(name, new SolrDocument())
+case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
+                        @BeanProperty val start: Int = 0,
+                        @BeanProperty val idAndRecommendations: Map[String, List[SolrDocument]]) {
+
+  def getList(name: String): List[SolrDocument] = idAndRecommendations.getOrElse(name, Nil)
+
+  def getListInJava(name: String): java.util.List[SolrDocument] = getList(name).asJava
 
 }

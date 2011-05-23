@@ -12,6 +12,7 @@ import com.github.seratch.scalikesolr.request.common._
 import com.github.seratch.scalikesolr.response.common._
 import com.github.seratch.scalikesolr.response.query._
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import xml.NodeSeq._
 
 case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
                          @BeanProperty val rawBody: String = "") {
@@ -112,46 +113,64 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
     writerType match {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)
-        val hashMap = new collection.mutable.HashMap[String, SolrDocument]
+        var numFound: Int = 0
+        var start: Int = 0
+        val idAndRecommendations = new collection.mutable.HashMap[String, List[SolrDocument]]
         val mltCandidates = (xml \ "lst").filter(lst => (lst \ "@name").text == "moreLikeThis")
         if (mltCandidates.size > 0) {
           val mlt = mltCandidates(0)
           (mlt \ "result") foreach {
             case result: Node => {
-              val element = new collection.mutable.HashMap[String, SolrDocumentValue]
+              val solrDocs = new collection.mutable.ListBuffer[SolrDocument]
               (result \ "doc") foreach {
-                doc => element.update((doc \ "@name").text, new SolrDocumentValue(doc.text))
+                doc => {
+                  val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
+                  doc.child foreach {
+                    case field => docMap.update((field \ "@name").text, new SolrDocumentValue(field.text))
+                  }
+                  solrDocs.append(new SolrDocument(map = docMap.toMap))
+                }
               }
-              element.update("numFound", SolrDocumentValue((result \ "@numFound").text))
-              element.update("start", SolrDocumentValue((result \ "@start").text))
-              hashMap.update((result \ "@name").text, SolrDocument(map = element.toMap))
+              idAndRecommendations.update((result \ "@name").text, solrDocs.toList)
+              numFound = ((result \ "@numFound").text).toInt
+              start = ((result \ "@start").text).toInt
             }
           }
         }
         new MoreLikeThis(
-          moreLikeThis = hashMap.toMap
+          numFound = numFound,
+          start = start,
+          idAndRecommendations = idAndRecommendations.toMap
         )
       }
       case WriterType.JSON => {
         val moreLikeThis = JSONUtil.toMap(jsonMapFromRawBody.get("moreLikeThis"))
-        val hashMap = new collection.mutable.HashMap[String, SolrDocument]
+        var numFound: Int = 0
+        var start: Int = 0
+        val idAndRecommendations = new collection.mutable.HashMap[String, List[SolrDocument]]
         moreLikeThis.keysIterator.foreach {
-          case key => {
-            val doc = JSONUtil.toMap(moreLikeThis.get(key))
-            val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-            doc.keysIterator.foreach {
-              case docKey => {
-                docHashMap.update(docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
+          case id => {
+            val eachMlt = JSONUtil.toMap(moreLikeThis.get(id))
+            val solrDocs = new collection.mutable.ListBuffer[SolrDocument]
+            val docs = JSONUtil.toList(eachMlt.get("docs"))
+            docs foreach {
+              case doc => {
+                val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
+                doc.keysIterator.foreach {
+                  case field => docMap.update(field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
+                }
+                solrDocs.append(new SolrDocument(writerType = WriterType.JSON, map = docMap.toMap))
               }
             }
-            hashMap.update(key, new SolrDocument(
-              writerType = WriterType.JSON,
-              map = docHashMap.toMap
-            ))
+            idAndRecommendations.update(id, solrDocs.toList)
+            numFound = JSONUtil.normalizeNum(eachMlt.get("numFound").getOrElse(0).toString).toInt
+            start = JSONUtil.normalizeNum(eachMlt.get("start").getOrElse(0).toString).toInt
           }
         }
         new MoreLikeThis(
-          moreLikeThis = hashMap.toMap
+          numFound = numFound,
+          start = start,
+          idAndRecommendations = idAndRecommendations.toMap
         )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")

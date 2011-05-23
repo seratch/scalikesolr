@@ -136,8 +136,11 @@ Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
     response.response.documents foreach {
       doc => {
         val id = doc.get("id").toString
-        println(id + " -> " + response.moreLikeThis.get(id).toString)
-        // "978-0641723445" -> "SolrDocument(WriterType(standard),,Map(start -> 0, numFound -> 0))"
+        response.moreLikeThis.getList(id) foreach {
+          case recommendation => {
+            println(recommendation) // "SolrDocument(WriterType(standard),,Map(start -> 0, numFound -> 0))"
+          }
+        }
       }
     }
 

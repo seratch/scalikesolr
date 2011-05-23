@@ -8,13 +8,57 @@ import request.query.morelikethis._
 import request._
 import org.slf4j.LoggerFactory
 import query.{Sort, Query}
-import org.junit.Assert._
-import org.hamcrest.CoreMatchers._
-
 object SolrClientSpec extends Specification {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
+
+  "doAddDocuments" should {
+
+    "be available" in {
+      val request = new AddRequest()
+      val doc1 = SolrDocument(
+        writerType = WriterType.JSON,
+        rawBody = """
+        {"id" : "978-0641723445",
+         "cat" : ["book","hardcover"],
+         "title" : "The Lightning Thief",
+         "author" : "Rick Riordan",
+         "series_t" : "Percy Jackson and the Olympians",
+         "sequence_i" : 1,
+         "genre_s" : "fantasy",
+         "inStock" : true,
+         "price" : 12.50,
+         "pages_i" : 384
+       }
+       """
+      )
+      val doc2 = SolrDocument(
+        writerType = WriterType.JSON,
+        rawBody = """
+       {
+          "id" : "978-1423103349",
+          "cat" : ["book","paperback"],
+          "title" : "The Sea of Monsters",
+          "author" : "Rick Riordan",
+          "series_t" : "Percy Jackson and the Olympians",
+          "sequence_i" : 2,
+          "genre_s" : "fantasy",
+          "inStock" : true,
+          "price" : 6.49,
+          "pages_i" : 304
+        }
+      """
+      )
+      request.documents = List(doc1, doc2)
+      val response = client.doAddDocuments(request)
+      client.doCommit(new UpdateRequest())
+      log.debug(response.toString)
+      response.responseHeader.status must greaterThanOrEqualTo(0)
+      response.responseHeader.qTime must greaterThanOrEqualTo(0)
+    }
+
+  }
 
   "doQuery" should {
 
@@ -131,7 +175,7 @@ object SolrClientSpec extends Specification {
       response.response.documents foreach {
         doc => {
           val id = doc.get("id").toString
-          log.debug(id + "->" + response.moreLikeThis.get(id).toString)
+          log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
         }
       }
     }
@@ -151,7 +195,7 @@ object SolrClientSpec extends Specification {
       response.response.documents foreach {
         doc => {
           val id = doc.get("id").toString
-          log.debug(id + "->" + response.moreLikeThis.get(id).toString)
+          log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
         }
       }
     }
@@ -228,53 +272,6 @@ object SolrClientSpec extends Specification {
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       client.doCommit(new UpdateRequest())
-    }
-
-  }
-
-  "doAddDocuments" should {
-
-    "be available" in {
-      val request = new AddRequest()
-      val doc1 = SolrDocument(
-        writerType = WriterType.JSON,
-        rawBody = """
-        {"id" : "978-0641723445",
-         "cat" : ["book","hardcover"],
-         "title" : "The Lightning Thief",
-         "author" : "Rick Riordan",
-         "series_t" : "Percy Jackson and the Olympians",
-         "sequence_i" : 1,
-         "genre_s" : "fantasy",
-         "inStock" : true,
-         "price" : 12.50,
-         "pages_i" : 384
-       }
-       """
-      )
-      val doc2 = SolrDocument(
-        writerType = WriterType.JSON,
-        rawBody = """
-       {
-          "id" : "978-1423103349",
-          "cat" : ["book","paperback"],
-          "title" : "The Sea of Monsters",
-          "author" : "Rick Riordan",
-          "series_t" : "Percy Jackson and the Olympians",
-          "sequence_i" : 2,
-          "genre_s" : "fantasy",
-          "inStock" : true,
-          "price" : 6.49,
-          "pages_i" : 304
-        }
-      """
-      )
-      request.documents = List(doc1, doc2)
-      val response = client.doAddDocuments(request)
-      client.doCommit(new UpdateRequest())
-      log.debug(response.toString)
-      response.responseHeader.status must greaterThanOrEqualTo(0)
-      response.responseHeader.qTime must greaterThanOrEqualTo(0)
     }
 
   }

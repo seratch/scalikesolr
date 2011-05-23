@@ -35,9 +35,9 @@ object TypeBinder {
       case method if Modifier.isPublic(method.getModifiers) && !Modifier.isStatic(method.getModifiers) => {
         method.getName match {
           case setter(name) => {
+            val solrFieldName = if (isJava) getSolrFieldNameInJava(name) else getSolrFieldName(name)
             try {
               val argType = method.getParameterTypes.apply(0)
-              val solrFieldName = if (isJava) getSolrFieldNameInJava(name) else getSolrFieldName(name)
               argType match {
                 case t if t == classOf[List[_]] =>
                   method.invoke(dest, document.get(solrFieldName).toListOrElse(Nil))
@@ -72,7 +72,7 @@ object TypeBinder {
                 }
               }
             } catch {
-              case e => log.warn("Cannot bind the type : " + name, e)
+              case e => log.debug("Failed to bind type from Solr document : " + solrFieldName, e)
             }
           }
           case _ =>
