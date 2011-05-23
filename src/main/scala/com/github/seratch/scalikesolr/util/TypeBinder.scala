@@ -2,10 +2,10 @@ package com.github.seratch.scalikesolr.util
 
 import com.github.seratch.scalikesolr.SolrDocument
 import org.joda.time.{LocalDate, DateTime}
-import java.lang.Byte
 import java.util.{Date, Calendar}
 import org.slf4j.LoggerFactory
 import util.matching.Regex
+import java.lang.reflect.Modifier
 
 object TypeBinder {
 
@@ -32,7 +32,7 @@ object TypeBinder {
     val setter = if (isJava) getSetterRegexInJava() else getSetterRegex()
     val methods = clazz.getDeclaredMethods
     methods.foreach {
-      case method => {
+      case method if Modifier.isPublic(method.getModifiers) && !Modifier.isStatic(method.getModifiers) => {
         method.getName match {
           case setter(name) => {
             try {
@@ -78,6 +78,7 @@ object TypeBinder {
           case _ =>
         }
       }
+      case _ =>
     }
     dest
   }

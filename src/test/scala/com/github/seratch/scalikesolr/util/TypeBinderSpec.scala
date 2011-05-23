@@ -14,6 +14,9 @@ case class Book(
                  var price: Double = 0.0,
                  var pageI: PageI = PageI(),
                  var sequenceI: Int = 0) {
+
+  private var secret: String = ""
+
   def this() = {
     this ("", Nil, "", 0.0, PageI(), 0)
   }
