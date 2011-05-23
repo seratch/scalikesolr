@@ -39,10 +39,12 @@ object TypeBinder {
             try {
               val argType = method.getParameterTypes.apply(0)
               argType match {
+
                 case t if t == classOf[List[_]] =>
                   method.invoke(dest, document.get(solrFieldName).toListOrElse(Nil))
                 case t if t == classOf[java.util.List[_]] =>
                   method.invoke(dest, document.get(solrFieldName).toListInJavaOrElse(null))
+
                 case t if t == classOf[Date] =>
                   method.invoke(dest, document.get(solrFieldName).toDateOrElse(null))
                 case t if t == classOf[Calendar] =>
@@ -51,12 +53,13 @@ object TypeBinder {
                   method.invoke(dest, document.get(solrFieldName).toDateTimeOrElse(null))
                 case t if t == classOf[LocalDate] =>
                   method.invoke(dest, document.get(solrFieldName).toLocalDateOrElse(null))
+
                 case t if t == classOf[Boolean] =>
                   method.invoke(dest, document.get(solrFieldName).toNullableBooleanOrElse(false))
                 case t if t == classOf[Float] =>
                   method.invoke(dest, document.get(solrFieldName).toNullableFloatOrElse(0.0F))
                 case t if t == classOf[Double] =>
-                  method.invoke(dest, document.get(solrFieldName).toNullableDoubleOrElse(0.0D))
+                  method.invoke(dest, document.get(solrFieldName).toNullableDoubleOrElse(0.0))
                 case t if t == classOf[Int] =>
                   method.invoke(dest, document.get(solrFieldName).toNullableIntOrElse(0))
                 case t if t == classOf[Long] =>
@@ -65,6 +68,20 @@ object TypeBinder {
                   method.invoke(dest, document.get(solrFieldName).toNullableShortOrElse(0))
                 case t if t == classOf[String] =>
                   method.invoke(dest, document.get(solrFieldName).toString())
+
+                case t if t == classOf[java.lang.Boolean] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableBooleanOrElse(false))
+                case t if t == classOf[java.lang.Float] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableFloatOrElse(null))
+                case t if t == classOf[java.lang.Double] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableDoubleOrElse(null))
+                case t if t == classOf[java.lang.Integer] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableIntOrElse(null))
+                case t if t == classOf[java.lang.Long] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableLongOrElse(null))
+                case t if t == classOf[java.lang.Short] =>
+                  method.invoke(dest, document.get(solrFieldName).toNullableShortOrElse(null))
+
                 case t => {
                   val constructor = t.getConstructor(classOf[String])
                   val instance = constructor.newInstance(document.get(solrFieldName).toString)

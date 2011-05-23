@@ -98,22 +98,23 @@ public class TypeBinderTest {
 
 	@Test
 	public void bind() throws Exception {
-		String csvString = "id,cat,name,price,page_i,sequence_i\n0553573403,book,A Game of Thrones,7.99,32,1\n";
+		String csvString = "id,cat,name,price,page_i,sequence_i\n0553573403,book,A Game of Thrones,7.99,32,1\n,,,.,\n,,,a.b,c\n";
 		List<SolrDocument> docs = UpdateFormatLoader.fromCSVStringInJava(csvString);
+		Book book1 = docs.get(0).bindInJava(Book.class);
+		assertThat(book1.id, is(equalTo("0553573403")));
+		assertThat(book1.cat, is(notNullValue()));
+		assertThat(book1.name, is(equalTo("A Game of Thrones")));
+		assertThat(book1.price, is(equalTo(7.99)));
+		assertThat(book1.pageI.getValue(), is(equalTo(new PageI("32").getValue())));
+		assertThat(book1.sequenceI, is(equalTo(1)));
 		for (SolrDocument doc : docs) {
 			Book book = doc.bindInJava(Book.class);
-			assertThat(book.id, is(equalTo("0553573403")));
-			assertThat(book.cat, is(notNullValue()));
-			assertThat(book.name, is(equalTo("A Game of Thrones")));
-			assertThat(book.price, is(equalTo(7.99)));
-			assertThat(book.pageI.getValue(), is(equalTo(new PageI("32").getValue())));
-			assertThat(book.sequenceI, is(equalTo(1)));
 			log.debug(book.id); // "978-1423103349"
 			log.debug(book.cat.toString()); // ["book", "paperback"]
 			log.debug(book.name); // "A Game of Thrones"
-			log.debug(book.price.toString()); // 7.99
-			log.debug(book.pageI.getValue()); // "32"
-			log.debug(book.sequenceI.toString()); // 1
+			log.debug(String.valueOf(book.price)); // 7.99
+			log.debug(String.valueOf(book.pageI)); // "32"
+			log.debug(String.valueOf(book.sequenceI)); // 1
 		}
 	}
 
