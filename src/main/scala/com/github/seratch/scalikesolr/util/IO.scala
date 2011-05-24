@@ -18,9 +18,6 @@ object IO {
   }
 
   def readAsString(is: InputStream, charset: String): String = {
-
-    println("-------------" + charset)
-
     using(is) {
       is => {
         using({
