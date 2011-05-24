@@ -223,5 +223,15 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
+  <component name="libraryTable">
+    <library name="scala">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/../../../scala/scala-2.9.0.final/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/../../../scala/scala-2.9.0.final/lib" recursive="false" />
+    </library>
+  </component>
 </project>
 
