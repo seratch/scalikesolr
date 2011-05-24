@@ -42,7 +42,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/select" + queryString
     log.debug("doQuery - Request URL : " + requestUrl)
-    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    val responseBody = HttpClient.get(requestUrl, "UTF-8").content
     log.debug("doQuery - Response Body : " + responseBody)
     new QueryResponse(
       writerType = request.writerType,
@@ -174,7 +174,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/admin/ping" + queryString
     log.debug("doPing - Request URL : " + requestUrl)
-    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    val responseBody = HttpClient.get(requestUrl, "UTF-8").content
     log.debug("doPing - Response Body : " + responseBody)
     new PingResponse(
       writerType = request.writerType,

@@ -7,7 +7,9 @@ case class IsIndentEnabled(@BeanProperty val indent: Boolean = false) extends Re
 
   override def isEmpty() = !indent
 
-  override def toQueryString() = "isIndentEnabled=" + (if (indent) "on" else "off")
+  override def getKey() = "indent"
+
+  override def getValue() = (if (indent) "on" else "off")
 
 }
 

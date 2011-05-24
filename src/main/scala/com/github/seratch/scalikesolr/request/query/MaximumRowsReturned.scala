@@ -7,7 +7,10 @@ case class MaximumRowsReturned(@BeanProperty val rows: Int = 10) extends Request
 
   override def isEmpty() = false
 
-  override def toQueryString() = "rows=" + rows
+  override def getKey() = "rows"
+
+  override def getValue() = toString(rows)
+
 }
 
 object MaximumRowsReturned {

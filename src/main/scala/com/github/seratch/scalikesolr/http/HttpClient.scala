@@ -6,16 +6,39 @@ import com.github.seratch.scalikesolr.util.IO
 
 object HttpClient {
 
+  def get(url: String, charset: String) = {
+
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+    conn.setConnectTimeout(3000)
+    conn.setReadTimeout(10000)
+    conn.setRequestMethod("GET")
+    try {
+      import collection.JavaConverters._
+      val headersInJava = conn.getHeaderFields
+      val mapBuffer = new collection.mutable.HashMap[String, List[String]]
+      headersInJava.keySet.asScala.foreach {
+        case key => mapBuffer.update(key, headersInJava.get(key).asScala.toList)
+      }
+      new HttpResponse(
+        conn.getResponseCode,
+        mapBuffer.toMap,
+        getResponseContent(conn, charset))
+    }
+    catch {
+      case e: IOException => throw e
+    }
+
+  }
+
+
   def post(url: String, dataBinary: String, contentType: String, charset: String) = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
-
     conn.setConnectTimeout(3000)
     conn.setReadTimeout(10000)
     conn.setRequestMethod("POST")
     conn.setRequestProperty("Content-Type", contentType)
     conn.setRequestProperty("Content-Length", dataBinary.size.toString)
-
     conn.setDoOutput(true);
     IO.using(conn.getOutputStream) {
       os => {
@@ -24,7 +47,6 @@ object HttpClient {
         }
       }
     }
-    conn.connect()
     try {
       import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
@@ -32,7 +54,7 @@ object HttpClient {
       headersInJava.keySet.asScala.foreach {
         case key => mapBuffer.update(key, headersInJava.get(key).asScala.toList)
       }
-      HttpResponse(
+      new HttpResponse(
         conn.getResponseCode,
         mapBuffer.toMap,
         getResponseContent(conn, charset))

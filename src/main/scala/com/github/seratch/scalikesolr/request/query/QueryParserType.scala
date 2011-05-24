@@ -7,7 +7,9 @@ case class QueryParserType(@BeanProperty val defType: String = "lucene") extends
 
   override def isEmpty() = defType == null || defType.isEmpty || defType == "lucene"
 
-  override def toQueryString() = "defType=" + defType
+  override def getKey() = "defType"
+
+  override def getValue() = toString(defType)
 
 }
 

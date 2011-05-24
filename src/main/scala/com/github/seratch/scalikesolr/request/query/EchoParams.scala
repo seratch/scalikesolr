@@ -7,7 +7,9 @@ case class EchoParams(@BeanProperty val echoParams: String = "none") extends Req
 
   override def isEmpty() = echoParams == null || echoParams.isEmpty || echoParams == "none"
 
-  override def toQueryString() = "echoParams=" + echoParams
+  override def getKey() = "echoParams"
+
+  override def getValue() = toString(echoParams)
 
 }
 

@@ -60,7 +60,9 @@ case class FieldsHighlighted(@BeanProperty val fl: String = "*") extends Request
 
   override def isEmpty() = fl == null || fl.isEmpty
 
-  override def toQueryString() = "hl.fl=" + fl
+  override def getKey() = "hl.fl"
+
+  override def getValue() = fl.toString
 
 }
 
@@ -72,7 +74,9 @@ case class NumOfSnippets(@BeanProperty val snippets: Int = 1) extends RequestPar
 
   override def isEmpty() = snippets == 1
 
-  override def toQueryString() = "hl.snippets=" + snippets
+  override def getKey() = "hl.snippets"
+
+  override def getValue() = snippets.toString
 
 }
 
@@ -84,7 +88,9 @@ case class FragSize(@BeanProperty val fragsize: Int = 100) extends RequestParam 
 
   override def isEmpty() = fragsize == 100
 
-  override def toQueryString() = "hl.fragsize=" + fragsize
+  override def getKey() = "hl.fragsize"
+
+  override def getValue() = fragsize.toString
 
 }
 
@@ -96,7 +102,9 @@ case class IsMergeContiguousEnabled(@BeanProperty val mergeContiguous: Boolean =
 
   override def isEmpty() = !mergeContiguous
 
-  override def toQueryString() = "hl.mergeContiguous=" + mergeContiguous
+  override def getKey() = "hl.mergeContiguous"
+
+  override def getValue() = mergeContiguous.toString
 
 }
 
@@ -108,7 +116,9 @@ case class IsFieldMatchEnabled(@BeanProperty val requireFieldMatch: Boolean = fa
 
   override def isEmpty() = !requireFieldMatch
 
-  override def toQueryString() = "hl.requireFieldMatch=" + requireFieldMatch
+  override def getKey() = "hl.requireFieldMatch"
+
+  override def getValue() = requireFieldMatch.toString
 
 }
 
@@ -120,7 +130,9 @@ case class MaxAnalyzedChars(@BeanProperty val maxAnalyzedChars: Int = 51200) ext
 
   override def isEmpty() = maxAnalyzedChars == 51200
 
-  override def toQueryString() = "hl.maxAnalyzedChars=" + maxAnalyzedChars
+  override def getKey() = "hl.maxAnalyzedChars"
+
+  override def getValue() = maxAnalyzedChars.toString
 
 }
 
@@ -132,7 +144,9 @@ case class AlternateField(@BeanProperty val alternateField: String = "") extends
 
   override def isEmpty() = alternateField == null || alternateField.isEmpty
 
-  override def toQueryString() = "hl.alternateField=" + alternateField
+  override def getKey() = "hl.alternateField"
+
+  override def getValue() = toString(alternateField)
 
 }
 
@@ -144,7 +158,9 @@ case class MaxAlternateFieldLength(@BeanProperty val maxAlternateFieldLength: In
 
   override def isEmpty() = maxAlternateFieldLength == -1
 
-  override def toQueryString() = "hl.maxAlternateFieldLength=" + maxAlternateFieldLength
+  override def getKey() = "hl.maxAlternateFieldLength"
+
+  override def getValue() = toString(maxAlternateFieldLength)
 
 }
 
@@ -156,7 +172,10 @@ case class Formatter(@BeanProperty val formatter: String = "simple") extends Req
 
   override def isEmpty() = formatter == null || formatter.isEmpty || formatter == "simple"
 
-  override def toQueryString() = "hl.formatter=" + formatter
+  override def getKey() = "hl.formatter"
+
+  override def getValue() = toString(formatter)
+
 
 }
 
@@ -168,7 +187,9 @@ case class SimplePrefix(@BeanProperty val simplePre: String = "<em>") extends Re
 
   override def isEmpty() = simplePre == null || simplePre.isEmpty || simplePre == "<em>"
 
-  override def toQueryString() = "hl.simple.pre=" + simplePre
+  override def getKey() = "hl.simple.pre"
+
+  override def getValue() = toString(simplePre)
 
 }
 
@@ -180,7 +201,9 @@ case class SimpleSuffix(@BeanProperty val simplePost: String = "</em>") extends 
 
   override def isEmpty() = simplePost == null || simplePost.isEmpty || simplePost == "</em>"
 
-  override def toQueryString() = "hl.simple.post=" + simplePost
+  override def getKey() = "hl.simple.post"
+
+  override def getValue() = toString(simplePost)
 
 }
 
@@ -192,7 +215,9 @@ case class Fragmenter(@BeanProperty val fragmenter: String = "gap") extends Requ
 
   override def isEmpty() = fragmenter == null || fragmenter.isEmpty || fragmenter == "gap"
 
-  override def toQueryString() = "hl.fragmenter=" + fragmenter
+  override def getKey() = "hl.fragmenter"
+
+  override def getValue() = toString(fragmenter)
 
 }
 
@@ -204,7 +229,9 @@ case class FragListBuilder(@BeanProperty val fragListBuilder: String = "") exten
 
   override def isEmpty() = fragListBuilder == null || fragListBuilder.isEmpty
 
-  override def toQueryString() = "hl.fragListBuilder=" + fragListBuilder
+  override def getKey() = "hl.fragListBuilder"
+
+  override def getValue() = toString(fragListBuilder)
 
 }
 
@@ -216,7 +243,9 @@ case class FragmentsBuilder(@BeanProperty val fragmentsBuilder: String = "") ext
 
   override def isEmpty() = fragmentsBuilder == null || fragmentsBuilder.isEmpty
 
-  override def toQueryString() = "hl.fragmentsBuilder=" + fragmentsBuilder
+  override def getKey() = "hl.fragmentsBuilder"
+
+  override def getValue() = toString(fragmentsBuilder)
 
 }
 
@@ -228,7 +257,10 @@ case class IsFastVectorHigighterEnabled(@BeanProperty val useFastVectorHigighter
 
   override def isEmpty() = !useFastVectorHigighter
 
-  override def toQueryString() = "hl.useFastVectorHigighter=" + useFastVectorHigighter
+  override def getKey() = "hl.useFastVectorHigighter"
+
+  override def getValue() = toString(useFastVectorHigighter)
+
 
 }
 
@@ -240,7 +272,9 @@ case class IsPhraseHigighterEnabled(@BeanProperty val usePhraseHigighter: Boolea
 
   override def isEmpty() = !usePhraseHigighter
 
-  override def toQueryString() = "hl.usePhraseHigighter=" + usePhraseHigighter
+  override def getKey() = "hl.usePhraseHigighter"
+
+  override def getValue() = toString(usePhraseHigighter)
 
 }
 
@@ -252,7 +286,9 @@ case class IsMultiTermHighlightingEnabled(@BeanProperty val higightMultiTerm: Bo
 
   override def isEmpty() = !higightMultiTerm
 
-  override def toQueryString() = "hl.higightMultiTerm=" + higightMultiTerm
+  override def getKey() = "hl.higightMultiTerm"
+
+  override def getValue() = toString(higightMultiTerm)
 
 }
 
@@ -264,7 +300,9 @@ case class RegexFragmenterSlop(@BeanProperty val regexSlop: Double = 0.6) extend
 
   override def isEmpty() = regexSlop == 0.6
 
-  override def toQueryString() = "hl.regex.slop=" + regexSlop
+  override def getKey() = "hl.regex.slop"
+
+  override def getValue() = toString(regexSlop)
 
 }
 
@@ -276,7 +314,9 @@ case class RegexMaxAnalyzedChars(@BeanProperty val regexMaxAnalyzedChars: Int = 
 
   override def isEmpty() = regexMaxAnalyzedChars == 10000
 
-  override def toQueryString() = "hl.regex.maxAnalyzedChars=" + regexMaxAnalyzedChars
+  override def getKey() = "hl.regex.maxAnalyzedChars"
+
+  override def getValue() = toString(regexMaxAnalyzedChars)
 
 }
 

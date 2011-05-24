@@ -7,7 +7,9 @@ case class Version(@BeanProperty val version: String = "2.2") extends RequestPar
 
   override def isEmpty() = version == null || version.isEmpty || version == "2.2"
 
-  override def toQueryString() = "version=" + version
+  override def getKey() = "version"
+
+  override def getValue() = toString(version)
 
 }
 

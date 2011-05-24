@@ -7,7 +7,9 @@ case class FieldsToReturn(@BeanProperty val fl: String = "*") extends RequestPar
 
   override def isEmpty() = fl == null || fl.isEmpty
 
-  override def toQueryString() = "fl=" + fl
+  override def getKey() = "fl"
+
+  override def getValue() = toString(fl)
 
 }
 

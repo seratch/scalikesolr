@@ -43,7 +43,9 @@ case class FieldsToUseForSimilarity(@BeanProperty val fl: String = "*") extends 
 
   override def isEmpty() = fl == null || fl.isEmpty
 
-  override def toQueryString() = "mlt.fl=" + fl
+  override def getKey() = "mlt.fl"
+
+  override def getValue() = fl.toString
 
 }
 
@@ -55,7 +57,9 @@ case class MinimumTermFrequency(@BeanProperty val mintf: Int = -1) extends Reque
 
   override def isEmpty() = mintf == -1
 
-  override def toQueryString() = "mlt.mintf=" + mintf
+  override def getKey() = "mlt.mintf"
+
+  override def getValue() = mintf.toString
 
 }
 
@@ -67,7 +71,9 @@ case class MinimumDocumentFrequency(@BeanProperty val mindf: Int = -1) extends R
 
   override def isEmpty() = mindf == -1
 
-  override def toQueryString() = "mlt.mindf=" + mindf
+  override def getKey() = "mlt.mindf"
+
+  override def getValue() = mindf.toString
 
 }
 
@@ -79,7 +85,9 @@ case class MinimumWordLengthBelowToBeIgnored(@BeanProperty val minwl: Int = -1) 
 
   override def isEmpty() = minwl == -1
 
-  override def toQueryString() = "mlt.minwl=" + minwl
+  override def getKey() = "mlt.minwl"
+
+  override def getValue() = minwl.toString
 
 }
 
@@ -91,7 +99,9 @@ case class MaximumWordLengthAboveToBeIgnored(@BeanProperty val maxwl: Int = -1) 
 
   override def isEmpty() = maxwl == -1
 
-  override def toQueryString() = "mlt.maxwl=" + maxwl
+  override def getKey() = "mlt.maxwl"
+
+  override def getValue() = maxwl.toString
 
 }
 
@@ -103,7 +113,9 @@ case class MaximumNumberOfQueryTerms(@BeanProperty val maxqt: Int = -1) extends 
 
   override def isEmpty() = maxqt == -1
 
-  override def toQueryString() = "mlt.maxqt=" + maxqt
+  override def getKey() = "mlt.maxqt"
+
+  override def getValue() = maxqt.toString
 
 }
 
@@ -115,7 +127,9 @@ case class MaximumNumberOfTokensToParseInEachDocument(@BeanProperty val maxntp: 
 
   override def isEmpty() = maxntp == -1
 
-  override def toQueryString() = "mlt.maxqt=" + maxntp
+  override def getKey() = "mlt.maxntp"
+
+  override def getValue() = maxntp.toString
 
 }
 
@@ -127,7 +141,9 @@ case class IsBoostedQueryEnabled(@BeanProperty val boost: Boolean = false) exten
 
   override def isEmpty() = !boost
 
-  override def toQueryString() = "mlt.boost=" + boost
+  override def getKey() = "mlt.boost"
+
+  override def getValue() = boost.toString
 
 }
 
@@ -139,7 +155,9 @@ case class QueryFields(@BeanProperty val qf: String = "") extends RequestParam {
 
   override def isEmpty() = qf == null || qf.isEmpty
 
-  override def toQueryString() = "mlt.qf=" + qf
+  override def getKey() = "mlt.qf"
+
+  override def getValue() = qf.toString
 
 }
 

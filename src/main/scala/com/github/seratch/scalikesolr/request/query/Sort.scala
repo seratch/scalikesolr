@@ -7,7 +7,9 @@ case class Sort(@BeanProperty val sort: String = "") extends RequestParam {
 
   override def isEmpty() = sort == null || sort.isEmpty
 
-  override def toQueryString() = "sort=" + sort
+  override def getKey() = "sort"
+
+  override def getValue() = toString(sort)
 
 }
 

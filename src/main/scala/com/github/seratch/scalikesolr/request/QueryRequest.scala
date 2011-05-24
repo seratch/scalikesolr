@@ -8,6 +8,7 @@ import morelikethis.MoreLikeThisParams
 import query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.SolrCore
 import util.QueryStringUtil
+import java.net.URLEncoder
 
 case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
                         @BeanProperty var echoParams: EchoParams = EchoParams(),

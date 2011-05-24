@@ -8,6 +8,7 @@ import request.query.morelikethis._
 import request._
 import org.slf4j.LoggerFactory
 import query.{Sort, Query}
+
 object SolrClientSpec extends Specification {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
@@ -87,6 +88,21 @@ object SolrClientSpec extends Specification {
 
     }
 
+    "be available" in {
+
+      val request = new QueryRequest(Query("author:日本人"))
+      val response = client.doQuery(request)
+      log.debug(response.toString)
+      response.responseHeader mustNot beNull
+      response.responseHeader.status must greaterThanOrEqualTo(0)
+      response.responseHeader.qTime must greaterThanOrEqualTo(0)
+      response.responseHeader.params mustNot beNull
+
+      log.debug("-----------------------------")
+      log.debug(response.toString)
+
+    }
+
     "be available in JSON" in {
 
       val request = new QueryRequest(
@@ -94,6 +110,8 @@ object SolrClientSpec extends Specification {
         query = Query("author:Rick"))
       val response = client.doQuery(request)
       log.debug(response.toString)
+
+
       response.responseHeader mustNot beNull
       response.responseHeader.status must greaterThanOrEqualTo(0)
       response.responseHeader.qTime must greaterThanOrEqualTo(0)

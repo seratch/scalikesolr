@@ -7,7 +7,9 @@ case class TimeoutMilliseconds(@BeanProperty val timeAllowed: Long = 0) extends 
 
   override def isEmpty() = timeAllowed <= 0
 
-  override def toQueryString() = "timeAllowed=" + timeAllowed
+  override def getKey() = "timeAllowed"
+
+  override def getValue() = toString(timeAllowed)
 
 }
 

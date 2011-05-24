@@ -7,7 +7,10 @@ case class Query(@BeanProperty val q: String) extends RequestParam {
 
   override def isEmpty() = q == null || q.isEmpty
 
-  override def toQueryString() = "q=" + q
+  override def getKey() = "q"
+
+  override def getValue() = toString(q)
+
 
 }
 

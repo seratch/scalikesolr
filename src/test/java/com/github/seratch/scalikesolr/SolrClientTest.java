@@ -49,6 +49,19 @@ public class SolrClientTest {
         }
     }
 
+	@Test
+	public void doQuery_MultiByteChars() throws Exception {
+		QueryRequest request = new QueryRequest(new Query("author:日本人"));
+		QueryResponse response = client.doQuery(request);
+		assertThat(response.getResponseHeader(), is(notNullValue()));
+		assertThat(response.getResponse(), is(notNullValue()));
+		assertThat(response.getHighlightings(), is(notNullValue()));
+		assertThat(response.getMoreLikeThis(), is(notNullValue()));
+		assertThat(response.getFacet(), is(notNullValue()));
+		List<SolrDocument> documents = response.getResponse().getDocumentsInJava();
+		log.debug(response.toString());
+	}
+
     @Test
     public void doQuery_JSON() throws Exception {
         QueryRequest request = new QueryRequest(new Query("author:Rick"));

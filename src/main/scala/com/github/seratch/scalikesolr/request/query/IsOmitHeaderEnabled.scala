@@ -7,7 +7,9 @@ case class IsOmitHeaderEnabled(@BeanProperty val omitHeader: Boolean = false) ex
 
   override def isEmpty() = !omitHeader
 
-  override def toQueryString() = "omitHeader=" + omitHeader
+  override def getKey() = "omitHeader"
+
+  override def getValue() = toString(omitHeader)
 
 }
 

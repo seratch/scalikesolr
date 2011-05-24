@@ -6,7 +6,9 @@ case class WriterType(@BeanProperty val wt: String = "standard") extends Request
 
   override def isEmpty() = wt == null || wt.isEmpty
 
-  override def toQueryString() = "wt=" + wt
+  override def getKey() = "wt"
+
+  override def getValue() = wt
 
 }
 

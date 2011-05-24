@@ -7,7 +7,9 @@ case class IsDebugQueryEnabled(@BeanProperty val debugQuery: Boolean = false) ex
 
   override def isEmpty() = !debugQuery
 
-  override def toQueryString() = "debugQuery=" + debugQuery
+  override def getKey() = "debugQuery"
+
+  override def getValue() = toString(debugQuery)
 
 }
 

@@ -7,7 +7,9 @@ case class IsEchoHandlerEnabled(@BeanProperty val echoHandler: Boolean = false) 
 
   override def isEmpty() = !echoHandler
 
-  override def toQueryString() = "echoHandler=" + echoHandler
+  override def getKey() = "echoHandler"
+
+  override def getValue() = toString(echoHandler)
 
 }
 

@@ -7,7 +7,9 @@ case class ExplainOther(@BeanProperty val explainOther: String = "") extends Req
 
   override def isEmpty() = explainOther == null || explainOther.isEmpty
 
-  override def toQueryString() = "explainOther=" + explainOther
+  override def getKey() = "explainOther"
+
+  override def getValue() = toString(explainOther)
 
 }
 

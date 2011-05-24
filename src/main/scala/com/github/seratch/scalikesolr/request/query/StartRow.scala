@@ -7,7 +7,9 @@ case class StartRow(@BeanProperty val start: Int = 0) extends RequestParam {
 
   override def isEmpty() = false
 
-  override def toQueryString() = "start=" + start
+  override def getKey() = "start"
+
+  override def getValue() = toString(start)
 
 }
 
