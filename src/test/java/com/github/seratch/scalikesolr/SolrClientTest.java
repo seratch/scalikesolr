@@ -52,6 +52,8 @@ public class SolrClientTest {
 	@Test
 	public void doQuery_MultiByteChars() throws Exception {
 		QueryRequest request = new QueryRequest(new Query("author:日本人"));
+        request.set("mlt","true");
+        request.set("mlt.fl","author");
 		QueryResponse response = client.doQuery(request);
 		assertThat(response.getResponseHeader(), is(notNullValue()));
 		assertThat(response.getResponse(), is(notNullValue()));
