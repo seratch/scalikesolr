@@ -15,13 +15,12 @@ object HttpClient {
     try {
       import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
-      val mapBuffer = new collection.mutable.HashMap[String, List[String]]
-      headersInJava.keySet.asScala.foreach {
-        case key => mapBuffer.update(key, headersInJava.get(key).asScala.toList)
-      }
+      val headers = (headersInJava.keySet.asScala map {
+        case key => (key, headersInJava.get(key).asScala.toList)
+      }).toMap
       new HttpResponse(
         conn.getResponseCode,
-        mapBuffer.toMap,
+        headers,
         getResponseContent(conn, charset))
     }
     catch {
@@ -50,13 +49,12 @@ object HttpClient {
     try {
       import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
-      val mapBuffer = new collection.mutable.HashMap[String, List[String]]
-      headersInJava.keySet.asScala.foreach {
-        case key => mapBuffer.update(key, headersInJava.get(key).asScala.toList)
-      }
+      val headers = (headersInJava.keySet.asScala map {
+        case key => (key, headersInJava.get(key).asScala.toList)
+      }).toMap
       new HttpResponse(
         conn.getResponseCode,
-        mapBuffer.toMap,
+        headers,
         getResponseContent(conn, charset))
     }
     catch {

@@ -3,11 +3,9 @@ package com.github.seratch.scalikesolr.util
 import xml.{Node, XML}
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
-import util.parsing.json.JSON
-import java.io.{BufferedReader, FileInputStream, File}
+import java.io.{FileInputStream, File}
 
 import collection.JavaConverters._
-import java.lang.IllegalArgumentException
 
 object UpdateFormatLoader {
 
@@ -49,19 +47,18 @@ object UpdateFormatLoader {
   def fromCSVString(csvString: String): List[SolrDocument] = {
     var headers: List[String] = Nil
     val listBuf = new collection.mutable.ListBuffer[SolrDocument]
-    csvString.split("\n").foreach({
+    csvString.split("\n") foreach ({
       case line: String if headers == Nil => {
         headers = line.replaceFirst("\r", "").split(",").toList
       }
       case line: String => {
         val values = line.replaceFirst("\r", "").split(",").toList
-        val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        headers.zip(values).toList foreach {
+        val docMap = (headers.zip(values).toList map {
           case (key, value) => {
-            docMap.update(key.toString, new SolrDocumentValue(value.toString))
+            (key.toString, new SolrDocumentValue(value.toString))
           }
-        }
-        listBuf.append(new SolrDocument(map = docMap.toMap))
+        }).toMap
+        listBuf.append(new SolrDocument(map = docMap))
       }
     })
     listBuf.toList

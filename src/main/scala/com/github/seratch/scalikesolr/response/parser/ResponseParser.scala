@@ -35,11 +35,10 @@ object ResponseParser {
         val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
         val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
         val params = JSONUtil.toMap(responseHeader.get("params"))
-        val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        params.keysIterator.foreach {
-          case key => docMap.update(key, new SolrDocumentValue(params.getOrElse(key, "").toString))
-        }
-        new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap.toMap))
+        val docMap = (params.keysIterator map {
+          case key => (key, new SolrDocumentValue(params.getOrElse(key, "").toString))
+        }).toMap
+        new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap))
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }

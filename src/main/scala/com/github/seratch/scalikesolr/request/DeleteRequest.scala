@@ -4,7 +4,7 @@ import common.WriterType
 import query.Query
 import reflect.BeanProperty
 
-import com.github.seratch.scalikesolr.{SolrDocument, SolrCore}
+import com.github.seratch.scalikesolr.SolrCore
 import collection.JavaConverters._
 import util.QueryStringUtil
 

@@ -30,21 +30,19 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)
         val initArgs = (xml \ "lst").filter(lst => (lst \ "@name").text == "initArgs")(0)
-        val hashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        initArgs.child.filter {
+        val docMap = (initArgs.child.filter {
           lst => (lst \ "@name").text == "defaults"
-        }(0).child foreach {
-          case elem: Node => hashMap.update((elem \ "@name").text, SolrDocumentValue(elem.text))
-        }
-        new InitArgs(defaults = SolrDocument(map = hashMap.toMap))
+        }(0).child map {
+          case elem: Node => ((elem \ "@name").text, SolrDocumentValue(elem.text))
+        }).toMap
+        new InitArgs(defaults = SolrDocument(map = docMap))
       }
       case WriterType.JSON => {
         val initArgs = JSONUtil.toMap(jsonMapFromRawBody.get("initArgs"))
-        val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        initArgs.keysIterator.foreach {
-          case key => docMap.update(key, new SolrDocumentValue(initArgs.getOrElse(key, "").toString))
-        }
-        new InitArgs(defaults = new SolrDocument(writerType = writerType, map = docMap.toMap))
+        val docMap = (initArgs.keysIterator map {
+          case key => (key, new SolrDocumentValue(initArgs.getOrElse(key, "").toString))
+        }).toMap
+        new InitArgs(defaults = new SolrDocument(writerType = writerType, map = docMap))
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -94,21 +92,17 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)
         val statusMessages = (xml \ "lst").filter(lst => (lst \ "@name").text == "statusMessages")(0)
-        val hashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        statusMessages.child foreach {
-          case elem: Node => hashMap.update((elem \ "@name").text, SolrDocumentValue(elem.text))
-        }
-        new StatusMessages(defaults = new SolrDocument(map = hashMap.toMap))
+        val docMap = (statusMessages.child map {
+          case elem: Node => ((elem \ "@name").text, SolrDocumentValue(elem.text))
+        }).toMap
+        new StatusMessages(defaults = new SolrDocument(map = docMap))
       }
       case WriterType.JSON => {
         val doc = JSONUtil.toMap(jsonMapFromRawBody.get("statusMessages"))
-        val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-        doc.keysIterator.foreach {
-          case docKey => {
-            docHashMap.update(docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
-          }
-        }
-        new StatusMessages(defaults = new SolrDocument(map = docHashMap.toMap))
+        val docMap = (doc.keysIterator map {
+          case docKey => (docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
+        }).toMap
+        new StatusMessages(defaults = new SolrDocument(map = docMap))
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }

@@ -6,7 +6,7 @@ import org.joda.time.{LocalDate, LocalTime, DateTime}
 
 import collection.JavaConverters._
 import util.JSONUtil
-import java.util.{ArrayList, Locale, Calendar, Date}
+import java.util.{Locale, Calendar, Date}
 
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 

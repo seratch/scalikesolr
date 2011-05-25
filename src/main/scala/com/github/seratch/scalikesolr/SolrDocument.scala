@@ -28,24 +28,22 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
     if (map != null && map.size > 0) {
       map
     } else {
-      val mutableMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-      writerType match {
+      (writerType match {
         case WriterType.Standard => {
-          XML.loadString(rawBody).child foreach {
-            case elem: Node => mutableMap.update((elem \ "@name").toString, new SolrDocumentValue(elem.text))
+          XML.loadString(rawBody).child map {
+            case elem: Node => ((elem \ "@name").toString, new SolrDocumentValue(elem.text))
           }
         }
         case WriterType.JSON => {
-          jsonMapFromRawBody.keys.foreach {
+          jsonMapFromRawBody.keys map {
             case key => {
               val value = JSONUtil.normalizeNum(jsonMapFromRawBody.get(key).getOrElse("").toString)
-              mutableMap.update(key, new SolrDocumentValue(value))
+              (key, new SolrDocumentValue(value))
             }
           }
         }
         case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
-      }
-      mutableMap.toMap
+      }).toMap
     }
   }
 

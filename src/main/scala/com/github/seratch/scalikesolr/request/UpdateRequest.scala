@@ -3,7 +3,7 @@ package com.github.seratch.scalikesolr.request
 import common.WriterType
 import reflect.BeanProperty
 
-import com.github.seratch.scalikesolr.{SolrDocument, SolrCore}
+import com.github.seratch.scalikesolr.SolrCore
 import util.QueryStringUtil
 
 case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
