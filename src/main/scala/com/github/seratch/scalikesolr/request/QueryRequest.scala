@@ -152,11 +152,11 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
           if (buf.length > 0) buf.append("&")
           buf.append(key)
           buf.append("=")
-          buf.append(extraParams.getOrElse(key, ""))
+          buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
         }
       }
     }
-    "?" + buf.toString.replaceAll(" ", "%20")
+    "?" + buf.toString
   }
 
   private def appendIfExists[RP <: RequestParam](buf: StringBuilder, param: RP): Unit = {
