@@ -113,6 +113,7 @@
                             <goal>testCompile</goal>
                         </goals>
                         <configuration>
+                            <scalaVersion>${scala.version}</scalaVersion>
                             <args>
                                 <arg>-make:transitive</arg>
                                 <arg>-dependencyfile</arg>
