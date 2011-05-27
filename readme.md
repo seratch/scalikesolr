@@ -1,6 +1,6 @@
 # scalikesolr : Apache Solr Client for Scala/Java
 
-"[scalikesolr](https://github.com/seratch/scalikesolr/blob/master/scaladocs/index.html)" is a simple Solr client library for [Scala 2.9.0.final](http://www.scala-lang.org/). And it also works fine with Java.
+"scalikesolr" is a simple Solr client library for [Scala 2.9.0.final](http://www.scala-lang.org/). And it also works fine with Java.
 
 ## How to install
 
