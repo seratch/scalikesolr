@@ -3,6 +3,7 @@ package com.github.seratch.scalikesolr.http
 import java.net.{URL, HttpURLConnection}
 import java.io._
 import com.github.seratch.scalikesolr.util.IO
+import sun.security.krb5.internal.KdcErrException
 
 object HttpClient {
 
@@ -15,9 +16,7 @@ object HttpClient {
     try {
       import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
-      val headers = (headersInJava.keySet.asScala map {
-        case key => (key, headersInJava.get(key).asScala.toList)
-      }).toMap
+      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
       new HttpResponse(
         conn.getResponseCode,
         headers,
