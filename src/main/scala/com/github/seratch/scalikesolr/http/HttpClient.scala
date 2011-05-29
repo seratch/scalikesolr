@@ -3,8 +3,6 @@ package com.github.seratch.scalikesolr.http
 import java.net.{URL, HttpURLConnection}
 import java.io._
 import com.github.seratch.scalikesolr.util.IO
-import sun.security.krb5.internal.KdcErrException
-
 object HttpClient {
 
   def get(url: String, charset: String) = {
