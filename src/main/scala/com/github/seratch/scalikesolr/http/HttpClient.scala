@@ -3,6 +3,8 @@ package com.github.seratch.scalikesolr.http
 import java.net.{URL, HttpURLConnection}
 import java.io._
 import com.github.seratch.scalikesolr.util.IO
+import collection.JavaConverters._
+
 object HttpClient {
 
   def get(url: String, charset: String) = {
@@ -12,8 +14,8 @@ object HttpClient {
     conn.setReadTimeout(10000)
     conn.setRequestMethod("GET")
     try {
-      import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
+      // (k -> v) is a pair tuple which is same as (k,v).
       val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
       new HttpResponse(
         conn.getResponseCode,
@@ -44,11 +46,8 @@ object HttpClient {
       }
     }
     try {
-      import collection.JavaConverters._
       val headersInJava = conn.getHeaderFields
-      val headers = (headersInJava.keySet.asScala map {
-        case key => (key, headersInJava.get(key).asScala.toList)
-      }).toMap
+      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
       new HttpResponse(
         conn.getResponseCode,
         headers,
