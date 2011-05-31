@@ -1,12 +1,13 @@
 package com.github.seratch.scalikesolr
 
 import scala.reflect.BeanProperty
-import java.text.SimpleDateFormat
 import org.joda.time.{LocalDate, LocalTime, DateTime}
 
 import collection.JavaConverters._
 import util.JSONUtil
-import java.util.{Locale, Calendar, Date}
+import java.util.{Calendar, Date}
+import org.joda.time.format.DateTimeFormat
+import java.text.SimpleDateFormat
 
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
@@ -30,7 +31,11 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toDateOrElse(defaultValue: Date): Date = {
     try {
-      new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH).parse(rawValue)
+      try {
+        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(rawValue)
+      } catch {
+        case _ => new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(rawValue)
+      }
     } catch {
       case _ => defaultValue
     }
@@ -49,7 +54,11 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toDateTimeOrElse(defaultValue: DateTime): DateTime = {
     try {
-      new DateTime(toDateOrElse(null))
+      try {
+        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parseDateTime(rawValue)
+      } catch {
+        case _ => DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").parseDateTime(rawValue)
+      }
     } catch {
       case _ => defaultValue
     }
@@ -57,7 +66,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toLocalTimeOrElse(defaultValue: LocalTime): LocalTime = {
     try {
-      new LocalTime(toDateOrElse(null))
+      toDateTimeOrElse(null).toLocalTime
     } catch {
       case _ => defaultValue
     }
@@ -65,7 +74,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toLocalDateOrElse(defaultValue: LocalDate): LocalDate = {
     try {
-      new LocalDate(toDateOrElse(null))
+      toDateTimeOrElse(null).toLocalDate
     } catch {
       case _ => defaultValue
     }
