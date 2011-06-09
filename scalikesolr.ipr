@@ -20,8 +20,16 @@
     </wildcardResourcePatterns>
     <annotationProcessing enabled="false" useClasspath="true" />
   </component>
-  <component name="CopyrightManager" default="">
+  <component name="CopyrightManager" default="Apache 2.0">
+    <copyright>
+      <option name="notice" value="Copyright 2011 Kazuhiro Sera&#10;&#10;Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);&#10;you may not use this file except in compliance with the License.&#10;You may obtain a copy of the License at&#10;&#10;    http://www.apache.org/licenses/LICENSE-2.0&#10;&#10;Unless required by applicable law or agreed to in writing, software&#10;distributed under the License is distributed on an &quot;AS IS&quot; BASIS,&#10;WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,&#10;either express or implied. See the License for the specific language&#10;governing permissions and limitations under the License." />
+      <option name="keyword" value="Copyright" />
+      <option name="allowReplaceKeyword" value="" />
+      <option name="myName" value="Apache 2.0" />
+      <option name="myLocal" value="true" />
+    </copyright>
     <module2copyright />
+    <LanguageOptions name="Scala" />
   </component>
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
@@ -34,6 +42,15 @@
     <option name="PRINT_LINE_NUMBERS" value="false" />
     <option name="OPEN_IN_BROWSER" value="false" />
     <option name="OUTPUT_DIRECTORY" />
+  </component>
+  <component name="FacetAutodetectingManager">
+    <autodetection-disabled>
+      <facet-type id="scala">
+        <modules>
+          <module name="scalikesolr" />
+        </modules>
+      </facet-type>
+    </autodetection-disabled>
   </component>
   <component name="HighlightingAdvisor">
     <option name="SUGGEST_TYPE_AWARE_HIGHLIGHTING" value="false" />
@@ -64,6 +81,13 @@
     <option name="HEAP_SIZE" />
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="false" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
   </component>
   <component name="NullableNotNullManager">
     <option name="myDefaultNullable" value="org.jetbrains.annotations.Nullable" />
@@ -224,13 +248,112 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="libraryTable">
-    <library name="scala">
+    <library name="Maven: ch.qos.logback:logback-classic:0.9.28">
       <CLASSES>
-        <root url="file://$PROJECT_DIR$/../../../scala/scala-2.9.0.final/lib" />
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.28/logback-classic-0.9.28.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.28/logback-classic-0.9.28-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-classic/0.9.28/logback-classic-0.9.28-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: ch.qos.logback:logback-core:0.9.28">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.28/logback-core-0.9.28.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.28/logback-core-0.9.28-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/ch/qos/logback/logback-core/0.9.28/logback-core-0.9.28-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: joda-time:joda-time:1.6.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/joda-time/joda-time/1.6.2/joda-time-1.6.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/joda-time/joda-time/1.6.2/joda-time-1.6.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/joda-time/joda-time/1.6.2/joda-time-1.6.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: junit:junit:4.8.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.8.2/junit-4.8.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.8.2/junit-4.8.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.8.2/junit-4.8.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.mockito:mockito-all:1.8.2">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.8.2/mockito-all-1.8.2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.8.2/mockito-all-1.8.2-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/mockito/mockito-all/1.8.2/mockito-all-1.8.2-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-compiler-bundle:2.9.0-1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.9.0-1/scala-compiler-2.9.0-1.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.0-1/scala-library-2.9.0-1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
-      <jarDirectory url="file://$PROJECT_DIR$/../../../scala/scala-2.9.0.final/lib" recursive="false" />
+    </library>
+    <library name="Maven: org.scala-lang:scala-compiler:2.9.0">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.9.0/scala-compiler-2.9.0.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.9.0/scala-compiler-2.9.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-compiler/2.9.0/scala-compiler-2.9.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-lang:scala-library:2.9.0-1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.0-1/scala-library-2.9.0-1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.0-1/scala-library-2.9.0-1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-lang/scala-library/2.9.0-1/scala-library-2.9.0-1-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.scala-tools.testing:specs_2.9.0:1.6.8">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs_2.9.0/1.6.8/specs_2.9.0-1.6.8.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs_2.9.0/1.6.8/specs_2.9.0-1.6.8-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/scala-tools/testing/specs_2.9.0/1.6.8/specs_2.9.0-1.6.8-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: org.slf4j:slf4j-api:1.6.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.6.1/slf4j-api-1.6.1-sources.jar!/" />
+      </SOURCES>
     </library>
   </component>
 </project>
