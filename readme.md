@@ -1,12 +1,12 @@
 # scalikesolr : Apache Solr Client for Scala/Java
 
-"scalikesolr" is a simple Solr client library for [Scala 2.9.0.1](http://www.scala-lang.org/). And it also works fine with Java.
+"scalikesolr" is a simple Solr client library for "Scala 2.8.1.final" or "Scala 2.9.0.1". And it also works fine with Java.
 
 ## How to install
 
 ### Maven
 
-"3.2" means Solr/Lucene release version that is supported by scalikesolr("3.1" and "3.2" are available). The "x" of "3.2.x" will be incremented.
+"3.2"(or "3.1") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.2.x" will be incremented.
 
     <repositories>
       <repository>
@@ -21,7 +21,7 @@
 
     <dependency>
       <groupId>com.github.seratch</groupId>
-      <artifactId>scalikesolr</artifactId>
+      <artifactId>scalikesolr_2.9.0-1</artifactId>
       <version>[3.2,)</version>
     </dependency>
 

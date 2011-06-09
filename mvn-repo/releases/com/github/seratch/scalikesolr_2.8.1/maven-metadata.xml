@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.github.seratch</groupId>
+  <artifactId>scalikesolr_2.8.1</artifactId>
+  <version>3.2.0</version>
+  <versioning>
+    <versions>
+      <version>3.2.0</version>
+      <version>3.1.14</version>
+    </versions>
+    <lastUpdated>20110609064920</lastUpdated>
+  </versioning>
+</metadata>
