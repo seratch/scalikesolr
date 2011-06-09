@@ -3,7 +3,13 @@ package com.github.seratch.scalikesolr.util
 import org.specs.Specification
 import org.slf4j.LoggerFactory
 
-object UpdateFormatLoaderSpec extends Specification {
+import org.junit.runner.RunWith
+import org.specs._
+import org.specs.matcher._
+import org.specs.runner.{JUnitSuiteRunner, JUnit}
+
+@RunWith(classOf[JUnitSuiteRunner])
+class UpdateFormatLoaderSpec extends Specification with JUnit {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.util.UpdateFormatLoaderSpec")
 

@@ -39,7 +39,13 @@ case class Person(var name: String = "",
   }
 }
 
-object TypeBinderSpec extends Specification {
+import org.junit.runner.RunWith
+import org.specs._
+import org.specs.matcher._
+import org.specs.runner.{JUnitSuiteRunner, JUnit}
+
+@RunWith(classOf[JUnitSuiteRunner])
+class TypeBinderSpec extends Specification with JUnit {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.util.TypeBinderSpec")
 

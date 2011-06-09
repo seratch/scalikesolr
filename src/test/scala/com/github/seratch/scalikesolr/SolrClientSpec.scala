@@ -9,7 +9,13 @@ import request._
 import org.slf4j.LoggerFactory
 import query.{Sort, Query}
 
-object SolrClientSpec extends Specification {
+import org.junit.runner.RunWith
+import org.specs._
+import org.specs.matcher._
+import org.specs.runner.{JUnitSuiteRunner, JUnit}
+
+@RunWith(classOf[JUnitSuiteRunner])
+class SolrClientSpec extends Specification with JUnit {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()

@@ -6,7 +6,13 @@ import org.joda.time.format.DateTimeFormat
 import org.joda.time.{LocalDate, LocalTime}
 import java.util.{Calendar, Locale}
 
-object SolrDocumentValueSpec extends Specification {
+import org.junit.runner.RunWith
+import org.specs._
+import org.specs.matcher._
+import org.specs.runner.{JUnitSuiteRunner, JUnit}
+
+@RunWith(classOf[JUnitSuiteRunner])
+class SolrDocumentValueSpec extends Specification with JUnit {
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrDocumentValueSpec")
 
