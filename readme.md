@@ -1,6 +1,32 @@
 # scalikesolr : Apache Solr Client for Scala/Java
 
-"scalikesolr" is a simple Solr client library for "Scala 2.8.1.final" or "Scala 2.9.0.1". And it also works fine with Java.
+"scalikesolr" is a simple Solr client library for Scala. And it also works fine with Java.
+
+Currently following Scala versions are supported:
+
+### Scala 2.8.1.final
+
+    <dependency>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>scalikesolr_2.8.0</artifactId>
+      <version>[3.2,)</version>
+    </dependency>
+
+### Scala 2.9.0.final ->
+
+    <dependency>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>scalikesolr_2.9.0</artifactId>
+      <version>[3.2,)</version>
+    </dependency>
+
+### Scala 2.9.0.1 ->
+
+    <dependency>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>scalikesolr_2.9.0-1</artifactId>
+      <version>[3.2,)</version>
+    </dependency>
 
 ## How to install
 
