@@ -12,7 +12,7 @@ Currently following Scala versions are supported:
       <version>[3.2,)</version>
     </dependency>
 
-### Scala 2.9.0.final ->
+### Scala 2.9.0.final
 
     <dependency>
       <groupId>com.github.seratch</groupId>
@@ -20,7 +20,7 @@ Currently following Scala versions are supported:
       <version>[3.2,)</version>
     </dependency>
 
-### Scala 2.9.0.1 ->
+### Scala 2.9.0.1
 
     <dependency>
       <groupId>com.github.seratch</groupId>
