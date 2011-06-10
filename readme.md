@@ -30,6 +30,13 @@ Currently following Scala versions are supported:
 
 ## How to install
 
+### sbt
+
+Example of "project/build/MyProject.scala":
+
+    val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
+    val scalikesolr = "com.github.seratch" % "scalikesolr_2.9.0-1" % "3.2.0" withSources ()
+
 ### Maven
 
 "3.2"(or "3.1") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.2.x" will be incremented.
