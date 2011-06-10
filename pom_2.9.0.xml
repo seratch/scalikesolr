@@ -20,7 +20,7 @@
 
     <groupId>com.github.seratch</groupId>
     <artifactId>scalikesolr_2.9.0</artifactId>
-    <version>3.1.14</version>
+    <version>3.2.0</version>
     <name>${project.artifactId}</name>
     <description>Solr Client library for Solr</description>
     <inceptionYear>2011</inceptionYear>
@@ -130,6 +130,19 @@
                                 <arg>${project.build.directory}/.scala_dependencies</arg>
                             </args>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
