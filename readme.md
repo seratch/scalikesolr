@@ -8,7 +8,7 @@ Currently following Scala versions are supported:
 
     <dependency>
       <groupId>com.github.seratch</groupId>
-      <artifactId>scalikesolr_2.8.0</artifactId>
+      <artifactId>scalikesolr_2.8.1</artifactId>
       <version>[3.2,)</version>
     </dependency>
 
