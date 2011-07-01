@@ -238,8 +238,12 @@ class SolrClientSpec extends Specification with JUnit {
       response.response.documents.size must beEqual(2)
       log.debug("-----------------------------")
       log.debug("facetFields:" + response.facet.facetFields.toString)
+      // Solr 3.2: Map(title -> SolrDocument(WriterType(standard),,Map(thief -> 1, sea -> 1, monster -> 1, lightn -> 1)))
+      // Solr 3.3: Map(title -> SolrDocument(WriterType(standard),,Map(sea -> 1, thief -> 1, monsters -> 1, lightning -> 1, of -> 1, the -> 2)))
       response.facet.facetFields.keys.size must beEqual(1)
-      response.facet.facetFields.get("title").get.keys.size must beEqual(4)
+      // Solr 3.2: response.facet.facetFields.get("title").get.keys.size must beEqual(4)
+      // Solr 3.3: response.facet.facetFields.get("title").get.keys.size must beEqual(6)
+      response.facet.facetFields.get("title").get.keys.size must greaterThanOrEqualTo(4)
       response.facet.facetFields.keys foreach {
         case key => {
           val facets = response.facet.facetFields.getOrElse(key, new SolrDocument())
@@ -266,8 +270,12 @@ class SolrClientSpec extends Specification with JUnit {
       response.responseHeader.qTime must greaterThanOrEqualTo(0)
       response.response.documents.size must beEqual(2)
       log.debug("facetFields:" + response.facet.facetFields.toString)
+      // Solr 3.2: Map(title -> SolrDocument(WriterType(standard),,Map(thief -> 1, sea -> 1, monster -> 1, lightn -> 1)))
+      // Solr 3.3: Map(title -> SolrDocument(WriterType(standard),,Map(sea -> 1, thief -> 1, monsters -> 1, lightning -> 1, of -> 1, the -> 2)))
       response.facet.facetFields.keys.size must beEqual(1)
-      response.facet.facetFields.get("title").get.keys.size must beEqual(4)
+      // Solr 3.2: response.facet.facetFields.get("title").get.keys.size must beEqual(4)
+      // Solr 3.3: response.facet.facetFields.get("title").get.keys.size must beEqual(6)
+      response.facet.facetFields.get("title").get.keys.size must greaterThanOrEqualTo(4)
     }
 
   }
