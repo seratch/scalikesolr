@@ -45,7 +45,6 @@ case class MoreLikeThisParams(@BeanProperty var enabled: Boolean = false,
       minimumWordLengthBelowToBeIgnored = MinimumWordLengthBelowToBeIgnored(),
       queryFields = QueryFields())
   }
-
 }
 
 object MoreLikeThisParams {

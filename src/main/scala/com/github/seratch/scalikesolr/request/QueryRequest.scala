@@ -20,6 +20,7 @@ import common.{RequestParam, WriterType}
 import reflect.BeanProperty
 import query._
 import facet.FacetParams
+import group.GroupParams
 import morelikethis.MoreLikeThisParams
 import query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.SolrCore
@@ -32,6 +33,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
                         @BeanProperty var facet: FacetParams = FacetParams(),
                         @BeanProperty var fieldsToReturn: FieldsToReturn = FieldsToReturn(),
                         @BeanProperty var filterQuery: FilterQuery = FilterQuery(),
+                        @BeanProperty var group: GroupParams = GroupParams(),
                         @BeanProperty var highlighting: HighlightingParams = HighlightingParams(),
                         @BeanProperty var isIndentEnabled: IsIndentEnabled = IsIndentEnabled(),
                         @BeanProperty var isDebugQueryEnabled: IsDebugQueryEnabled = IsDebugQueryEnabled(),
@@ -62,6 +64,8 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
       facet = FacetParams(),
       fieldsToReturn = FieldsToReturn(),
       filterQuery = FilterQuery(),
+      group = GroupParams(),
+      highlighting = HighlightingParams(),
       isIndentEnabled = IsIndentEnabled(),
       isDebugQueryEnabled = IsDebugQueryEnabled(),
       isEchoHandlerEnabled = IsEchoHandlerEnabled(),
@@ -87,6 +91,8 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
       facet = FacetParams(),
       fieldsToReturn = FieldsToReturn(),
       filterQuery = FilterQuery(),
+      group = GroupParams(),
+      highlighting = HighlightingParams(),
       isIndentEnabled = IsIndentEnabled(),
       isDebugQueryEnabled = IsDebugQueryEnabled(),
       isEchoHandlerEnabled = IsEchoHandlerEnabled(),

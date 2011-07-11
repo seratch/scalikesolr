@@ -277,7 +277,6 @@ case class IsFastVectorHigighterEnabled(@BeanProperty val useFastVectorHigighter
 
   override def getValue() = toString(useFastVectorHigighter)
 
-
 }
 
 object IsFastVectorHigighterEnabled {
