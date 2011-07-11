@@ -21,30 +21,30 @@ import com.github.seratch.scalikesolr.request.common.RequestParam
 import com.github.seratch.scalikesolr.request.query.{Sort, StartRow, MaximumRowsReturned}
 
 case class GroupParams(@BeanProperty var enabled: Boolean = false,
-                       @BeanProperty var field: Field = Field(),
-                       @BeanProperty var query: Query = Query(),
+                       @BeanProperty var field: GroupField = GroupField(),
+                       @BeanProperty var query: GroupQuery = GroupQuery(),
                        @BeanProperty var rows: MaximumRowsReturned = MaximumRowsReturned(),
                        @BeanProperty var start: StartRow = StartRow(),
-                       @BeanProperty var limit: Limit = Limit(),
-                       @BeanProperty var offset: Offset = Offset(),
+                       @BeanProperty var limit: GroupLimit = GroupLimit(),
+                       @BeanProperty var offset: GroupOffset = GroupOffset(),
                        @BeanProperty var sort: Sort = Sort(),
                        @BeanProperty var groupSort: GroupSort = GroupSort(),
-                       @BeanProperty var format: Format = Format(),
+                       @BeanProperty var format: GroupFormat = GroupFormat(),
                        @BeanProperty var main: AsMainResultWhenUsingSimpleFormat = AsMainResultWhenUsingSimpleFormat(),
                        @BeanProperty var ngroups: WithNumberOfGroups = WithNumberOfGroups(),
                        @BeanProperty var cachePercent: GroupingCachePercent = GroupingCachePercent()) {
 
-  def this(enabled: Boolean, field: Field) {
+  def this(enabled: Boolean, field: GroupField) {
     this (enabled = enabled,
       field = field,
-      query = Query(),
+      query = GroupQuery(),
       rows = MaximumRowsReturned(),
       start = StartRow(),
-      limit = Limit(),
-      offset = Offset(),
+      limit = GroupLimit(),
+      offset = GroupOffset(),
       sort = Sort(),
       groupSort = GroupSort(),
-      format = Format(),
+      format = GroupFormat(),
       main = AsMainResultWhenUsingSimpleFormat(),
       ngroups = WithNumberOfGroups(),
       cachePercent = GroupingCachePercent()
@@ -54,12 +54,12 @@ case class GroupParams(@BeanProperty var enabled: Boolean = false,
 }
 
 object GroupParams {
-  def as(enabled: Boolean, field: Field) = {
+  def as(enabled: Boolean, field: GroupField) = {
     new GroupParams(enabled, field)
   }
 }
 
-case class Field(@BeanProperty val field: String = "*") extends RequestParam {
+case class GroupField(@BeanProperty val field: String = "*") extends RequestParam {
 
   override def isEmpty() = field == null || field.isEmpty
 
@@ -69,14 +69,14 @@ case class Field(@BeanProperty val field: String = "*") extends RequestParam {
 
 }
 
-object Field {
-  def as(field: String) = Field(field)
+object GroupField {
+  def as(field: String) = GroupField(field)
 }
 
 /**
  * TODO This parameter only is supported on 4.0
  */
-case class FunctionalQeury(@BeanProperty val func: String) extends RequestParam {
+case class GroupFunctionalQeury(@BeanProperty val func: String) extends RequestParam {
 
   override def isEmpty() = func == null || func.isEmpty
 
@@ -86,11 +86,11 @@ case class FunctionalQeury(@BeanProperty val func: String) extends RequestParam 
 
 }
 
-object FunctionalQeury {
-  def as(func: String) = FunctionalQeury(func)
+object GroupFunctionalQeury {
+  def as(func: String) = GroupFunctionalQeury(func)
 }
 
-case class Query(@BeanProperty val query: String = "") extends RequestParam {
+case class GroupQuery(@BeanProperty val query: String = "") extends RequestParam {
 
   override def isEmpty() = query == null || query.isEmpty
 
@@ -100,11 +100,11 @@ case class Query(@BeanProperty val query: String = "") extends RequestParam {
 
 }
 
-object Query {
-  def as(query: String) = Query(query)
+object GroupQuery {
+  def as(query: String) = GroupQuery(query)
 }
 
-case class Limit(@BeanProperty val limit: Int = 1) extends RequestParam {
+case class GroupLimit(@BeanProperty val limit: Int = 1) extends RequestParam {
 
   override def isEmpty() = false
 
@@ -114,11 +114,11 @@ case class Limit(@BeanProperty val limit: Int = 1) extends RequestParam {
 
 }
 
-object Limit {
-  def as(limit: Int) = Limit(limit)
+object GroupLimit {
+  def as(limit: Int) = GroupLimit(limit)
 }
 
-case class Offset(@BeanProperty val offset: Int = 0) extends RequestParam {
+case class GroupOffset(@BeanProperty val offset: Int = 0) extends RequestParam {
 
   override def isEmpty() = false
 
@@ -128,8 +128,8 @@ case class Offset(@BeanProperty val offset: Int = 0) extends RequestParam {
 
 }
 
-object Offset {
-  def as(offset: Int) = Offset(offset)
+object GroupOffset {
+  def as(offset: Int) = GroupOffset(offset)
 }
 
 case class GroupSort(@BeanProperty val sort: String = "") extends RequestParam {
@@ -146,7 +146,7 @@ object GroupSort {
   def as(sort: String): GroupSort = GroupSort(sort)
 }
 
-case class Format(@BeanProperty val format: String = "grouped") extends RequestParam {
+case class GroupFormat(@BeanProperty val format: String = "grouped") extends RequestParam {
 
   override def isEmpty() = format == null || format.isEmpty
 
@@ -156,8 +156,8 @@ case class Format(@BeanProperty val format: String = "grouped") extends RequestP
 
 }
 
-object Format {
-  def as(format: String) = Format(format)
+object GroupFormat {
+  def as(format: String) = GroupFormat(format)
 }
 
 case class AsMainResultWhenUsingSimpleFormat(@BeanProperty val main: Boolean = false) extends RequestParam {
