@@ -129,6 +129,22 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     appendIfExists(buf, this.startRow)
     appendIfExists(buf, this.timeoutMilliseconds)
     appendIfExists(buf, this.version)
+    if (this.group.enabled) {
+      if (buf.length > 0) buf.append("&")
+      buf.append("group=true")
+      appendIfExists(buf, this.group.cachePercent)
+      appendIfExists(buf, this.group.field)
+      appendIfExists(buf, this.group.format)
+      appendIfExists(buf, this.group.groupSort)
+      appendIfExists(buf, this.group.limit)
+      appendIfExists(buf, this.group.main)
+      appendIfExists(buf, this.group.ngroups)
+      appendIfExists(buf, this.group.offset)
+      appendIfExists(buf, this.group.query)
+      appendIfExists(buf, this.group.rows)
+      appendIfExists(buf, this.group.sort)
+      appendIfExists(buf, this.group.start)
+    }
     if (this.highlighting.enabled) {
       if (buf.length > 0) buf.append("&")
       buf.append("hl=true")

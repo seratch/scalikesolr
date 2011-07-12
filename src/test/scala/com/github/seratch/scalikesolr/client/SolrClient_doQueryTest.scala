@@ -11,10 +11,11 @@ import com.github.seratch.scalikesolr.request.query.morelikethis.{FieldsToUseFor
 import com.github.seratch.scalikesolr.{SolrDocument, Solr}
 import com.github.seratch.scalikesolr.request.query.facet.{Param, Value, FacetParam, FacetParams}
 import com.github.seratch.scalikesolr.request.{UpdateRequest, AddRequest, QueryRequest}
+import com.github.seratch.scalikesolr.request.query.group.{AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams}
 
 class SolrClient_doQueryTest extends Assertions {
 
-  val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
+  val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.client.SolrClient_doQueryTest")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   @Before
@@ -63,11 +64,11 @@ class SolrClient_doQueryTest extends Assertions {
     val request = new QueryRequest(Query("author:Rick"))
     val response = client.doQuery(request)
     log.debug(response.toString)
+
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
     assert(response.responseHeader.params != null)
-    assert(response.response.documents.size == 2)
 
     log.debug("-----------------------------")
     log.debug(response.response.documents.toString)
@@ -80,7 +81,7 @@ class SolrClient_doQueryTest extends Assertions {
         log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
       }
     }
-
+    assert(response.response.documents.size == 2)
   }
 
   @Test
@@ -105,11 +106,9 @@ class SolrClient_doQueryTest extends Assertions {
     val response = client.doQuery(request)
     log.debug(response.toString)
 
-
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
 
     log.debug("-----------------------------")
     log.debug(response.response.documents.toString)
@@ -122,6 +121,162 @@ class SolrClient_doQueryTest extends Assertions {
         log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
       }
     }
+    assert(response.response.documents.size == 2)
+  }
+
+  @Test
+  def availableWithGroupParams() {
+    val request = new QueryRequest(
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(enabled = true, field = GroupField("author_t")))
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    log.debug("-----------------------------")
+    response.groups.groups foreach {
+      case group => {
+        log.debug(group.groupValue + " -> " + group.documents.toString)
+      }
+    }
+    log.debug(response.groups.toString)
+    assert(response.groups.groups.size == 3)
+    assert(response.groups.groups.apply(0).numFound == 3)
+    assert(response.groups.groups.apply(0).start == 0)
+    assert(response.groups.groups.apply(1).numFound == 1)
+    assert(response.groups.groups.apply(1).start == 0)
+    assert(response.groups.groups.apply(2).numFound == 2)
+    assert(response.groups.groups.apply(2).start == 0)
+  }
+
+  @Test
+  def availableInJSONWithGroupParams() {
+    val request = new QueryRequest(
+      writerType = WriterType.JSON,
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(enabled = true, field = GroupField("author_t")))
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    log.debug("-----------------------------")
+    log.debug(response.groups.toString)
+    response.groups.groups foreach {
+      case group => {
+        log.debug(group.groupValue + " -> " + group.documents.toString)
+      }
+    }
+    assert(response.groups.groups.size == 3)
+    assert(response.groups.groups.apply(0).numFound == 3)
+    assert(response.groups.groups.apply(0).start == 0)
+    assert(response.groups.groups.apply(1).numFound == 1)
+    assert(response.groups.groups.apply(1).start == 0)
+    assert(response.groups.groups.apply(2).numFound == 2)
+    assert(response.groups.groups.apply(2).start == 0)
+  }
+
+  @Test
+  def availableWithGroupParamsWithSimpleFormat() {
+    val request = new QueryRequest(
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple")))
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    log.debug("-----------------------------")
+    log.debug(response.groups.toString)
+    response.groups.groups foreach {
+      case group => {
+        log.debug(group.groupValue + " -> " + group.documents.toString)
+      }
+    }
+    assert(response.groups.groups.size == 1)
+    assert(response.groups.groups.apply(0).numFound == 6)
+    assert(response.groups.groups.apply(0).start == 0)
+  }
+
+  @Test
+  def availableInJSONWithGroupParamsWithSimpleFormat() {
+    val request = new QueryRequest(
+      writerType = WriterType.JSON,
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple")))
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    log.debug("-----------------------------")
+    log.debug(response.groups.toString)
+    response.groups.groups foreach {
+      case group => {
+        log.debug(group.groupValue + " -> " + group.documents.toString)
+      }
+    }
+    assert(response.groups.groups.size == 1)
+    assert(response.groups.groups.apply(0).numFound == 6)
+    assert(response.groups.groups.apply(0).start == 0)
+  }
+
+  @Test
+  def availableWithGroupParamsWithSimpleFormatAndMain() {
+    val request = new QueryRequest(
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(
+        enabled = true,
+        field = GroupField("author_t"),
+        format = GroupFormat("simple"),
+        main = AsMainResultWhenUsingSimpleFormat(true)
+      )
+    )
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    assert(response.response.documents.size == 3)
+    log.debug("-----------------------------")
+    log.debug(response.groups.toString)
+    response.response.documents foreach {
+      case doc => log.debug(doc.toString)
+    }
+    assert(response.groups.groups.size == 0)
+  }
+
+  @Test
+  def availableInJSONWithGroupParamsWithSimpleFormatAndMain() {
+    val request = new QueryRequest(
+      writerType = WriterType.JSON,
+      query = Query("genre_s:fantasy"),
+      group = GroupParams(
+        enabled = true,
+        field = GroupField("author_t"),
+        format = GroupFormat("simple"),
+        main = AsMainResultWhenUsingSimpleFormat(true)
+      )
+    )
+    request.sort = Sort("page_i desc")
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    assert(response.response.documents.size == 3)
+    log.debug("-----------------------------")
+    log.debug(response.groups.toString)
+    response.response.documents foreach {
+      case doc => log.debug(doc.toString)
+    }
+    assert(response.groups.groups.size == 0)
   }
 
   @Test

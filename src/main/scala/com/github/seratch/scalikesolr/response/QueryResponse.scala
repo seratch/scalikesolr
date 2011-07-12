@@ -17,6 +17,7 @@
 package com.github.seratch.scalikesolr.response
 
 import parser.ResponseParser
+import query._
 import reflect.BeanProperty
 
 import xml._
@@ -26,7 +27,6 @@ import com.github.seratch.scalikesolr.util.JSONUtil
 
 import com.github.seratch.scalikesolr.request.common._
 import com.github.seratch.scalikesolr.response.common._
-import com.github.seratch.scalikesolr.response.query._
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
 import xml.NodeSeq._
 
@@ -70,6 +70,130 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
           }
         }
         new Response(numFound, start, documents.toList)
+      }
+      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+    }
+  }
+
+  @BeanProperty lazy val groups: Groups = {
+    writerType match {
+      case WriterType.Standard => {
+        val xml = XML.loadString(rawBody)
+        var matches: Int = 0
+        val groups = new collection.mutable.ListBuffer[com.github.seratch.scalikesolr.response.query.Group]
+        val groupedCandidates = (xml \ "lst").filter(lst => (lst \ "@name").text == "grouped")
+        if (groupedCandidates.size > 0) {
+          val grouped = groupedCandidates(0)
+          (grouped \ "lst") foreach {
+            case lst: Node => {
+              matches = (lst \ "int").filter(i => (i \ "@name").text == "matches").apply(0).text.toInt
+              val arrCandidates = (lst \ "arr").filter(lst => (lst \ "@name").text == "groups")
+              if (arrCandidates.size == 0) {
+                // group.format=simple
+                val result = (lst \ "result").filter(str => (str \ "@name").text == "doclist").apply(0)
+                groups.append(new com.github.seratch.scalikesolr.response.query.Group(
+                  groupValue = "",
+                  numFound = (result \ "@numFound").text.toInt,
+                  start = (result \ "@start").text.toInt,
+                  documents = ((result \ "doc") map {
+                    case doc: Node => new SolrDocument(writerType = writerType, rawBody = doc.toString)
+                  }).toList
+                ))
+              } else {
+                // group.format=grouped
+                val arr = (lst \ "arr").filter(lst => (lst \ "@name").text == "groups").apply(0)
+                (arr \ "lst") foreach {
+                  case lst: Node => {
+                    var groupValue = ""
+                    val groupValueCandidates = (lst \ "str").filter(str => (str \ "@name").text == "groupValue")
+                    if (groupValueCandidates.size > 0) {
+                      groupValue = (lst \ "str").filter(str => (str \ "@name").text == "groupValue").apply(0).text
+                    }
+                    val result = (lst \ "result").filter(str => (str \ "@name").text == "doclist").apply(0)
+                    groups.append(new com.github.seratch.scalikesolr.response.query.Group(
+                      groupValue = groupValue,
+                      numFound = (result \ "@numFound").text.toInt,
+                      start = (result \ "@start").text.toInt,
+                      documents = ((result \ "doc") map {
+                        case doc: Node => new SolrDocument(writerType = writerType, rawBody = doc.toString)
+                      }).toList
+                    ))
+                  }
+                  case _ =>
+                }
+              }
+            }
+          }
+        }
+        new Groups(
+          matches = matches,
+          groups = groups.toList
+        )
+      }
+      case WriterType.JSON => {
+        val grouped = JSONUtil.toMap(jsonMapFromRawBody.get("grouped"))
+        val groupedSeq = grouped.keys.toSeq
+        if (groupedSeq.size == 0) {
+          // group.format=simple&group.main=true
+          val response = JSONUtil.toMap(jsonMapFromRawBody.get("response"))
+          new Groups(
+            matches = 0,
+            groups = Nil
+          )
+        } else {
+          val fieldName = JSONUtil.toMap(grouped.get(groupedSeq.apply(0)))
+          val groupsDocs = JSONUtil.toList(fieldName.get("groups"))
+          if (groupsDocs.size == 0) {
+            // group.format=simple
+            val matches = JSONUtil.normalizeNum(fieldName.getOrElse("matches", "0").toString).toInt
+            val doclist = JSONUtil.toMap(fieldName.get("doclist"))
+            val documents = JSONUtil.toList(doclist.get("docs")) map {
+              case doc => {
+                val docMap = (doc.keysIterator.map {
+                  case key => (key, new SolrDocumentValue(doc.getOrElse(key, "").toString))
+                }).toMap
+                new SolrDocument(writerType = writerType, map = docMap)
+              }
+            }
+            new Groups(
+              matches = matches,
+              groups = List(new com.github.seratch.scalikesolr.response.query.Group(
+                groupValue = "",
+                numFound = JSONUtil.normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
+                start = JSONUtil.normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
+                documents = documents
+              ))
+            )
+          } else {
+            // group.format=grouped
+            var matches: Int = 0
+            val groups = (groupsDocs.map {
+              case groupDoc => {
+                matches = JSONUtil.normalizeNum(groupDoc.getOrElse("matches", "0").toString).toInt
+                val doclist = JSONUtil.toMap(groupDoc.get("doclist"))
+                val documents = JSONUtil.toList(doclist.get("docs")) map {
+                  case doc => {
+                    val docMap = (doc.keysIterator.map {
+                      case key => (key, new SolrDocumentValue(doc.getOrElse(key, "").toString))
+                    }).toMap
+                    new SolrDocument(writerType = writerType, map = docMap)
+                  }
+                }
+                val groupValue = groupDoc.getOrElse("groupValue", "")
+                new com.github.seratch.scalikesolr.response.query.Group(
+                  groupValue = if (groupValue == null) "" else groupValue.toString,
+                  numFound = JSONUtil.normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
+                  start = JSONUtil.normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
+                  documents = documents
+                )
+              }
+            }).toList
+            new Groups(
+              matches = matches,
+              groups = groups
+            )
+          }
+        }
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -286,7 +410,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetFieldsMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
@@ -300,7 +424,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetDatesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
@@ -314,7 +438,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             doc.keysIterator.foreach {
               case docKey => {
                 val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, List()).asInstanceOf[List[Any]]
+                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
                 parseFacetsToMap(facets, docHashMap)
                 facetRangesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
