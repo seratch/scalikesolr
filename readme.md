@@ -9,7 +9,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.8.1</artifactId>
-      <version>[3.2,)</version>
+      <version>[3.3,)</version>
     </dependency>
 
 ### Scala 2.9.0.final
@@ -17,7 +17,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.0</artifactId>
-      <version>[3.2,)</version>
+      <version>[3.3,)</version>
     </dependency>
 
 ### Scala 2.9.0.1
@@ -25,7 +25,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.0-1</artifactId>
-      <version>[3.2,)</version>
+      <version>[3.3,)</version>
     </dependency>
 
 ## How to install
@@ -35,11 +35,11 @@ Currently following Scala versions are supported:
 Example of "project/build/MyProject.scala":
 
     val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" % "scalikesolr_2.9.0-1" % "3.2.0" withSources ()
+    val scalikesolr = "com.github.seratch" % "scalikesolr_2.9.0-1" % "3.3.0" withSources ()
 
 ### Maven
 
-"3.2"(or "3.1") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.2.x" will be incremented.
+"3.3"(or "3.1","3.2") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.3.x" will be incremented.
 
     <repositories>
       <repository>
@@ -55,7 +55,7 @@ Example of "project/build/MyProject.scala":
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.0-1</artifactId>
-      <version>[3.2,)</version>
+      <version>[3.3,)</version>
     </dependency>
 
 ## Usage
@@ -121,7 +121,8 @@ It is also possible to specify user-defined type that has one argument(String) c
       var cat: List[String] = Nil,
       var price: Double = 0.0,
       var pageI: PageI = PageI(),
-      var sequenceI: Int = 0) {
+      var sequenceI: Int = 0
+    ) {
       def this() = {
         this ("", Nil, 0.0, PageI(), 0)
       }
@@ -198,6 +199,25 @@ Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameter
           // "thief" -> 1, "sea" -> 1, "monster" -> 1, "lightn" -> 1
         }
       }
+    }
+
+#### With Result Groupiong / Field Collapsing
+
+Using [Result Groupiong / Field Collapsing](http://wiki.apache.org/solr/FieldCollapsing):
+
+    val request = new QueryRequest(
+      query = Query("genre_s:fantasy"),
+      group = new GroupParams(
+        enabled = true,
+        field = Field("author_t")
+      )
+    )
+    val response = client.doQuery(request)
+    println(response.groups.toString)
+    response.groups.groups foreach {
+      case group => println(group.groupValue + " -> " + group.documents.toString)
+      // "r.r" -> List(SolrDocument(...
+      // "glen" -> List(SolrDocument(...
     }
 
 ### DIH Command
