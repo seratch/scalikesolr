@@ -124,6 +124,7 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.response.documents.size == 2)
   }
 
+
   @Test
   def availableWithGroupParams() {
     val request = new QueryRequest(

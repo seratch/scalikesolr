@@ -22,6 +22,7 @@ import reflect.BeanProperty
 import io.Source
 import org.slf4j.LoggerFactory
 import java.lang.StringBuilder
+import util.XMLStringBuilder
 
 trait SolrClient {
 
@@ -51,7 +52,7 @@ trait SolrClient {
 
 class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
-  private val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClient")
+  private val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.HttpSolrClient")
 
   override def doQuery(request: QueryRequest): QueryResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
@@ -83,27 +84,25 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.toQueryString
     log.debug("doAddDocuments - Request URL : " + requestUrl)
-    val body = new StringBuilder
-    body.append("<add>")
+    val xml = new XMLStringBuilder
+    xml.append("<add>")
     request.documents foreach {
       case doc =>
-        body.append("<doc>")
+        xml.append("<doc>")
         doc.keys map {
           case key => {
-            body.append("<field name=")
-            body.append(""""""")
-            body.append(key.toString)
-            body.append(""""""")
-            body.append(">")
-            body.append(doc.get(key).toString)
-            body.append("</field>")
+            xml.append("<field name=\"")
+            xml.appendEscaped(key.toString)
+            xml.append("\">")
+            xml.appendEscaped(doc.get(key).toString)
+            xml.append("</field>")
           }
         }
-        body.append("</doc>")
+        xml.append("</doc>")
     }
-    body.append("</add>")
-    log.debug("doAddDocuments - Request Body : " + body.toString)
-    val responseBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
+    xml.append("</add>")
+    log.debug("doAddDocuments - Request Body : " + xml.toString)
+    val responseBody = HttpClient.post(requestUrl, xml.toString, "text/xml", "UTF-8").content
     log.debug("doAddDocuments - Response Body : " + responseBody)
     new AddResponse(
       writerType = request.writerType,
@@ -116,25 +115,25 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
     log.debug("doAddDocuments - Request URL : " + requestUrl)
-    val body = new StringBuilder
-    body.append("<delete>")
+    val xml = new XMLStringBuilder
+    xml.append("<delete>")
     request.uniqueKeysToDelete foreach {
       case uniqueKey => {
-        body.append("<id>")
-        body.append(uniqueKey)
-        body.append("</id>")
+        xml.append("<id>")
+        xml.appendEscaped(uniqueKey)
+        xml.append("</id>")
       }
     }
     request.queries foreach {
       case query => {
-        body.append("<query>")
-        body.append(query.toString)
-        body.append("</query>")
+        xml.append("<query>")
+        xml.appendEscaped(query.toString)
+        xml.append("</query>")
       }
     }
-    body.append("</delete>")
-    log.debug("doDeleteDocuments - Request Body : " + body.toString)
-    val responseBody = HttpClient.post(requestUrl, body.toString, "text/xml", "UTF-8").content
+    xml.append("</delete>")
+    log.debug("doDeleteDocuments - Request Body : " + xml.toString)
+    val responseBody = HttpClient.post(requestUrl, xml.toString, "text/xml", "UTF-8").content
     log.debug("doDeleteDocuments - Response Body : " + responseBody)
     new DeleteResponse(
       writerType = request.writerType,

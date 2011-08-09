@@ -40,7 +40,7 @@ class SolrClient_doAddDocumentsTest extends Assertions {
         "cat" : ["book","paperback"],
         "title" : "The Sea of Monsters",
         "author" : "Rick Riordan",
-        "series_t" : "Percy Jackson and the Olympians",
+        "series_t" : "Percy Jackson and the Olympians <script>foovar</script>",
         "sequence_i" : 2,
         "genre_s" : "fantasy",
         "inStock" : true,
