@@ -148,8 +148,7 @@ class TypeBinderSpec extends Specification with JUnit {
           log.debug(book.toString)
           // Assert
           book.id must beEqual("978-1423103349")
-          val lastModified = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            .parseDateTime("2010-12-31T23:59:59.345Z")
+          val lastModified = new DateTime("2010-12-31T23:59:59.345Z")
           book.lastModified must beEqual(lastModified)
         }
       }

@@ -47,10 +47,9 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toDateOrElse(defaultValue: Date): Date = {
     try {
-      try {
-        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(rawValue)
-      } catch {
-        case _ => new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(rawValue)
+      toDateTimeOrElse(null) match {
+        case null => defaultValue
+        case dateTime => dateTime.toDate
       }
     } catch {
       case _ => defaultValue
@@ -70,11 +69,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toDateTimeOrElse(defaultValue: DateTime): DateTime = {
     try {
-      try {
-        DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parseDateTime(rawValue)
-      } catch {
-        case _ => DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").parseDateTime(rawValue)
-      }
+      new DateTime(rawValue)
     } catch {
       case _ => defaultValue
     }
