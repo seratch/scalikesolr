@@ -25,7 +25,7 @@ import java.lang.reflect.Modifier
 
 object TypeBinder {
 
-  val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.util.TypeBinder")
+  private val log = new Log(LoggerFactory.getLogger("com.github.seratch.scalikesolr.util.TypeBinder"))
 
   def getSetterRegex(): Regex = "(.+)_\\$eq".r
 

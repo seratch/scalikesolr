@@ -21,8 +21,7 @@ import java.net.URL
 import reflect.BeanProperty
 import io.Source
 import org.slf4j.LoggerFactory
-import java.lang.StringBuilder
-import util.XMLStringBuilder
+import util.{Log, XMLStringBuilder}
 
 trait SolrClient {
 
@@ -52,7 +51,7 @@ trait SolrClient {
 
 class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
-  private val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.HttpSolrClient")
+  private val log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))
 
   override def doQuery(request: QueryRequest): QueryResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
