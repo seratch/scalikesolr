@@ -35,7 +35,7 @@ Currently following Scala versions are supported:
 Example of "project/build/MyProject.scala":
 
     val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.2" withSources ()
+    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.3" withSources ()
 
 ### Maven
 
