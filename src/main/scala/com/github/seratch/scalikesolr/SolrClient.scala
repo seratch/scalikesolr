@@ -196,7 +196,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
-  def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
+  override def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/csv" + request.toQueryString()
@@ -210,7 +210,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
-  def doUpdateInXML(request: UpdateRequest): UpdateResponse = {
+  override def doUpdateInXML(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
@@ -224,7 +224,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
-  def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
+  override def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/json" + request.toQueryString()
