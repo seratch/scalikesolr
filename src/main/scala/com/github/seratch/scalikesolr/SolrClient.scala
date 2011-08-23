@@ -53,13 +53,32 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
 
   private val log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))
 
+  private val LOG_PREFIX = "["
+  private val LOG_PREFIX_URL = "URL: "
+  private val LOG_PREFIX_REQ = "Request Body: "
+  private val LOG_PREFIX_RESP = "Response Body: "
+  private val COMMA = " , "
+  private val LOG_SUFFIX = "]"
+
+  private def logGet(requestUrl: => String): Unit = {
+    log.debug(LOG_PREFIX + LOG_PREFIX_URL + requestUrl + LOG_SUFFIX)
+  }
+
+  private def logPost(requestUrl: => String, requestBody: => String): Unit = {
+    log.debug(LOG_PREFIX + LOG_PREFIX_URL + requestUrl + COMMA + LOG_PREFIX_REQ + requestBody + LOG_SUFFIX)
+  }
+
+  private def logResponse(responseBody: => String): Unit = {
+    log.debug(LOG_PREFIX + LOG_PREFIX_RESP + responseBody + LOG_SUFFIX)
+  }
+
   override def doQuery(request: QueryRequest): QueryResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val queryString = request.queryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/select" + queryString
-    log.debug("doQuery - Request URL : " + requestUrl)
+    logGet(requestUrl)
     val responseBody = HttpClient.get(requestUrl, "UTF-8").content
-    log.debug("doQuery - Response Body : " + responseBody)
+    logResponse(responseBody)
     new QueryResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -70,9 +89,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val queryString = request.toQueryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/dataimport" + queryString
-    log.debug("doDIHCommand - Request URL : " + requestUrl)
+    logGet(requestUrl)
     val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
-    log.debug("doDIHCommand - Response Body : " + responseBody)
+    logResponse(responseBody)
     new DIHCommandResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -82,7 +101,6 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doAddDocuments(request: AddRequest): AddResponse = {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core + "/update" + request.toQueryString
-    log.debug("doAddDocuments - Request URL : " + requestUrl)
     val xml = new XMLStringBuilder
     xml.append("<add>")
     request.documents foreach {
@@ -100,9 +118,10 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
         xml.append("</doc>")
     }
     xml.append("</add>")
-    log.debug("doAddDocuments - Request Body : " + xml.toString)
-    val responseBody = HttpClient.post(requestUrl, xml.toString, "text/xml", "UTF-8").content
-    log.debug("doAddDocuments - Response Body : " + responseBody)
+    val requestBody = xml.toString
+    logPost(requestUrl, requestBody)
+    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    logResponse(responseBody)
     new AddResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -113,7 +132,6 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doAddDocuments - Request URL : " + requestUrl)
     val xml = new XMLStringBuilder
     xml.append("<delete>")
     request.uniqueKeysToDelete foreach {
@@ -131,9 +149,10 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
       }
     }
     xml.append("</delete>")
-    log.debug("doDeleteDocuments - Request Body : " + xml.toString)
+    val requestBody = xml.toString
+    logPost(requestUrl, requestBody)
     val responseBody = HttpClient.post(requestUrl, xml.toString, "text/xml", "UTF-8").content
-    log.debug("doDeleteDocuments - Response Body : " + responseBody)
+    logResponse(responseBody)
     new DeleteResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -144,10 +163,10 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doCommit - Request URL : " + requestUrl)
-    log.debug("doCommit - Request Body : <commit/>")
-    val responseBody = HttpClient.post(requestUrl, "<commit/>", "text/xml", "UTF-8").content
-    log.debug("doCommit - Response Body : " + responseBody)
+    val requestBody = "<commit/>"
+    logPost(requestUrl, requestBody)
+    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -158,10 +177,10 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doOptimize - Request URL : " + requestUrl)
-    log.debug("doOptimize - Request Body : <optimize/>")
+    val requestBody = "<optimize/>"
+    logPost(requestUrl, requestBody)
     val responseBody = HttpClient.post(requestUrl, "<optimize/>", "text/xml", "UTF-8").content
-    log.debug("doOptimize - Response Body : " + responseBody)
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -172,10 +191,10 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doRollback - Request URL : " + requestUrl)
-    log.debug("doRollback - Request Body : <rollback/>")
+    val requestBody = "<rollback/>"
+    logPost(requestUrl, requestBody)
     val responseBody = HttpClient.post(requestUrl, "<rollback/>", "text/xml", "UTF-8").content
-    log.debug("doRollback - Response Body : " + responseBody)
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -187,9 +206,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/admin/ping" + queryString
-    log.debug("doPing - Request URL : " + requestUrl)
+    logGet(requestUrl)
     val responseBody = HttpClient.get(requestUrl, "UTF-8").content
-    log.debug("doPing - Response Body : " + responseBody)
+    logResponse(responseBody)
     new PingResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -200,10 +219,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/csv" + request.toQueryString()
-    log.debug("doAddDocumentsInCSV - Request URL : " + requestUrl)
-    log.debug("doAddDocumentsInCSV - Request Body : " + request.requestBody)
+    logPost(requestUrl, request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doAddDocumentsInCSV - Response Body : " + responseBody)
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -214,10 +232,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update" + request.toQueryString()
-    log.debug("doUpdateInXML - Request URL : " + requestUrl)
-    log.debug("doUpdateInXML - Request Body : " + request.requestBody)
+    logPost(requestUrl, request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doUpdateInXML - Response Body : " + responseBody)
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
@@ -228,10 +245,9 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val core = if (request.core.name.isEmpty) "" else "/" + request.core.name
     val requestUrl = url.getProtocol + "://" + url.getHost + ":" + url.getPort + url.getPath + core +
       "/update/json" + request.toQueryString()
-    log.debug("doUpdateInJSON - Request URL : " + requestUrl)
-    log.debug("doUpdateInJSON - Request Body : " + request.requestBody)
+    logPost(requestUrl, request.requestBody)
     val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
-    log.debug("doUpdateInJSON - Response Body : " + responseBody)
+    logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
