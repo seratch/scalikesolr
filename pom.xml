@@ -4,7 +4,7 @@
 
     <groupId>com.github.seratch</groupId>
     <artifactId>scalikesolr</artifactId>
-    <version>3.3.3</version>
+    <version>3.3.4</version>
     <name>${project.artifactId}</name>
     <description>Solr Client library for Solr</description>
     <inceptionYear>2011</inceptionYear>
