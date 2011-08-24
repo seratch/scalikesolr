@@ -59,6 +59,8 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   private val LOG_PREFIX_RESP = "Response Body: "
   private val COMMA = " , "
   private val LOG_SUFFIX = "]"
+  private val CONTENT_TYPE_XML = "text/xml"
+  private val UTF8 = "UTF-8"
 
   private def basicUrl(core: SolrCore): String = {
     val coreName = if (core.name.isEmpty) "" else "/" + core.name
@@ -81,7 +83,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = basicUrl(request.core) + "/select" + queryString
     logGet(requestUrl)
-    val responseBody = HttpClient.get(requestUrl, "UTF-8").content
+    val responseBody = HttpClient.get(requestUrl, UTF8).content
     logResponse(responseBody)
     new QueryResponse(
       writerType = request.writerType,
@@ -93,7 +95,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.toQueryString
     val requestUrl = basicUrl(request.core) + "/dataimport" + queryString
     logGet(requestUrl)
-    val responseBody = Source.fromURL(requestUrl, "UTF-8").mkString
+    val responseBody = Source.fromURL(requestUrl, UTF8).mkString
     logResponse(responseBody)
     new DIHCommandResponse(
       writerType = request.writerType,
@@ -122,7 +124,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     xml.append("</add>")
     val requestBody = xml.toString
     logPost(requestUrl, requestBody)
-    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new AddResponse(
       writerType = request.writerType,
@@ -151,7 +153,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     xml.append("</delete>")
     val requestBody = xml.toString
     logPost(requestUrl, requestBody)
-    val responseBody = HttpClient.post(requestUrl, xml.toString, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, xml.toString, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new DeleteResponse(
       writerType = request.writerType,
@@ -163,7 +165,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val requestBody = "<commit/>"
     logPost(requestUrl, requestBody)
-    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -175,7 +177,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val requestBody = "<optimize/>"
     logPost(requestUrl, requestBody)
-    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -187,7 +189,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val requestBody = "<rollback/>"
     logPost(requestUrl, requestBody)
-    val responseBody = HttpClient.post(requestUrl, requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -199,7 +201,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     val queryString = request.queryString
     val requestUrl = basicUrl(request.core) + "/admin/ping" + queryString
     logGet(requestUrl)
-    val responseBody = HttpClient.get(requestUrl, "UTF-8").content
+    val responseBody = HttpClient.get(requestUrl, UTF8).content
     logResponse(responseBody)
     new PingResponse(
       writerType = request.writerType,
@@ -210,7 +212,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update/csv" + request.toQueryString
     logPost(requestUrl, request.requestBody)
-    val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -221,7 +223,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doUpdateInXML(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     logPost(requestUrl, request.requestBody)
-    val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -232,7 +234,7 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
   override def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update/json" + request.toQueryString
     logPost(requestUrl, request.requestBody)
-    val responseBody = HttpClient.post(requestUrl, request.requestBody, "text/xml", "UTF-8").content
+    val responseBody = HttpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,

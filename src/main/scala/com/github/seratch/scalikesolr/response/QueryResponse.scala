@@ -228,7 +228,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
           case key => {
             val doc = JSONUtil.toMap(highlighting.get(key))
             val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-            doc.keysIterator.foreach {
+            doc.keys.foreach {
               case docKey => {
                 docHashMap.update(docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
               }
@@ -292,7 +292,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             val solrDocs = docs map {
               case doc => {
                 val docMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                doc.keysIterator.foreach {
+                doc.keys.foreach {
                   case field => docMap.update(field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
                 }
                 new SolrDocument(writerType = WriterType.JSON, map = docMap.toMap)
@@ -325,40 +325,45 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         if (facetCountsCandidates.size > 0) {
           val facetCounts = facetCountsCandidates(0)
           facetCounts.child foreach {
-            case facetQueries: Node if (facetQueries \ "@name").text == "facet_queries" => {
-              (facetQueries \ "lst") foreach {
-                query => {
-                  val element = new collection.mutable.HashMap[String, SolrDocumentValue]
-                  query.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
-                  facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+            case node: Node => {
+              (node \ "@name").text match {
+                case "facet_queries" => {
+                  (node \ "lst") foreach {
+                    query => {
+                      val element = new collection.mutable.HashMap[String, SolrDocumentValue]
+                      query.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
+                      facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+                    }
+                  }
                 }
-              }
-            }
-            case facetFields: Node if (facetFields \ "@name").text == "facet_fields" => {
-              facetFields.child foreach {
-                field => {
-                  val element = new collection.mutable.HashMap[String, SolrDocumentValue]
-                  field.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
-                  facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                case "facet_fields" => {
+                  node.child foreach {
+                    field => {
+                      val element = new collection.mutable.HashMap[String, SolrDocumentValue]
+                      field.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
+                      facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                    }
+                  }
                 }
-              }
-            }
-            case facetDates: Node if (facetDates \ "@name").text == "facet_dates" => {
-              (facetDates \ "lst") foreach {
-                date => {
-                  val element = new collection.mutable.HashMap[String, SolrDocumentValue]
-                  date.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
-                  facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                case "facet_dates" => {
+                  (node \ "lst") foreach {
+                    date => {
+                      val element = new collection.mutable.HashMap[String, SolrDocumentValue]
+                      date.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
+                      facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                    }
+                  }
                 }
-              }
-            }
-            case facetRanges: Node if (facetRanges \ "@name").text == "facet_ranges" => {
-              (facetRanges \ "lst") foreach {
-                range => {
-                  val element = new collection.mutable.HashMap[String, SolrDocumentValue]
-                  range.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
-                  facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                case "facet_ranges" => {
+                  (node \ "lst") foreach {
+                    range => {
+                      val element = new collection.mutable.HashMap[String, SolrDocumentValue]
+                      range.child foreach (value => element.update((value \ "@name").text, SolrDocumentValue(value.text)))
+                      facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                    }
+                  }
                 }
+                case _ =>
               }
             }
             case _ =>
@@ -373,15 +378,19 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
       }
       case WriterType.JSON => {
 
-        def parseFacetsToMap(facets: List[Any], docHashMap: collection.mutable.HashMap[String, SolrDocumentValue]): Unit = {
-          facets.size match {
-            case 0 =>
-            case _ => {
-              val kv = facets.take(2)
-              docHashMap.update(kv(0).toString, new SolrDocumentValue(kv(1).toString))
-              parseFacetsToMap(facets.drop(2), docHashMap)
+        def toMap(facets: List[Any]): Map[String, SolrDocumentValue] = {
+          def parseFacetsToMap(facets: List[Any], docHashMap: collection.mutable.HashMap[String, SolrDocumentValue])
+          : collection.mutable.HashMap[String, SolrDocumentValue] = {
+            facets.size match {
+              case 0 => docHashMap
+              case _ => {
+                val kv = facets.take(2)
+                docHashMap.update(kv(0).toString, new SolrDocumentValue(kv(1).toString))
+                parseFacetsToMap(facets.drop(2), docHashMap)
+              }
             }
           }
+          parseFacetsToMap(facets, new collection.mutable.HashMap[String, SolrDocumentValue]).toMap
         }
 
         val facetQueriesMap = new collection.mutable.HashMap[String, SolrDocument]
@@ -390,64 +399,53 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
         val facetRangesMap = new collection.mutable.HashMap[String, SolrDocument]
 
         val facetCounts = JSONUtil.toMap(jsonMapFromRawBody.get("facet_counts"))
-        facetCounts.keysIterator.foreach {
+        facetCounts.keys.foreach {
           case key if key == "facet_queries" => {
             val doc = JSONUtil.toMap(facetCounts.get(key))
-            doc.keysIterator.foreach {
+            doc.keys.foreach {
               case docKey => {
-                val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
-                parseFacetsToMap(facets, docHashMap)
                 facetQueriesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = docHashMap.toMap
+                  map = toMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
                 ))
               }
             }
           }
           case key if key == "facet_fields" => {
             val doc = JSONUtil.toMap(facetCounts.get(key))
-            doc.keysIterator.foreach {
+            doc.keys.foreach {
               case docKey => {
-                val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
-                parseFacetsToMap(facets, docHashMap)
                 facetFieldsMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = docHashMap.toMap
+                  map = toMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
                 ))
               }
             }
           }
           case key if key == "facet_dates" => {
             val doc = JSONUtil.toMap(facetCounts.get(key))
-            doc.keysIterator.foreach {
+            doc.keys.foreach {
               case docKey => {
-                val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
-                parseFacetsToMap(facets, docHashMap)
                 facetDatesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = docHashMap.toMap
+                  map = toMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
                 ))
               }
             }
           }
           case key if key == "facet_ranges" => {
             val doc = JSONUtil.toMap(facetCounts.get(key))
-            doc.keysIterator.foreach {
+            doc.keys.foreach {
               case docKey => {
-                val docHashMap = new collection.mutable.HashMap[String, SolrDocumentValue]
-                val facets = doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]]
-                parseFacetsToMap(facets, docHashMap)
                 facetRangesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = docHashMap.toMap
+                  map = toMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
                 ))
               }
             }
           }
         }
+
         new Facet(
           facetQueries = facetQueriesMap.toMap,
           facetFields = facetFieldsMap.toMap,

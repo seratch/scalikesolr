@@ -23,7 +23,7 @@ import collection.JavaConverters._
 
 object HttpClient {
 
-  def get(url: String, charset: String) = {
+  def get(url: String, charset: String): HttpResponse = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
     conn.setConnectTimeout(3000)
@@ -44,7 +44,13 @@ object HttpClient {
 
   }
 
-  def post(url: String, dataBinary: String, contentType: String, charset: String) = {
+  private val POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
+
+  def post(url: String, dataBinary: String, charset: String): HttpResponse = {
+    post(url, dataBinary, POST_CONTENT_TYPE, charset)
+  }
+
+  def post(url: String, dataBinary: String, contentType: String, charset: String): HttpResponse = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
     conn.setConnectTimeout(3000)
