@@ -44,7 +44,6 @@ object HttpClient {
 
   }
 
-
   def post(url: String, dataBinary: String, contentType: String, charset: String) = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
@@ -67,7 +66,8 @@ object HttpClient {
       new HttpResponse(
         conn.getResponseCode,
         headers,
-        getResponseContent(conn, charset))
+        getResponseContent(conn, charset)
+      )
     }
     catch {
       case e: IOException => throw e
