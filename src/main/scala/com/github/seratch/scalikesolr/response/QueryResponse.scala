@@ -29,6 +29,7 @@ import com.github.seratch.scalikesolr.request.common._
 import com.github.seratch.scalikesolr.response.common._
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
 import xml.NodeSeq._
+import collection.immutable.Map
 
 case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
                          @BeanProperty val rawBody: String = "") {
@@ -81,10 +82,10 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   @BeanProperty lazy val groups: Groups = {
     writerType match {
       case WriterType.Standard => {
-        val xml = XML.loadString(rawBody)
         var matches: Int = 0
-        val groupedList = (xml \ "lst").filter(lst => (lst \ "@name").text == "grouped")
         val empty: List[com.github.seratch.scalikesolr.response.query.Group] = Nil
+        val xml = XML.loadString(rawBody)
+        val groupedList = (xml \ "lst").filter(lst => (lst \ "@name").text == "grouped")
         val groups = groupedList.size match {
           case 0 => empty
           case _ => {
@@ -145,20 +146,18 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
       }
       case WriterType.JSON => {
         val grouped = toMap(jsonMapFromRawBody.get("grouped"))
-        val groupedSeq = grouped.keys.toSeq
-        groupedSeq.size match {
+        grouped.keys.size match {
           case 0 => {
             // group.format=simple&group.main=true
-            val response = toMap(jsonMapFromRawBody.get("response"))
             new Groups(
               matches = 0,
               groups = Nil
             )
           }
           case _ => {
-            val fieldName = toMap(grouped.get(groupedSeq.apply(0)))
-            val groupsDocs = toList(fieldName.get("groups"))
-            groupsDocs.size match {
+            val fieldName = toMap(grouped.get(grouped.keys.toSeq.head))
+            val groupsList = toList(fieldName.get("groups"))
+            groupsList.size match {
               case 0 => {
                 // group.format=simple
                 val doclist = toMap(fieldName.get("doclist"))
@@ -184,7 +183,7 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
               case _ => {
                 // group.format=grouped
                 var matches: Int = 0
-                val groups = (groupsDocs.map {
+                val groups = (groupsList.map {
                   case groupDoc => {
                     matches = normalizeNum(groupDoc.getOrElse("matches", "0").toString).toInt
                     val doclist = toMap(groupDoc.get("doclist"))
@@ -260,59 +259,58 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   @BeanProperty lazy val moreLikeThis: MoreLikeThis = {
     writerType match {
       case WriterType.Standard => {
-        val xml = XML.loadString(rawBody)
         var numFound: Int = 0
         var start: Int = 0
-        val idAndRecommendations = new collection.mutable.HashMap[String, List[SolrDocument]]
-        val mltCandidates = (xml \ "lst").filter(lst => (lst \ "@name").text == "moreLikeThis")
-        if (mltCandidates.size > 0) {
-          val mlt = mltCandidates(0)
-          (mlt \ "result") foreach {
-            case result: Node => {
-              numFound = ((result \ "@numFound").text).toInt
-              start = ((result \ "@start").text).toInt
-              val solrDocs = (result \ "doc") map {
-                doc => {
-                  new SolrDocument(map = (doc.child map {
-                    case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
-                  }).toMap)
+        val xml = XML.loadString(rawBody)
+        val mltList = (xml \ "lst").filter(lst => (lst \ "@name").text == "moreLikeThis")
+        val idAndRecommendations: Map[String, List[SolrDocument]] = mltList.size match {
+          case size if size > 0 => {
+            ((mltList.head \ "result") flatMap {
+              case result: Node => {
+                numFound = ((result \ "@numFound").text).toInt
+                start = ((result \ "@start").text).toInt
+                val solrDocs = (result \ "doc") map {
+                  doc => {
+                    new SolrDocument(map = (doc.child map {
+                      case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
+                    }).toMap)
+                  }
                 }
+                Map((result \ "@name").text -> solrDocs.toList)
               }
-              idAndRecommendations.update((result \ "@name").text, solrDocs.toList)
-            }
+            }).toMap
           }
+          case _ => Map()
         }
         new MoreLikeThis(
           numFound = numFound,
           start = start,
-          idAndRecommendations = idAndRecommendations.toMap
+          idAndRecommendations = idAndRecommendations
         )
       }
       case WriterType.JSON => {
-        val moreLikeThis = toMap(jsonMapFromRawBody.get("moreLikeThis"))
         var numFound: Int = 0
         var start: Int = 0
-        val idAndRecommendations = new collection.mutable.HashMap[String, List[SolrDocument]]
-        moreLikeThis.keys.foreach {
-          case id => {
+        val moreLikeThis = toMap(jsonMapFromRawBody.get("moreLikeThis"))
+        val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.keys flatMap {
+          case id: String => {
             val eachMlt = toMap(moreLikeThis.get(id))
             numFound = normalizeNum(eachMlt.get("numFound").getOrElse(0).toString).toInt
             start = normalizeNum(eachMlt.get("start").getOrElse(0).toString).toInt
-            val docs = toList(eachMlt.get("docs"))
-            val solrDocs = docs map {
+            Map(id -> toList(eachMlt.get("docs")).map {
               case doc => {
                 new SolrDocument(writerType = WriterType.JSON, map = (doc.keys.map {
                   case field => (field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
                 }).toMap)
               }
-            }
-            idAndRecommendations.update(id, solrDocs)
+            })
           }
-        }
+          case _ => None
+        }).toMap
         new MoreLikeThis(
           numFound = numFound,
           start = start,
-          idAndRecommendations = idAndRecommendations.toMap
+          idAndRecommendations = idAndRecommendations
         )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
@@ -322,53 +320,57 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   @BeanProperty lazy val facet: Facet = {
     writerType match {
       case WriterType.Standard => {
-        val xml = XML.loadString(rawBody)
+
         val facetQueriesMap = new collection.mutable.HashMap[String, SolrDocument]
         val facetFieldsMap = new collection.mutable.HashMap[String, SolrDocument]
         val facetDatesMap = new collection.mutable.HashMap[String, SolrDocument]
         val facetRangesMap = new collection.mutable.HashMap[String, SolrDocument]
-        val facetCountsCandidates = (xml \ "lst").filter(lst => (lst \ "@name").text == "facet_counts")
-        if (facetCountsCandidates.size > 0) {
-          val facetCounts = facetCountsCandidates(0)
-          facetCounts.child foreach {
-            case node: Node => {
-              (node \ "@name").text match {
-                case "facet_queries" => {
-                  (node \ "lst") foreach {
-                    query => {
-                      val element = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                      facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+
+        val xml = XML.loadString(rawBody)
+        val facetCountsList = (xml \ "lst").filter(lst => (lst \ "@name").text == "facet_counts")
+        facetCountsList.size match {
+          case 0 =>
+          case _ => {
+            facetCountsList.head.child foreach {
+              case node: Node => {
+                (node \ "@name").text match {
+                  case "facet_queries" => {
+                    (node \ "lst") foreach {
+                      query => {
+                        val element = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+                      }
                     }
                   }
-                }
-                case "facet_fields" => {
-                  node.child foreach {
-                    field => {
-                      val element = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                      facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                  case "facet_fields" => {
+                    node.child foreach {
+                      field => {
+                        val element = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                      }
                     }
                   }
-                }
-                case "facet_dates" => {
-                  (node \ "lst") foreach {
-                    date => {
-                      val element = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                      facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                  case "facet_dates" => {
+                    (node \ "lst") foreach {
+                      date => {
+                        val element = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                      }
                     }
                   }
-                }
-                case "facet_ranges" => {
-                  (node \ "lst") foreach {
-                    range => {
-                      val element = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                      facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                  case "facet_ranges" => {
+                    (node \ "lst") foreach {
+                      range => {
+                        val element = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                      }
                     }
                   }
+                  case _ =>
                 }
-                case _ =>
               }
+              case _ =>
             }
-            case _ =>
           }
         }
         new Facet(
@@ -447,7 +449,6 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
             }
           }
         }
-
         new Facet(
           facetQueries = facetQueriesMap.toMap,
           facetFields = facetFieldsMap.toMap,

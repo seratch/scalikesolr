@@ -22,9 +22,6 @@ import org.joda.time.{LocalDate, LocalTime, DateTime}
 import collection.JavaConverters._
 import util.JSONUtil
 import java.util.{Calendar, Date}
-import org.joda.time.format.DateTimeFormat
-import java.text.SimpleDateFormat
-
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toListOrElse(defaultValue: List[String]): List[String] = {

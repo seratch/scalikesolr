@@ -24,6 +24,8 @@ public class SolrClientTest {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
+    WriterType JSON = WriterType.as("json");
+
     SolrClient client;
 
     @Before
@@ -49,25 +51,25 @@ public class SolrClientTest {
         }
     }
 
-	@Test
-	public void doQuery_MultiByteChars() throws Exception {
-		QueryRequest request = new QueryRequest(new Query("author:日本人"));
-        request.set("mlt","true");
-        request.set("mlt.fl","author");
-		QueryResponse response = client.doQuery(request);
-		assertThat(response.getResponseHeader(), is(notNullValue()));
-		assertThat(response.getResponse(), is(notNullValue()));
-		assertThat(response.getHighlightings(), is(notNullValue()));
-		assertThat(response.getMoreLikeThis(), is(notNullValue()));
-		assertThat(response.getFacet(), is(notNullValue()));
-		List<SolrDocument> documents = response.getResponse().getDocumentsInJava();
-		log.debug(response.toString());
-	}
+    @Test
+    public void doQuery_MultiByteChars() throws Exception {
+        QueryRequest request = new QueryRequest(new Query("author:日本人"));
+        request.set("mlt", "true");
+        request.set("mlt.fl", "author");
+        QueryResponse response = client.doQuery(request);
+        assertThat(response.getResponseHeader(), is(notNullValue()));
+        assertThat(response.getResponse(), is(notNullValue()));
+        assertThat(response.getHighlightings(), is(notNullValue()));
+        assertThat(response.getMoreLikeThis(), is(notNullValue()));
+        assertThat(response.getFacet(), is(notNullValue()));
+        List<SolrDocument> documents = response.getResponse().getDocumentsInJava();
+        log.debug(response.toString());
+    }
 
     @Test
     public void doQuery_JSON() throws Exception {
         QueryRequest request = new QueryRequest(new Query("author:Rick"));
-        request.setWriterType(WriterType.JSON());
+        request.setWriterType(JSON);
         request.setSort(Sort.as("author desc"));
         request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
         QueryResponse response = client.doQuery(request);
@@ -105,7 +107,7 @@ public class SolrClientTest {
     public void doAddDocuments() throws Exception {
         AddRequest request = new AddRequest();
         String jsonString = "{\"id\" : \"978-0641723445\", \"cat\" : [\"book\",\"hardcover\"], \"title\" : \"The Lightning Thief\", \"author\" : \"Rick Riordan\", \"series_t\" : \"Percy Jackson and the Olympians\", \"sequence_i\" : 1, \"genre_s\" : \"fantasy\", \"inStock\" : true, \"price\" : 12.50, \"pages_i\" : 384}";
-        SolrDocument doc = new SolrDocument(WriterType.JSON(), jsonString);
+        SolrDocument doc = new SolrDocument(JSON, jsonString);
         List<SolrDocument> docs = new ArrayList<SolrDocument>();
         docs.add(doc);
         request.setDocumentsInJava(docs);
@@ -164,7 +166,7 @@ public class SolrClientTest {
     public void doUpdateInJSON() throws Exception {
         UpdateRequest request = new UpdateRequest();
         request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
-        request.setWriterType(WriterType.JSON());
+        request.setWriterType(JSON);
         request.setAdditionalQueryString("&indent=on");
         UpdateResponse response = client.doUpdateInJSON(request);
         assertThat(response.responseHeader(), is(notNullValue()));
