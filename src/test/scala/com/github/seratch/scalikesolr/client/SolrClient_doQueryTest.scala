@@ -3,19 +3,21 @@ package com.github.seratch.scalikesolr.client
 import java.net.URL
 import org.slf4j.LoggerFactory
 import org.junit._
-import org.scalatest.Assertions
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
-import com.github.seratch.scalikesolr.request.query.{Sort, Query}
 import com.github.seratch.scalikesolr.request.query.morelikethis.{FieldsToUseForSimilarity, MoreLikeThisParams}
 import com.github.seratch.scalikesolr.{SolrDocument, Solr}
 import com.github.seratch.scalikesolr.request.query.facet.{Param, Value, FacetParam, FacetParams}
-import com.github.seratch.scalikesolr.request.{UpdateRequest, AddRequest, QueryRequest}
 import com.github.seratch.scalikesolr.request.query.group.{AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams}
+import com.github.seratch.scalikesolr.request.{DeleteRequest, UpdateRequest, AddRequest, QueryRequest}
+import org.joda.time.DateTime
+import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, Query}
+import com.github.seratch.scalikesolr.util.Log
+import org.scalatest.Assertions
 
 class SolrClient_doQueryTest extends Assertions {
 
-  val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.client.SolrClient_doQueryTest")
+  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryTest]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   @Before
@@ -55,7 +57,7 @@ class SolrClient_doQueryTest extends Assertions {
     """
     )
     request.documents = List(doc1, doc2)
-    val response = client.doAddDocuments(request)
+    client.doAddDocuments(request)
     client.doCommit(new UpdateRequest())
   }
 
@@ -81,7 +83,7 @@ class SolrClient_doQueryTest extends Assertions {
         log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
       }
     }
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
   }
 
   @Test
@@ -121,7 +123,7 @@ class SolrClient_doQueryTest extends Assertions {
         log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
       }
     }
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
   }
 
 
@@ -144,11 +146,11 @@ class SolrClient_doQueryTest extends Assertions {
     }
     log.debug(response.groups.toString)
     assert(response.groups.groups.size == 3)
-    assert(response.groups.groups.apply(0).numFound == 3)
+    assert(response.groups.groups.apply(0).numFound > 0)
     assert(response.groups.groups.apply(0).start == 0)
-    assert(response.groups.groups.apply(1).numFound == 1)
+    assert(response.groups.groups.apply(1).numFound > 0)
     assert(response.groups.groups.apply(1).start == 0)
-    assert(response.groups.groups.apply(2).numFound == 2)
+    assert(response.groups.groups.apply(2).numFound > 0)
     assert(response.groups.groups.apply(2).start == 0)
   }
 
@@ -172,11 +174,11 @@ class SolrClient_doQueryTest extends Assertions {
       }
     }
     assert(response.groups.groups.size == 3)
-    assert(response.groups.groups.apply(0).numFound == 3)
+    assert(response.groups.groups.apply(0).numFound > 0)
     assert(response.groups.groups.apply(0).start == 0)
-    assert(response.groups.groups.apply(1).numFound == 1)
+    assert(response.groups.groups.apply(1).numFound > 0)
     assert(response.groups.groups.apply(1).start == 0)
-    assert(response.groups.groups.apply(2).numFound == 2)
+    assert(response.groups.groups.apply(2).numFound > 0)
     assert(response.groups.groups.apply(2).start == 0)
   }
 
@@ -199,7 +201,7 @@ class SolrClient_doQueryTest extends Assertions {
       }
     }
     assert(response.groups.groups.size == 1)
-    assert(response.groups.groups.apply(0).numFound == 6)
+    assert(response.groups.groups.apply(0).numFound > 10)
     assert(response.groups.groups.apply(0).start == 0)
   }
 
@@ -223,7 +225,7 @@ class SolrClient_doQueryTest extends Assertions {
       }
     }
     assert(response.groups.groups.size == 1)
-    assert(response.groups.groups.apply(0).numFound == 6)
+    assert(response.groups.groups.apply(0).numFound > 0)
     assert(response.groups.groups.apply(0).start == 0)
   }
 
@@ -291,11 +293,11 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     response.response.documents foreach {
       doc => log.debug(response.highlightings.get(doc.get("id").toString).toString)
     }
-    assert(response.highlightings.size == 2)
+    assert(response.highlightings.size == 10)
     log.debug("-----------------------------")
     log.debug(response.highlightings.toString)
     response.highlightings.keys() foreach {
@@ -318,11 +320,11 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     response.response.documents foreach {
       doc => log.debug(response.highlightings.get(doc.get("id").toString).toString)
     }
-    assert(response.highlightings.size == 2)
+    assert(response.highlightings.size == 10)
     log.debug("-----------------------------")
     log.debug(response.highlightings.toString)
     response.highlightings.keys() foreach {
@@ -342,7 +344,7 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     log.debug("-----------------------------")
     log.debug(response.moreLikeThis.toString)
     response.response.documents foreach {
@@ -364,7 +366,7 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     log.debug("-----------------------------")
     log.debug(response.moreLikeThis.toString)
     response.response.documents foreach {
@@ -388,7 +390,7 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     log.debug("-----------------------------")
     log.debug("facetFields:" + response.facet.facetFields.toString)
     // Solr 3.2: Map(title -> SolrDocument(WriterType(standard),,Map(thief -> 1, sea -> 1, monster -> 1, lightn -> 1)))
@@ -423,7 +425,7 @@ class SolrClient_doQueryTest extends Assertions {
     assert(response.responseHeader != null)
     assert(response.responseHeader.status >= 0)
     assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 2)
+    assert(response.response.documents.size == 10)
     log.debug("facetFields:" + response.facet.facetFields.toString)
     // Solr 3.2: Map(title -> SolrDocument(WriterType(standard),,Map(thief -> 1, sea -> 1, monster -> 1, lightn -> 1)))
     // Solr 3.3: Map(title -> SolrDocument(WriterType(standard),,Map(sea -> 1, thief -> 1, monsters -> 1, lightning -> 1, of -> 1, the -> 2)))
@@ -431,6 +433,131 @@ class SolrClient_doQueryTest extends Assertions {
     // Solr 3.2: response.facet.facetFields.get("title").get.keys.size must beEqual(4)
     // Solr 3.3: response.facet.facetFields.get("title").get.keys.size must beEqual(6)
     assert(response.facet.facetFields.get("title").get.keys.size >= 4)
+  }
+
+  @Test
+  def checkPerformanceOfFetching() {
+
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryTest]))
+    log.isDebugEnabled = false
+    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
+    val currentCount = client.doQuery(new QueryRequest(
+      query = Query("author:Rick"),
+      maximumRowsReturned = MaximumRowsReturned(1))
+    ).response.numFound
+
+    if (currentCount < 100) {
+      val addReq = new AddRequest()
+      val ids = (Range(0, 10000) map {
+        i => "unittest" + i.toString
+      }).toList
+      addReq.documents = ids map {
+        id => SolrDocument(
+          writerType = WriterType.JSON,
+          rawBody = """{"id" : """" + id + """",
+         "cat" : ["book","hardcover"],
+         "title" : "The Lightning Thief",
+         "author" : "Rick Riordan",
+         "series_t" : "Percy Jackson and the Olympians",
+         "sequence_i" : 1,
+         "genre_s" : "fantasy",
+         "inStock" : true,
+         "price" : 12.50,
+         "pages_i" : 384
+       }
+       """
+        )
+      }
+      client.doAddDocuments(addReq)
+      client.doCommit(new UpdateRequest)
+    }
+
+    val request = new QueryRequest(
+      query = Query("author:Rick"),
+      maximumRowsReturned = MaximumRowsReturned(1000)
+    )
+    val xmlStart = new DateTime()
+    log.info("xml start  :" + xmlStart)
+    client.doQuery(request)
+    val xmlEnd = new DateTime()
+    log.info("xml end    :" + xmlEnd)
+    request.writerType = WriterType.JSON
+    val jsonStart = new DateTime()
+    log.info("json start :" + jsonStart)
+    client.doQuery(request)
+    val jsonEnd = new DateTime()
+    log.info("json end   :" + jsonEnd)
+
+    log.info("xml result  :" + (xmlEnd.getMillis - xmlStart.getMillis))
+    log.info("json result :" + (jsonEnd.getMillis - jsonStart.getMillis))
+
+  }
+
+  @Test
+  def checkPerformanceOfLoadingDocuments() {
+
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryTest]))
+    log.isDebugEnabled = false
+    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
+    val currentCount = client.doQuery(new QueryRequest(
+      query = Query("author:Rick"),
+      maximumRowsReturned = MaximumRowsReturned(1))
+    ).response.numFound
+
+    if (currentCount < 100) {
+      val addReq = new AddRequest()
+      val ids = (Range(0, 10000) map {
+        i => "unittest" + i.toString
+      }).toList
+      addReq.documents = ids map {
+        id => SolrDocument(
+          writerType = WriterType.JSON,
+          rawBody = """{"id" : """" + id + """",
+         "cat" : ["book","hardcover"],
+         "title" : "The Lightning Thief",
+         "author" : "Rick Riordan",
+         "series_t" : "Percy Jackson and the Olympians",
+         "sequence_i" : 1,
+         "genre_s" : "fantasy",
+         "inStock" : true,
+         "price" : 12.50,
+         "pages_i" : 384
+       }
+       """
+        )
+      }
+      client.doAddDocuments(addReq)
+      client.doCommit(new UpdateRequest)
+    }
+
+    val request = new QueryRequest(
+      query = Query("author:Rick"),
+      maximumRowsReturned = MaximumRowsReturned(1000)
+    )
+
+    val xmlResponse = client.doQuery(request)
+
+    val xmlStart = new DateTime()
+    log.info("xml start  :" + xmlStart)
+    val docsFromXML = xmlResponse.response.documents
+    val xmlEnd = new DateTime()
+    log.info("xml end    :" + xmlEnd)
+
+    request.writerType = WriterType.JSON
+    val jsonResponse = client.doQuery(request)
+
+    val jsonStart = new DateTime()
+    log.info("json start :" + jsonStart)
+    val docsFromJSON = jsonResponse.response.documents
+    val jsonEnd = new DateTime()
+    log.info("json end   :" + jsonEnd)
+
+    assert(docsFromXML.size > 0)
+    assert(docsFromJSON.size > 0)
+
+    log.info("xml result  :" + (xmlEnd.getMillis - xmlStart.getMillis))
+    log.info("json result :" + (jsonEnd.getMillis - jsonStart.getMillis))
+
   }
 
 }

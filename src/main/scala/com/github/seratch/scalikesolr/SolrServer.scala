@@ -17,10 +17,13 @@
 package com.github.seratch.scalikesolr
 
 import java.net.URL
+import util.Log
 
 trait SolrServer {
 
   def newClient(): SolrClient
+
+  def newClient(log: Log): SolrClient
 
   def getNewClient(): SolrClient = newClient()
 
@@ -29,5 +32,7 @@ trait SolrServer {
 class HttpSolrServer(val url: URL) extends SolrServer {
 
   override def newClient(): SolrClient = new HttpSolrClient(url)
+
+  override def newClient(log: Log): SolrClient = new HttpSolrClient(url, log)
 
 }

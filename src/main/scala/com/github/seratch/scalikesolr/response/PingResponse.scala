@@ -40,7 +40,7 @@ case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.St
     writerType match {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)
-        (xml \ "str").filter(item => (item \ "@name").text == "status")(0).text
+        (xml \ "str").filter(item => (item \ "@name").text == "status").head.text
       }
       case WriterType.JSON => {
         jsonMapFromRawBody.get("status").getOrElse("").toString

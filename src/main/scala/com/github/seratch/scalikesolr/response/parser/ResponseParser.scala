@@ -30,19 +30,22 @@ object ResponseParser {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)
         val intItems = xml \ "lst" \ "int"
-        val paramsCandidates = (xml \ "lst" \ "list").filter(item => (item \ "@name").text == "params")
-        if (paramsCandidates.size > 0) {
-          val params = paramsCandidates(0)
-          new ResponseHeader(
-            intItems.filter(item => (item \ "@name").text == "status")(0).text.toInt,
-            intItems.filter(item => (item \ "@name").text == "QTime")(0).text.toInt,
-            SolrDocument(writerType = writerType, rawBody = params.toString)
-          )
-        } else {
-          new ResponseHeader(
-            intItems.filter(item => (item \ "@name").text == "status")(0).text.toInt,
-            intItems.filter(item => (item \ "@name").text == "QTime")(0).text.toInt
-          )
+        val paramsList = (xml \ "lst" \ "list").filter(item => (item \ "@name").text == "params")
+        paramsList.size match {
+          case 0 => {
+            new ResponseHeader(
+              intItems.filter(item => (item \ "@name").text == "status").head.text.toInt,
+              intItems.filter(item => (item \ "@name").text == "QTime").head.text.toInt
+            )
+          }
+          case _ => {
+            val params = paramsList(0)
+            new ResponseHeader(
+              intItems.filter(item => (item \ "@name").text == "status").head.text.toInt,
+              intItems.filter(item => (item \ "@name").text == "QTime").head.text.toInt,
+              SolrDocument(writerType = writerType, rawBody = params.toString)
+            )
+          }
         }
       }
       case WriterType.JSON => {
@@ -51,7 +54,7 @@ object ResponseParser {
         val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
         val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
         val params = JSONUtil.toMap(responseHeader.get("params"))
-        val docMap = (params.keysIterator map {
+        val docMap = (params.keys map {
           case key => (key, new SolrDocumentValue(params.getOrElse(key, "").toString))
         }).toMap
         new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap))

@@ -22,6 +22,7 @@ import reflect.BeanProperty
 import io.Source
 import org.slf4j.LoggerFactory
 import util.{Log, XMLStringBuilder}
+import java.lang.RuntimeException
 
 trait SolrClient {
 
@@ -49,9 +50,9 @@ trait SolrClient {
 
 }
 
-class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
-
-  private val log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))
+class HttpSolrClient(@BeanProperty val url: URL,
+                     @BeanProperty val log: Log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))
+                      ) extends SolrClient {
 
   private val LOG_PREFIX = "["
   private val LOG_PREFIX_URL = "URL: "
@@ -242,4 +243,11 @@ class HttpSolrClient(@BeanProperty val url: URL) extends SolrClient {
     )
   }
 
+}
+
+class NotImplementedExcetption extends RuntimeException
+
+class EmbeddedSolrClient {
+  // TODO
+  throw new NotImplementedExcetption
 }

@@ -115,7 +115,7 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       }
       case WriterType.JSON => {
         val doc = JSONUtil.toMap(jsonMapFromRawBody.get("statusMessages"))
-        val docMap = (doc.keysIterator map {
+        val docMap = (doc.keys map {
           case docKey => (docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
         }).toMap
         new StatusMessages(defaults = new SolrDocument(map = docMap))

@@ -18,52 +18,57 @@ package com.github.seratch.scalikesolr.util
 
 import org.slf4j.Logger
 
-class Log(logger: Logger) {
+case class Log(logger: Logger) {
+
+  var isDebugEnabled: Boolean = logger.isDebugEnabled
+  var isInfoEnabled: Boolean = logger.isInfoEnabled
+  var isWarnEnabled: Boolean = logger.isWarnEnabled
+  var isErrorEnabled: Boolean = logger.isErrorEnabled
 
   def debug(msg: => String): Unit = {
-    if (logger.isDebugEnabled) {
+    if (isDebugEnabled && logger.isDebugEnabled) {
       logger.debug(msg)
     }
   }
 
   def debug(msg: => String, e: Throwable): Unit = {
-    if (logger.isDebugEnabled) {
+    if (isDebugEnabled && logger.isDebugEnabled) {
       logger.debug(msg, e)
     }
   }
 
   def info(msg: => String): Unit = {
-    if (logger.isInfoEnabled) {
+    if (isInfoEnabled && logger.isInfoEnabled) {
       logger.info(msg)
     }
   }
 
   def info(msg: => String, e: Throwable): Unit = {
-    if (logger.isInfoEnabled) {
+    if (isInfoEnabled && logger.isInfoEnabled) {
       logger.info(msg, e)
     }
   }
 
   def warn(msg: => String): Unit = {
-    if (logger.isWarnEnabled) {
+    if (isWarnEnabled && logger.isWarnEnabled) {
       logger.warn(msg)
     }
   }
 
   def warn(msg: => String, e: Throwable): Unit = {
-    if (logger.isWarnEnabled) {
+    if (isWarnEnabled && logger.isWarnEnabled) {
       logger.warn(msg, e)
     }
   }
 
   def error(msg: => String): Unit = {
-    if (logger.isErrorEnabled) {
+    if (isErrorEnabled && logger.isErrorEnabled) {
       logger.error(msg)
     }
   }
 
   def error(msg: => String, e: Throwable): Unit = {
-    if (logger.isErrorEnabled) {
+    if (isErrorEnabled && logger.isErrorEnabled) {
       logger.error(msg, e)
     }
   }
