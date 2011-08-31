@@ -23,6 +23,7 @@ import scala.util.parsing.json.JSON
 
 case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.Standard,
                         @BeanProperty val rawBody: String = "",
+                        @BeanProperty val rawJavaBin: SolrjSolrDocument = null,
                         @BeanProperty val map: Map[String, SolrDocumentValue] = Map()) {
 
   def this(writerType: WriterType, rawBody: String) = {
@@ -44,6 +45,7 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
     if (map != null && map.size > 0) {
       map
     } else {
+      import collection.JavaConverters._
       (writerType match {
         case WriterType.Standard => {
           XML.loadString(rawBody).child map {
@@ -56,6 +58,11 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
               val value = JSONUtil.normalizeNum(jsonMapFromRawBody.get(key).getOrElse("").toString)
               (key, new SolrDocumentValue(value))
             }
+          }
+        }
+        case WriterType.JavaBinary => {
+          rawJavaBin.getFieldNames.asScala map {
+            case e => (e.toString -> new SolrDocumentValue(rawJavaBin.get(e).toString))
           }
         }
         case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")

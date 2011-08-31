@@ -9,7 +9,7 @@ import com.github.seratch.scalikesolr.request.query.morelikethis.{FieldsToUseFor
 import com.github.seratch.scalikesolr.{SolrDocument, Solr}
 import com.github.seratch.scalikesolr.request.query.facet.{Param, Value, FacetParam, FacetParams}
 import com.github.seratch.scalikesolr.request.query.group.{AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams}
-import com.github.seratch.scalikesolr.request.{DeleteRequest, UpdateRequest, AddRequest, QueryRequest}
+import com.github.seratch.scalikesolr.request.{UpdateRequest, AddRequest, QueryRequest}
 import org.joda.time.DateTime
 import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, Query}
 import com.github.seratch.scalikesolr.util.Log
@@ -125,7 +125,6 @@ class SolrClient_doQueryTest extends Assertions {
     }
     assert(response.response.documents.size == 10)
   }
-
 
   @Test
   def availableWithGroupParams() {
@@ -378,6 +377,28 @@ class SolrClient_doQueryTest extends Assertions {
   }
 
   @Test
+  def availableInJavabinWithMoreLikeThisParams() {
+    val request = new QueryRequest(
+      writerType = WriterType.JavaBinary,
+      query = Query("author:Rick"),
+      moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body")))
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    assert(response.response.documents.size == 10)
+    log.debug("-----------------------------")
+    log.debug(response.moreLikeThis.toString)
+    response.response.documents foreach {
+      doc => {
+        val id = doc.get("id").toString
+        log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
+      }
+    }
+  }
+
+  @Test
   def availableWithFacetParams() {
     val request = new QueryRequest(
       query = Query("author:Rick"),
@@ -481,6 +502,7 @@ class SolrClient_doQueryTest extends Assertions {
     client.doQuery(request)
     val xmlEnd = new DateTime()
     log.info("xml end    :" + xmlEnd)
+
     request.writerType = WriterType.JSON
     val jsonStart = new DateTime()
     log.info("json start :" + jsonStart)
@@ -488,8 +510,16 @@ class SolrClient_doQueryTest extends Assertions {
     val jsonEnd = new DateTime()
     log.info("json end   :" + jsonEnd)
 
+    request.writerType = WriterType.JavaBinary
+    val javabinStart = new DateTime()
+    log.info("javabin start :" + javabinStart)
+    client.doQuery(request)
+    val javabinEnd = new DateTime()
+    log.info("javabin end   :" + javabinEnd)
+
     log.info("xml result  :" + (xmlEnd.getMillis - xmlStart.getMillis))
     log.info("json result :" + (jsonEnd.getMillis - jsonStart.getMillis))
+    log.info("javabin result :" + (javabinEnd.getMillis - javabinStart.getMillis))
 
   }
 
@@ -552,11 +582,22 @@ class SolrClient_doQueryTest extends Assertions {
     val jsonEnd = new DateTime()
     log.info("json end   :" + jsonEnd)
 
+    request.writerType = WriterType.JavaBinary
+    val javabinResponse = client.doQuery(request)
+
+    val javabinStart = new DateTime()
+    log.info("json start :" + javabinStart)
+    val docsFromJavaBin = javabinResponse.response.documents
+    val javabinEnd = new DateTime()
+    log.info("json end   :" + javabinEnd)
+
     assert(docsFromXML.size > 0)
     assert(docsFromJSON.size > 0)
+    assert(docsFromJavaBin.size > 0)
 
     log.info("xml result  :" + (xmlEnd.getMillis - xmlStart.getMillis))
     log.info("json result :" + (jsonEnd.getMillis - jsonStart.getMillis))
+    log.info("javabin result :" + (javabinEnd.getMillis - javabinStart.getMillis))
 
   }
 

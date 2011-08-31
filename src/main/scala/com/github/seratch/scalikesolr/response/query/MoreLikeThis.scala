@@ -16,10 +16,15 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import com.github.seratch.scalikesolr.SolrDocument
 import reflect.BeanProperty
 
 import collection.JavaConverters._
+import com.github.seratch.scalikesolr.request.common.WriterType
+import org.apache.solr.common.util.NamedList
+import xml.{Node, XML}
+import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import com.github.seratch.scalikesolr.util.JSONUtil._
+import scala.Option._
 
 case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
                         @BeanProperty val start: Int = 0,
@@ -28,5 +33,77 @@ case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
   def getList(name: String): List[SolrDocument] = idAndRecommendations.getOrElse(name, Nil)
 
   def getListInJava(name: String): java.util.List[SolrDocument] = getList(name).asJava
+
+}
+
+object MoreLikeThis {
+
+  def extract(writerType: WriterType = WriterType.Standard,
+              rawBody: String = "",
+              jsonMapFromRawBody: Map[String, Option[Any]],
+              rawJavaBin: NamedList[Any] = null): MoreLikeThis = {
+    writerType match {
+      case WriterType.Standard => {
+        var numFound: Int = 0
+        var start: Int = 0
+        val xml = XML.loadString(rawBody)
+        val mltList = (xml \ "lst").filter(lst => (lst \ "@name").text == "moreLikeThis")
+        val idAndRecommendations: Map[String, List[SolrDocument]] = mltList.size match {
+          case size if size > 0 => {
+            ((mltList.head \ "result") flatMap {
+              case result: Node => {
+                numFound = ((result \ "@numFound").text).toInt
+                start = ((result \ "@start").text).toInt
+                val solrDocs = (result \ "doc") map {
+                  doc => {
+                    new SolrDocument(map = (doc.child map {
+                      case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
+                    }).toMap)
+                  }
+                }
+                Map((result \ "@name").text -> solrDocs.toList)
+              }
+            }).toMap
+          }
+          case _ => Map()
+        }
+        new MoreLikeThis(
+          numFound = numFound,
+          start = start,
+          idAndRecommendations = idAndRecommendations
+        )
+      }
+      case WriterType.JSON => {
+        var numFound: Int = 0
+        var start: Int = 0
+        val moreLikeThis = toMap(jsonMapFromRawBody.get("moreLikeThis"))
+        val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.keys flatMap {
+          case id: String => {
+            val eachMlt = toMap(moreLikeThis.get(id))
+            numFound = normalizeNum(eachMlt.get("numFound").getOrElse(0).toString).toInt
+            start = normalizeNum(eachMlt.get("start").getOrElse(0).toString).toInt
+            Map(id -> toList(eachMlt.get("docs")).map {
+              case doc => {
+                new SolrDocument(writerType = WriterType.JSON, map = (doc.keys.map {
+                  case field => (field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
+                }).toMap)
+              }
+            })
+          }
+          case _ => None
+        }).toMap
+        new MoreLikeThis(
+          numFound = numFound,
+          start = start,
+          idAndRecommendations = idAndRecommendations
+        )
+      }
+      case WriterType.JavaBinary => {
+        // TODO
+        throw new UnsupportedOperationException("currently not supported.")
+      }
+      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+    }
+  }
 
 }

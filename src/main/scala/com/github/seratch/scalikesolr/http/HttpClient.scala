@@ -20,8 +20,29 @@ import java.net.{URL, HttpURLConnection}
 import java.io._
 import com.github.seratch.scalikesolr.util.IO
 import collection.JavaConverters._
+import org.apache.solr.common.util.{NamedList, JavaBinCodec}
 
 object HttpClient {
+
+  def getAsJavaBin(url: String): JavabinHttpResponse = {
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+    conn.setConnectTimeout(3000)
+    conn.setReadTimeout(10000)
+    conn.setRequestMethod("GET")
+    try {
+      val headersInJava = conn.getHeaderFields
+      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
+      val response: NamedList[Any] = new JavaBinCodec().unmarshal(conn.getInputStream).asInstanceOf[NamedList[Any]]
+      new JavabinHttpResponse(
+        conn.getResponseCode,
+        headers,
+        response
+      )
+    }
+    catch {
+      case e: IOException => throw e
+    }
+  }
 
   def get(url: String, charset: String): HttpResponse = {
 

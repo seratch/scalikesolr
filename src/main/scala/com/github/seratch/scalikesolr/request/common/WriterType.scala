@@ -36,4 +36,6 @@ object WriterType {
 
   val JSON = new WriterType("json")
 
+  val JavaBinary = new WriterType("javabin")
+
 }

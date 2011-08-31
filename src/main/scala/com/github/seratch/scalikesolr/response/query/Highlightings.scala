@@ -16,8 +16,12 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import com.github.seratch.scalikesolr.SolrDocument
 import reflect.BeanProperty
+import com.github.seratch.scalikesolr.request.common.WriterType
+import org.apache.solr.common.util.NamedList
+import xml.{Node, XML}
+import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocument]) {
 
@@ -26,5 +30,71 @@ case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocume
   def get(name: String): SolrDocument = highlightings.getOrElse(name, new SolrDocument())
 
   def size(): Int = highlightings.size
+
+}
+
+object Highlightings {
+
+  def extract(writerType: WriterType = WriterType.Standard,
+              rawBody: String = "",
+              jsonMapFromRawBody: Map[String, Option[Any]],
+              rawJavaBin: NamedList[Any] = null): Highlightings = {
+    writerType match {
+      case WriterType.Standard => {
+        val xml = XML.loadString(rawBody)
+        val hlList = (xml \ "lst").filter(lst => (lst \ "@name").text == "highlighting")
+        new Highlightings(
+          highlightings = hlList.size match {
+            case 0 => Map()
+            case _ => {
+              val hl = hlList(0)
+              ((hl \ "lst") map {
+                case lst: Node => {
+                  val element = (lst \ "arr") map {
+                    arr => ((arr \ "@name").text, new SolrDocumentValue(arr.child.text))
+                  }
+                  ((lst \ "@name").text, new SolrDocument(map = element.toMap))
+                }
+              }).toMap
+            }
+          })
+      }
+      case WriterType.JSON => {
+        val highlighting = toMap(jsonMapFromRawBody.get("highlighting"))
+        new Highlightings(
+          highlightings = (highlighting.keys.map {
+            case key => {
+              val docMap = toMap(highlighting.get(key))
+              (key, new SolrDocument(
+                writerType = WriterType.JSON,
+                map = (docMap.keys.map {
+                  case docKey => (docKey, new SolrDocumentValue(docMap.getOrElse(docKey, "").toString))
+                }).toMap
+              ))
+            }
+          }).toMap
+        )
+      }
+      case WriterType.JavaBinary => {
+        val highlighting = rawJavaBin.get("highlighting").asInstanceOf[NamedList[Any]]
+        import collection.JavaConverters._
+        new Highlightings(
+          highlightings = (highlighting.iterator().asScala map {
+            case e: java.util.Map.Entry[String, Any] => {
+              val element = e.getValue.asInstanceOf[NamedList[Any]]
+              (e.getKey.toString -> new SolrDocument(
+                writerType = WriterType.JSON,
+                map = (element.iterator().asScala map {
+                  case eachInValue: java.util.Map.Entry[String, Any] => {
+                    (eachInValue.getKey.toString, new SolrDocumentValue(eachInValue.getValue.toString))
+                  }
+                }).toMap))
+            }
+          }).toMap
+        )
+      }
+      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+    }
+  }
 
 }

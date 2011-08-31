@@ -51,4 +51,6 @@ package object scalikesolr {
   type PingResponse = response.PingResponse
   val PingResponse = response.PingResponse
 
+  type SolrjSolrDocument = org.apache.solr.common.SolrDocument
+
 }

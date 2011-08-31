@@ -16,4 +16,12 @@
 
 package com.github.seratch.scalikesolr.http
 
-case class HttpResponse(val statusCode: Int, val headers: Map[String, List[String]], val content: String)
+import org.apache.solr.common.util.NamedList
+
+case class HttpResponse(val statusCode: Int,
+                        val headers: Map[String, List[String]],
+                        val content: String)
+
+case class JavabinHttpResponse(val statusCode: Int,
+                               val headers: Map[String, List[String]],
+                               val rawJavaBin: NamedList[Any])

@@ -84,12 +84,24 @@ class HttpSolrClient(@BeanProperty val url: URL,
     val queryString = request.queryString
     val requestUrl = basicUrl(request.core) + "/select" + queryString
     logGet(requestUrl)
-    val responseBody = HttpClient.get(requestUrl, UTF8).content
-    logResponse(responseBody)
-    new QueryResponse(
-      writerType = request.writerType,
-      rawBody = responseBody
-    )
+    request.writerType match {
+      case WriterType.JavaBinary => {
+        val rawJavaBin = HttpClient.getAsJavaBin(requestUrl).rawJavaBin
+        logResponse(rawJavaBin.toString)
+        new QueryResponse(
+          writerType = request.writerType,
+          rawJavaBin = rawJavaBin
+        )
+      }
+      case _ => {
+        val responseBody = HttpClient.get(requestUrl, UTF8).content
+        logResponse(responseBody)
+        new QueryResponse(
+          writerType = request.writerType,
+          rawBody = responseBody
+        )
+      }
+    }
   }
 
   override def doDIHCommand(request: DIHCommandRequest): DIHCommandResponse = {
