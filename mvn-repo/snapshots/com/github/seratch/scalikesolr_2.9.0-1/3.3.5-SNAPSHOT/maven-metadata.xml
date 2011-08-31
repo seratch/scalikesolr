@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.github.seratch</groupId>
+  <artifactId>scalikesolr_2.9.0-1</artifactId>
+  <version>3.3.5-SNAPSHOT</version>
+  <versioning>
+    <snapshot>
+      <timestamp>20110831.235337</timestamp>
+      <buildNumber>1</buildNumber>
+    </snapshot>
+    <lastUpdated>20110831235337</lastUpdated>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>jar</extension>
+        <value>3.3.5-20110831.235337-1</value>
+        <updated>20110831235337</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>3.3.5-20110831.235337-1</value>
+        <updated>20110831235337</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>sources</classifier>
+        <extension>jar</extension>
+        <value>3.3.5-20110831.235337-1</value>
+        <updated>20110831235337</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+</metadata>

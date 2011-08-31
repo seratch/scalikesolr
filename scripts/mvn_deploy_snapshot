@@ -1,0 +1,4 @@
+#!/bin/sh
+cd `dirname $0`/../.
+mvn -f pom.xml clean -DaltDeploymentRepository=release-repo::default::file:./mvn-repo/snapshots clean deploy
+
