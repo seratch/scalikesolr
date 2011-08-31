@@ -20,7 +20,6 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
 import xml.{Node, XML}
-import com.github.seratch.scalikesolr.SolrDocumentValue._
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
 import com.github.seratch.scalikesolr.util.JSONUtil._
 
@@ -42,7 +41,7 @@ object Facet {
   def extract(writerType: WriterType = WriterType.Standard,
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavaBin: NamedList[Any] = null): Facet = {
+              rawJavabin: NamedList[Any] = null): Facet = {
     writerType match {
       case WriterType.Standard => {
 
@@ -182,8 +181,36 @@ object Facet {
         )
       }
       case WriterType.JavaBinary => {
-        // TODO
-        throw new UnsupportedOperationException("currently not supported.")
+
+        def fromListToMap(namedList: NamedList[Any]): Map[String, SolrDocument] = {
+          import collection.JavaConverters._
+          (namedList.asScala map {
+            case e: java.util.Map.Entry[String, Any] => {
+              val docKey = e.getKey
+              val doc = e.getValue.asInstanceOf[NamedList[Any]]
+              val map = (doc.asScala.map {
+                case e: java.util.Map.Entry[String, Any] => {
+                  (e.getKey -> new SolrDocumentValue(e.getValue.toString))
+                }
+              }).toMap
+              (docKey.toString -> new SolrDocument(writerType = WriterType.JavaBinary, map = map))
+            }
+          }).toMap
+        }
+
+        val facetCounts = rawJavabin.get("facet_counts").asInstanceOf[NamedList[Any]]
+
+        val facetQueries = fromListToMap(facetCounts.get("facet_queries").asInstanceOf[NamedList[Any]])
+        val facetFields = fromListToMap(facetCounts.get("facet_fields").asInstanceOf[NamedList[Any]])
+        val facetDates = fromListToMap(facetCounts.get("facet_dates").asInstanceOf[NamedList[Any]])
+        val facetRanges = fromListToMap(facetCounts.get("facet_ranges").asInstanceOf[NamedList[Any]])
+
+        new Facet(
+          facetQueries = facetQueries,
+          facetFields = facetFields,
+          facetDates = facetDates,
+          facetRanges = facetRanges
+        )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }

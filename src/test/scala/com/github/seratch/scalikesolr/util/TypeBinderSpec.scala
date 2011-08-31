@@ -1,6 +1,5 @@
 package com.github.seratch.scalikesolr.util
 
-import org.specs.Specification
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.{Solr, SolrDocument}
@@ -8,7 +7,6 @@ import java.net.URL
 import com.github.seratch.scalikesolr.request.{QueryRequest, UpdateRequest, AddRequest}
 import com.github.seratch.scalikesolr.request.query.Query
 import org.joda.time.DateTime
-import org.joda.time.format.DateTimeFormat
 
 case class PageI(val value: String = "")
 
@@ -41,7 +39,6 @@ case class Person(var name: String = "",
 
 import org.junit.runner.RunWith
 import org.specs._
-import org.specs.matcher._
 import org.specs.runner.{JUnitSuiteRunner, JUnit}
 
 @RunWith(classOf[JUnitSuiteRunner])

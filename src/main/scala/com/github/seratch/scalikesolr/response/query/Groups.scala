@@ -38,7 +38,6 @@ import xml.{Node, XML}
 import com.github.seratch.scalikesolr.util.JSONUtil._
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
 import org.apache.solr.common.util.{NamedList, SimpleOrderedMap}
-
 case class Groups(@BeanProperty val matches: Int = 0,
                   @BeanProperty val groups: List[Group])
 
@@ -187,13 +186,14 @@ object Groups {
       case WriterType.JavaBinary => {
         // TODO
         val grouped = rawJavaBin.get("grouped").asInstanceOf[SimpleOrderedMap[Any]]
+        println(grouped)
+        var matches: Int = 0
         new Groups(
-          matches = 0,
+          matches = matches,
           groups = Nil
         )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
   }
-
 }

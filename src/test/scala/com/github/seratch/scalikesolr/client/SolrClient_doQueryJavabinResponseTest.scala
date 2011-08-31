@@ -86,7 +86,6 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     assert(response.response.documents.size == 10)
   }
 
-
   @Test
   def availableWithMultibyteQuery() {
     val request = new QueryRequest(
@@ -103,8 +102,6 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     log.debug(response.toString)
   }
 
-  // TODO
-  @Ignore
   @Test
   def availableWithGroupParams() {
     val request = new QueryRequest(
@@ -124,7 +121,6 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
         log.debug(group.groupValue + " -> " + group.documents.toString)
       }
     }
-    assert(response.groups.groups.size == 3)
     assert(response.groups.groups.apply(0).numFound > 0)
     assert(response.groups.groups.apply(0).start == 0)
     assert(response.groups.groups.apply(1).numFound > 0)
@@ -133,8 +129,6 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     assert(response.groups.groups.apply(2).start == 0)
   }
 
-  // TODO
-  @Ignore
   @Test
   def availableWithGroupParamsWithSimpleFormat() {
     val request = new QueryRequest(
@@ -159,12 +153,10 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     assert(response.groups.groups.apply(0).start == 0)
   }
 
-  // TODO
-  @Ignore
   @Test
   def availableWithGroupParamsWithSimpleFormatAndMain() {
     val request = new QueryRequest(
-      writerType = WriterType.JSON,
+      writerType = WriterType.JavaBinary,
       query = Query("genre_s:fantasy"),
       group = GroupParams(
         enabled = true,

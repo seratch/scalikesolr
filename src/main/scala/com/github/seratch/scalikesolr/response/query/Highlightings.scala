@@ -84,7 +84,7 @@ object Highlightings {
               val element = e.getValue.asInstanceOf[NamedList[Any]]
               (e.getKey.toString -> new SolrDocument(
                 writerType = WriterType.JSON,
-                map = (element.iterator().asScala map {
+                map = (element.iterator.asScala map {
                   case eachInValue: java.util.Map.Entry[String, Any] => {
                     (eachInValue.getKey.toString, new SolrDocumentValue(eachInValue.getValue.toString))
                   }

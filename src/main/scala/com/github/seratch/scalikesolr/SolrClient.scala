@@ -90,7 +90,7 @@ class HttpSolrClient(@BeanProperty val url: URL,
         logResponse(rawJavaBin.toString)
         new QueryResponse(
           writerType = request.writerType,
-          rawJavaBin = rawJavaBin
+          rawJavabin = rawJavaBin
         )
       }
       case _ => {

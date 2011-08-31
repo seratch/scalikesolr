@@ -30,10 +30,10 @@ import org.apache.solr.common.util.NamedList
 
 case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
                          @BeanProperty val rawBody: String = "",
-                         @BeanProperty val rawJavaBin: NamedList[Any] = null) {
+                         @BeanProperty val rawJavabin: NamedList[Any] = null) {
 
   @BeanProperty lazy val responseHeader: ResponseHeader
-  = ResponseParser.getResponseHeader(writerType, rawBody, rawJavaBin)
+  = ResponseParser.getResponseHeader(writerType, rawBody, rawJavabin)
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
     writerType match {
@@ -46,35 +46,35 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
     writerType,
     rawBody,
     jsonMapFromRawBody,
-    rawJavaBin
+    rawJavabin
   )
 
   @BeanProperty lazy val groups: Groups = Groups.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
-    rawJavaBin
+    rawJavabin
   )
 
   @BeanProperty lazy val highlightings: Highlightings = Highlightings.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
-    rawJavaBin
+    rawJavabin
   )
 
   @BeanProperty lazy val moreLikeThis: MoreLikeThis = MoreLikeThis.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
-    rawJavaBin
+    rawJavabin
   )
 
   @BeanProperty lazy val facet: Facet = Facet.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
-    rawJavaBin
+    rawJavabin
   )
 
 }

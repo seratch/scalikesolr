@@ -23,15 +23,15 @@ import scala.util.parsing.json.JSON
 
 case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.Standard,
                         @BeanProperty val rawBody: String = "",
-                        @BeanProperty val rawJavaBin: SolrjSolrDocument = null,
+                        @BeanProperty val rawJavabin: SolrjSolrDocument = new SolrjSolrDocument,
                         @BeanProperty val map: Map[String, SolrDocumentValue] = Map()) {
 
-  def this(writerType: WriterType, rawBody: String) = {
-    this (writerType = writerType, rawBody = rawBody, map = Map())
+  def this(writerType: WriterType, rawBody: String) {
+    this (writerType = writerType, rawBody = rawBody, rawJavabin = new SolrjSolrDocument, map = Map())
   }
 
-  def this(writerType: WriterType, map: Map[String, SolrDocumentValue]) = {
-    this (writerType = writerType, rawBody = "", map = map)
+  def this(writerType: WriterType, map: Map[String, SolrDocumentValue]) {
+    this (writerType = writerType, rawBody = "", rawJavabin = new SolrjSolrDocument, map = map)
   }
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
@@ -61,8 +61,8 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
           }
         }
         case WriterType.JavaBinary => {
-          rawJavaBin.getFieldNames.asScala map {
-            case e => (e.toString -> new SolrDocumentValue(rawJavaBin.get(e).toString))
+          rawJavabin.getFieldNames.asScala map {
+            case e => (e.toString -> new SolrDocumentValue(rawJavabin.get(e).toString))
           }
         }
         case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")

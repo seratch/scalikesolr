@@ -78,7 +78,7 @@ object Response {
           (response.asScala map {
             case solrjDocument => SolrDocument(
               writerType = WriterType.JavaBinary,
-              rawJavaBin = solrjDocument)
+              rawJavabin = solrjDocument)
           }).toList
         )
       }

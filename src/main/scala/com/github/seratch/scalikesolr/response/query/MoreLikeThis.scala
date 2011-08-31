@@ -25,6 +25,8 @@ import xml.{Node, XML}
 import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
 import com.github.seratch.scalikesolr.util.JSONUtil._
 import scala.Option._
+import org.apache.solr.common.SolrDocumentList
+import com.github.seratch.scalikesolr.SolrjSolrDocument
 
 case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
                         @BeanProperty val start: Int = 0,
@@ -41,7 +43,7 @@ object MoreLikeThis {
   def extract(writerType: WriterType = WriterType.Standard,
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavaBin: NamedList[Any] = null): MoreLikeThis = {
+              rawJavabin: NamedList[Any] = null): MoreLikeThis = {
     writerType match {
       case WriterType.Standard => {
         var numFound: Int = 0
@@ -99,8 +101,36 @@ object MoreLikeThis {
         )
       }
       case WriterType.JavaBinary => {
-        // TODO
-        throw new UnsupportedOperationException("currently not supported.")
+        var numFound: Int = 0
+        var start: Int = 0
+        val moreLikeThis = rawJavabin.get("moreLikeThis").asInstanceOf[NamedList[Any]]
+        val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.asScala flatMap {
+          case e: java.util.Map.Entry[String, Any] => {
+            val id = e.getKey
+            val mlt = e.getValue.asInstanceOf[SolrDocumentList]
+            numFound = mlt.getNumFound.toInt
+            start = mlt.getStart.toInt
+            val recommmendations = (mlt.asScala map {
+              case doc: SolrjSolrDocument => {
+                new SolrDocument(
+                  writerType = WriterType.JavaBinary,
+                  map = (doc.keySet.asScala map {
+                    case (key) => {
+                      (key.toString -> new SolrDocumentValue(doc.get(key).toString))
+                    }
+                  }).toMap
+                )
+              }
+            }).toList
+            Map(id -> recommmendations)
+          }
+          case _ => None
+        }).toMap
+        new MoreLikeThis(
+          numFound = numFound,
+          start = start,
+          idAndRecommendations = idAndRecommendations
+        )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
