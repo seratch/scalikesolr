@@ -18,7 +18,7 @@ package com.github.seratch.scalikesolr.request.common
 
 import reflect.BeanProperty
 
-case class WriterType(@BeanProperty val wt: String = "standard") extends RequestParam {
+case class WriterType(@BeanProperty val wt: String = "javabin") extends RequestParam {
 
   override def isEmpty() = wt == null || wt.isEmpty
 
