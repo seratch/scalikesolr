@@ -36,8 +36,10 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import xml.{Node, XML}
 import com.github.seratch.scalikesolr.util.JSONUtil._
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument, SolrjSolrDocument}
 import org.apache.solr.common.util.{NamedList, SimpleOrderedMap}
+import org.apache.solr.common.SolrDocumentList
+
 case class Groups(@BeanProperty val matches: Int = 0,
                   @BeanProperty val groups: List[Group])
 
@@ -55,7 +57,7 @@ object Groups {
     writerType match {
       case WriterType.Standard => {
         var matches: Int = 0
-        val empty: List[com.github.seratch.scalikesolr.response.query.Group] = Nil
+        val empty: List[Group] = Nil
         val xml = XML.loadString(rawBody)
         val groupedList = (xml \ "lst").filter(lst => (lst \ "@name").text == "grouped")
         val groups = groupedList.size match {
@@ -70,7 +72,7 @@ object Groups {
                     // group.format=simple
                     val result = (lst \ "result").filter(str => (str \ "@name").text == "doclist").apply(0)
                     List(
-                      new com.github.seratch.scalikesolr.response.query.Group(
+                      new Group(
                         groupValue = "",
                         numFound = (result \ "@numFound").text.toInt,
                         start = (result \ "@start").text.toInt,
@@ -92,7 +94,7 @@ object Groups {
                         }
                         val result = (lst \ "result").filter(str => (str \ "@name").text == "doclist").apply(0)
                         List(
-                          new com.github.seratch.scalikesolr.response.query.Group(
+                          new Group(
                             groupValue = groupValue,
                             numFound = (result \ "@numFound").text.toInt,
                             start = (result \ "@start").text.toInt,
@@ -135,7 +137,7 @@ object Groups {
                 val doclist = toMap(fieldName.get("doclist"))
                 new Groups(
                   matches = normalizeNum(fieldName.getOrElse("matches", "0").toString).toInt,
-                  groups = List(new com.github.seratch.scalikesolr.response.query.Group(
+                  groups = List(new Group(
                     groupValue = "",
                     numFound = normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
                     start = normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
@@ -160,7 +162,7 @@ object Groups {
                     matches = normalizeNum(groupDoc.getOrElse("matches", "0").toString).toInt
                     val doclist = toMap(groupDoc.get("doclist"))
                     val groupValue = groupDoc.getOrElse("groupValue", "")
-                    new com.github.seratch.scalikesolr.response.query.Group(
+                    new Group(
                       groupValue = if (groupValue == null) "" else groupValue.toString,
                       numFound = normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
                       start = normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
@@ -184,13 +186,73 @@ object Groups {
         }
       }
       case WriterType.JavaBinary => {
-        // TODO
-        val grouped = rawJavaBin.get("grouped").asInstanceOf[SimpleOrderedMap[Any]]
-        println(grouped)
+
+        type MapEntry = java.util.Map.Entry[String, Any]
+        import collection.JavaConverters._
+
         var matches: Int = 0
+        var groups: List[Group] = Nil
+
+        val grouped = rawJavaBin.get("grouped").asInstanceOf[SimpleOrderedMap[Any]]
+        grouped.asScala foreach {
+          case e: MapEntry => {
+            val groupedValue = e.getValue.asInstanceOf[NamedList[Any]]
+            groupedValue.asScala foreach {
+              case e: MapEntry if e.getKey == "matches" => {
+                matches = e.getValue.toString.toInt
+              }
+              case e: MapEntry if e.getKey == "doclist" => {
+                // group.format=simple
+                val doclist = e.getValue.asInstanceOf[SolrDocumentList]
+                groups = List(
+                  new Group(
+                    groupValue = null,
+                    numFound = doclist.getNumFound.toInt,
+                    start = doclist.getStart.toInt,
+                    documents = (doclist.asScala map {
+                      case doc: SolrjSolrDocument => {
+                        new SolrDocument(
+                          writerType = writerType,
+                          map = (doc.keySet.asScala.map {
+                            case key => (key, new SolrDocumentValue(doc.get(key).toString))
+                          }).toMap
+                        )
+                      }
+                    }).toList
+                  )
+                )
+              }
+              case e: MapEntry if e.getKey == "groups" => {
+                // group.format=grouped
+                val groupsList = e.getValue.asInstanceOf[java.util.List[NamedList[Any]]]
+                groups = (groupsList.asScala map {
+                  case g: NamedList[Any] => {
+                    val groupValue = g.get("groupValue")
+                    val doclist = g.get("doclist").asInstanceOf[SolrDocumentList]
+                    new Group(
+                      groupValue = if (groupValue == null) "" else groupValue.toString,
+                      numFound = doclist.getNumFound.toInt,
+                      start = doclist.getStart.toInt,
+                      documents = (doclist.asScala map {
+                        case doc: SolrjSolrDocument => {
+                          new SolrDocument(
+                            writerType = writerType,
+                            map = (doc.keySet.asScala.map {
+                              case key => (key, new SolrDocumentValue(doc.get(key).toString))
+                            }).toMap
+                          )
+                        }
+                      }).toList
+                    )
+                  }
+                }).toList
+              }
+            }
+          }
+        }
         new Groups(
           matches = matches,
-          groups = Nil
+          groups = groups
         )
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
