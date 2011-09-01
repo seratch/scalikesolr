@@ -28,6 +28,14 @@ Currently following Scala versions are supported:
       <version>[3.3,)</version>
     </dependency>
 
+### Scala 2.9.1.final
+
+    <dependency>
+      <groupId>com.github.seratch</groupId>
+      <artifactId>scalikesolr_2.9.1</artifactId>
+      <version>[3.3,)</version>
+    </dependency>
+
 ## How to install
 
 ### sbt
@@ -35,7 +43,7 @@ Currently following Scala versions are supported:
 Example of "project/build/MyProject.scala":
 
     val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.4" withSources ()
+    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.6" withSources ()
 
 ### Maven
 
@@ -54,7 +62,7 @@ Example of "project/build/MyProject.scala":
 
     <dependency>
       <groupId>com.github.seratch</groupId>
-      <artifactId>scalikesolr_2.9.0-1</artifactId>
+      <artifactId>scalikesolr_2.9.1</artifactId>
       <version>[3.3,)</version>
     </dependency>
 
@@ -96,7 +104,7 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
     import com.github.seratch.scalikesolr._
 
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient
-    val request = new QueryRequest(Query("author:Rick"))
+    val request = new QueryRequest(writerType = WriterType.JavaBinary, query = Query("author:Rick")) // faster when using WriterType.JavaBinary
     val response = client.doQuery(request)
     println(response.responseHeader)
     println(response.response)
