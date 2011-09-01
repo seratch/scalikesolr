@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.seratch</groupId>
-    <artifactId>scalikesolr_2.9.0-1</artifactId>
+    <artifactId>scalikesolr_2.9.1</artifactId>
     <version>3.3.5-SNAPSHOT</version>
     <name>${project.artifactId}</name>
     <description>Solr Client library for Scala</description>
@@ -13,7 +13,7 @@
         <maven.compiler.source>1.5</maven.compiler.source>
         <maven.compiler.target>1.5</maven.compiler.target>
         <encoding>UTF-8</encoding>
-        <scala.version>2.9.0-1</scala.version>
+        <scala.version>2.9.1</scala.version>
         <solrj.version>3.3.0</solrj.version>
     </properties>
 
