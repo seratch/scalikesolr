@@ -88,13 +88,14 @@
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.9.0</artifactId>
+            <artifactId>scalatest_${scala.version}</artifactId>
             <version>1.6.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scala-tools.testing</groupId>
-            <artifactId>specs_${scala.version}</artifactId>
+            <!--  <artifactId>specs_${scala.version}</artifactId>   -->
+            <artifactId>specs_2.9.0</artifactId>
             <version>1.6.8</version>
             <scope>test</scope>
         </dependency>
