@@ -34,7 +34,8 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
        "genre_s" : "fantasy",
        "inStock" : true,
        "price" : 12.50,
-       "pages_i" : 384
+       "pages_i" : 384,
+       "timestamp" : "2006-03-21T13:40:15.518Z"
      }
      """
     )
@@ -51,7 +52,8 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
         "genre_s" : "fantasy",
         "inStock" : true,
         "price" : 6.49,
-        "pages_i" : 304
+        "pages_i" : 304,
+        "timestamp" : "2006-03-21T13:40:15.518Z"
       }
     """
     )
@@ -64,7 +66,7 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def available() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("author:Rick"))
+      query = Query("id:978-1423103349"))
     val response = client.doQuery(request)
     log.debug(response.toString)
 
@@ -81,9 +83,16 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
         log.debug(doc.get("title").toString()) // "The Lightning Thief"
         log.debug(doc.get("pages_i").toIntOrElse(0).toString) // 384
         log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
+        log.debug(doc.get("timestamp").toDateOrElse(null).toString) // 12.5
+        assert(doc.get("id") != null)
+        assert(doc.get("cat") != null)
+        assert(doc.get("title") != null)
+        assert(doc.get("pages_i") != null)
+        assert(doc.get("price") != null)
+        assert(doc.get("timestamp") != null)
       }
     }
-    assert(response.response.documents.size == 10)
+    assert(response.response.documents.size == 1)
   }
 
   @Test

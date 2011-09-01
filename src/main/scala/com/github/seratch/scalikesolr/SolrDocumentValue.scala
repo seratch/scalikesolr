@@ -17,11 +17,12 @@
 package com.github.seratch.scalikesolr
 
 import scala.reflect.BeanProperty
-import org.joda.time.{LocalDate, LocalTime, DateTime}
-
 import collection.JavaConverters._
 import util.JSONUtil
-import java.util.{Calendar, Date}
+import org.joda.time.{DateTime, LocalDate, LocalTime}
+import java.text.SimpleDateFormat
+import java.util.{Locale, Date, Calendar}
+
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
   def toListOrElse(defaultValue: List[String]): List[String] = {
@@ -68,7 +69,14 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       new DateTime(rawValue)
     } catch {
-      case _ => defaultValue
+      case _ => {
+        try {
+          val dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+          new DateTime(dateFormat.parse(rawValue))
+        } catch {
+          case _ => defaultValue
+        }
+      }
     }
   }
 

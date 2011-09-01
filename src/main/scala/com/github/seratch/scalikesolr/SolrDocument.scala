@@ -61,6 +61,8 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
           }
         }
         case WriterType.JavaBinary => {
+          println(rawJavabin)
+
           rawJavabin.getFieldNames.asScala map {
             case e => (e.toString -> new SolrDocumentValue(rawJavabin.get(e).toString))
           }
