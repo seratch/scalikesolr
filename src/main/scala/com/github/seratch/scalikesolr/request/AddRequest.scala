@@ -32,6 +32,10 @@ case class AddRequest(@BeanProperty var core: SolrCore = SolrCore(),
     this (SolrCore(), Nil, WriterType.Standard, "")
   }
 
+  def this(core: SolrCore) = {
+    this (core, Nil, WriterType.Standard, "")
+  }
+
   def getDocumentsInJava(): java.util.List[SolrDocument] = documents.asJava
 
   def setDocumentsInJava(newDocuments: java.util.List[SolrDocument]) = {

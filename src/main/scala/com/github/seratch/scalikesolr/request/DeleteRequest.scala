@@ -34,6 +34,10 @@ case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
     this (SolrCore(), Nil, Nil, WriterType.Standard, "")
   }
 
+  def this(sore: SolrCore) = {
+    this (core, Nil, Nil, WriterType.Standard, "")
+  }
+
   def getUniqueKeysToDetelteInJava(): java.util.List[String] = uniqueKeysToDelete.asJava
 
   def setUniqueKeysToDetelteInJava(uniqueKeysToDelete: java.util.List[String]) = {

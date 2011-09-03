@@ -31,6 +31,13 @@ case class DIHCommandRequest(@BeanProperty var core: SolrCore = SolrCore(),
     )
   }
 
+  def this(core: SolrCore, command: String) {
+    this (
+      core = core,
+      command = command
+    )
+  }
+
   private val extraParams = new collection.mutable.HashMap[String, Any]
 
   def updateExtraParam(key: String, value: Any) = extraParams.update(key, value)

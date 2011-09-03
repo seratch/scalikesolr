@@ -31,6 +31,10 @@ case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
     this (SolrCore(), "", WriterType.Standard, "")
   }
 
+  def this(core: SolrCore) = {
+    this (core, "", WriterType.Standard, "")
+  }
+
   def toQueryString(): String = {
     val buf = new StringBuilder
     QueryStringUtil.appendIfExists(buf, writerType)

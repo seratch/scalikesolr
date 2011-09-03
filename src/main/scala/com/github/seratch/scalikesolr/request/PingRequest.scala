@@ -29,6 +29,10 @@ case class PingRequest(@BeanProperty var core: SolrCore = SolrCore(),
     this (SolrCore(), WriterType())
   }
 
+  def this(core: SolrCore) = {
+    this (core, WriterType())
+  }
+
   def queryString(): String = {
     val buf = new StringBuilder
     QueryStringUtil.appendIfExists(buf, this.writerType)
