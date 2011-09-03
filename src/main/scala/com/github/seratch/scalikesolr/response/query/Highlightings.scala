@@ -39,6 +39,7 @@ object Highlightings {
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
               rawJavaBin: NamedList[Any] = null): Highlightings = {
+
     writerType match {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)

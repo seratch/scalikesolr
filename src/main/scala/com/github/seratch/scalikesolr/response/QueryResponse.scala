@@ -32,8 +32,11 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
                          @BeanProperty val rawBody: String = "",
                          @BeanProperty val rawJavabin: NamedList[Any] = null) {
 
-  @BeanProperty lazy val responseHeader: ResponseHeader
-  = ResponseParser.getResponseHeader(writerType, rawBody, rawJavabin)
+  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
+    writerType,
+    rawBody,
+    rawJavabin
+  )
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
     writerType match {

@@ -42,6 +42,7 @@ object Facet {
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
               rawJavabin: NamedList[Any] = null): Facet = {
+
     writerType match {
       case WriterType.Standard => {
 
@@ -106,6 +107,8 @@ object Facet {
       }
       case WriterType.JSON => {
 
+        def castToList(obj: Any): List[Any] = obj.asInstanceOf[List[Any]]
+
         def fromListToMap(facets: List[Any]): Map[String, SolrDocumentValue] = {
           def parseFacetsToMap(facets: List[Any], docHashMap: collection.mutable.HashMap[String, SolrDocumentValue])
           : collection.mutable.HashMap[String, SolrDocumentValue] = {
@@ -134,7 +137,7 @@ object Facet {
               case docKey => {
                 facetQueriesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = fromListToMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
+                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
                 ))
               }
             }
@@ -145,7 +148,7 @@ object Facet {
               case docKey => {
                 facetFieldsMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = fromListToMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
+                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
                 ))
               }
             }
@@ -156,7 +159,7 @@ object Facet {
               case docKey => {
                 facetDatesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = fromListToMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
+                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
                 ))
               }
             }
@@ -167,7 +170,7 @@ object Facet {
               case docKey => {
                 facetRangesMap.update(docKey, new SolrDocument(
                   writerType = WriterType.JSON,
-                  map = fromListToMap(doc.getOrElse(docKey, Nil).asInstanceOf[List[Any]])
+                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
                 ))
               }
             }
@@ -182,14 +185,17 @@ object Facet {
       }
       case WriterType.JavaBinary => {
 
+        def castToNamedList(obj: Any): NamedList[Any] = obj.asInstanceOf[NamedList[Any]]
+
         def fromListToMap(namedList: NamedList[Any]): Map[String, SolrDocument] = {
+          type MapEntry = java.util.Map.Entry[String, Any]
           import collection.JavaConverters._
           (namedList.asScala map {
-            case e: java.util.Map.Entry[String, Any] => {
+            case e: MapEntry => {
               val docKey = e.getKey
               val doc = e.getValue.asInstanceOf[NamedList[Any]]
               val map = (doc.asScala.map {
-                case e: java.util.Map.Entry[String, Any] => {
+                case e: MapEntry => {
                   (e.getKey -> new SolrDocumentValue(e.getValue.toString))
                 }
               }).toMap
@@ -200,10 +206,10 @@ object Facet {
 
         val facetCounts = rawJavabin.get("facet_counts").asInstanceOf[NamedList[Any]]
 
-        val facetQueries = fromListToMap(facetCounts.get("facet_queries").asInstanceOf[NamedList[Any]])
-        val facetFields = fromListToMap(facetCounts.get("facet_fields").asInstanceOf[NamedList[Any]])
-        val facetDates = fromListToMap(facetCounts.get("facet_dates").asInstanceOf[NamedList[Any]])
-        val facetRanges = fromListToMap(facetCounts.get("facet_ranges").asInstanceOf[NamedList[Any]])
+        val facetQueries = fromListToMap(castToNamedList(facetCounts.get("facet_queries")))
+        val facetFields = fromListToMap(castToNamedList(facetCounts.get("facet_fields")))
+        val facetDates = fromListToMap(castToNamedList(facetCounts.get("facet_dates")))
+        val facetRanges = fromListToMap(castToNamedList(facetCounts.get("facet_ranges")))
 
         new Facet(
           facetQueries = facetQueries,

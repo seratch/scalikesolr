@@ -38,6 +38,7 @@ object Response {
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
               rawJavaBin: NamedList[Any] = null): Response = {
+
     writerType match {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)

@@ -34,7 +34,10 @@ case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.St
     }
   }
 
-  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(writerType, rawBody)
+  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
+    writerType,
+    rawBody
+  )
 
   @BeanProperty lazy val status: String = {
     writerType match {

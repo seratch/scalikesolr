@@ -44,6 +44,7 @@ object MoreLikeThis {
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
               rawJavabin: NamedList[Any] = null): MoreLikeThis = {
+
     writerType match {
       case WriterType.Standard => {
         var numFound: Int = 0
@@ -110,19 +111,19 @@ object MoreLikeThis {
             val mlt = e.getValue.asInstanceOf[SolrDocumentList]
             numFound = mlt.getNumFound.toInt
             start = mlt.getStart.toInt
-            val recommmendations = (mlt.asScala map {
+            val recommendations: List[SolrDocument] = (mlt.asScala map {
               case doc: SolrjSolrDocument => {
                 new SolrDocument(
                   writerType = WriterType.JavaBinary,
                   map = (doc.keySet.asScala map {
-                    case (key) => {
+                    case key => {
                       (key.toString -> new SolrDocumentValue(doc.get(key).toString))
                     }
                   }).toMap
                 )
               }
             }).toList
-            Map(id -> recommmendations)
+            Map(id -> recommendations)
           }
           case _ => None
         }).toMap

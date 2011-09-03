@@ -54,6 +54,7 @@ object Groups {
               rawBody: String = "",
               jsonMapFromRawBody: Map[String, Option[Any]],
               rawJavaBin: NamedList[Any] = null): Groups = {
+
     writerType match {
       case WriterType.Standard => {
         var matches: Int = 0

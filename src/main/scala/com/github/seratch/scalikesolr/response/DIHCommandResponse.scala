@@ -39,7 +39,10 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
     }
   }
 
-  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(writerType, rawBody)
+  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
+    writerType,
+    rawBody
+  )
 
   @BeanProperty lazy val initArgs: InitArgs = {
     writerType match {
