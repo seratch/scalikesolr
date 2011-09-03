@@ -34,7 +34,7 @@ case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
     this (SolrCore(), Nil, Nil, WriterType.Standard, "")
   }
 
-  def this(sore: SolrCore) = {
+  def this(core: SolrCore) = {
     this (core, Nil, Nil, WriterType.Standard, "")
   }
 

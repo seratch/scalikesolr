@@ -20,13 +20,14 @@ import common.WriterType
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.SolrCore
 
-case class DIHCommandRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                             @BeanProperty var writerType: WriterType = WriterType(),
+case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),
+                             @BeanProperty val writerType: WriterType = WriterType(),
                              @BeanProperty val command: String) {
 
   def this(command: String) {
     this (
       core = SolrCore(),
+      writerType = WriterType(),
       command = command
     )
   }
@@ -34,6 +35,7 @@ case class DIHCommandRequest(@BeanProperty var core: SolrCore = SolrCore(),
   def this(core: SolrCore, command: String) {
     this (
       core = core,
+      writerType = WriterType(),
       command = command
     )
   }
