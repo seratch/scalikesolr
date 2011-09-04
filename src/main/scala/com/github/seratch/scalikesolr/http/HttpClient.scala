@@ -21,13 +21,20 @@ import java.io._
 import com.github.seratch.scalikesolr.util.IO
 import collection.JavaConverters._
 import org.apache.solr.common.util.{NamedList, JavaBinCodec}
+import reflect.BeanProperty
 
 object HttpClient {
+  val DEFAULT_CONNECT_TIMEOUT_MILLIS = 3000
+  val DEFAULT_READ_TIMEOUT_MILLIS = 10000
+}
 
-  def getAsJavaBin(url: String): JavabinHttpResponse = {
+class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+                 @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS) {
+
+  def getAsJavabin(url: String): JavabinHttpResponse = {
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
-    conn.setConnectTimeout(3000)
-    conn.setReadTimeout(10000)
+    conn.setConnectTimeout(connectTimeout)
+    conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
     try {
       val headersInJava = conn.getHeaderFields
@@ -47,8 +54,8 @@ object HttpClient {
   def get(url: String, charset: String): HttpResponse = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
-    conn.setConnectTimeout(3000)
-    conn.setReadTimeout(10000)
+    conn.setConnectTimeout(connectTimeout)
+    conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
     try {
       val headersInJava = conn.getHeaderFields
@@ -74,8 +81,8 @@ object HttpClient {
   def post(url: String, dataBinary: String, contentType: String, charset: String): HttpResponse = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
-    conn.setConnectTimeout(3000)
-    conn.setReadTimeout(10000)
+    conn.setConnectTimeout(connectTimeout)
+    conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("POST")
     conn.setRequestProperty("Content-Type", contentType)
     conn.setRequestProperty("Content-Length", dataBinary.size.toString)
