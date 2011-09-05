@@ -14,6 +14,7 @@ import org.joda.time.DateTime
 import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, Query}
 import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.Assertions
+import java.io.IOException
 
 class SolrClient_doQueryTest extends Assertions {
 
@@ -59,6 +60,24 @@ class SolrClient_doQueryTest extends Assertions {
     request.documents = List(doc1, doc2)
     client.doAddDocuments(request)
     client.doCommit(new UpdateRequest())
+  }
+
+  @Test(expected = classOf[IOException])
+  def tooSmallConnectTimeoutValue() {
+    val client = Solr.httpServer(new URL("http://localhost:8984/solr")).newClient(
+      connectTimeout = 1,
+      readTimeout = 10000
+    )
+    client.doQuery(new QueryRequest(Query("author:Rick")))
+  }
+
+  @Test(expected = classOf[IOException])
+  def tooSmallReadTimeoutValue() {
+    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(
+      connectTimeout = 1000,
+      readTimeout = 1
+    )
+    client.doQuery(new QueryRequest(Query("author:Rick")))
   }
 
   @Test

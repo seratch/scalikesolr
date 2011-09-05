@@ -20,8 +20,8 @@ import java.net.URL
 
 object Solr {
 
-  def httpServer(url: URL): SolrServer = new HttpSolrServer(url)
+  def httpServer(url: URL): HttpSolrServer = new HttpSolrServer(url)
 
-  def getHttpServer(url: URL): SolrServer = httpServer(url)
+  def getHttpServer(url: URL): HttpSolrServer = httpServer(url)
 
 }
