@@ -62,24 +62,6 @@ class SolrClient_doQueryTest extends Assertions {
     client.doCommit(new UpdateRequest())
   }
 
-  @Test(expected = classOf[IOException])
-  def tooSmallConnectTimeoutValue() {
-    val client = Solr.httpServer(new URL("http://localhost:8984/solr")).newClient(
-      connectTimeout = 1,
-      readTimeout = 10000
-    )
-    client.doQuery(new QueryRequest(Query("author:Rick")))
-  }
-
-  @Test(expected = classOf[IOException])
-  def tooSmallReadTimeoutValue() {
-    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(
-      connectTimeout = 1000,
-      readTimeout = 1
-    )
-    client.doQuery(new QueryRequest(Query("author:Rick")))
-  }
-
   @Test
   def available() {
     val request = new QueryRequest(Query("author:Rick"))
