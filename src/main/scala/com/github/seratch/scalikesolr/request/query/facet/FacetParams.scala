@@ -21,7 +21,19 @@ import java.lang.StringBuilder
 import java.net.URLEncoder
 
 case class FacetParams(@BeanProperty var enabled: Boolean = false,
-                       @BeanProperty var params: List[FacetParam] = Nil) {
+                       var params: List[FacetParam] = Nil) {
+
+  def this(enabled: Boolean) {
+    this (enabled, Nil)
+  }
+
+  import collection.JavaConverters._
+
+  def setParamsInJava(paramsInJava: java.util.List[FacetParam]): Unit = {
+    params = paramsInJava.asScala.toList
+  }
+
+  def getParamsInJava(): java.util.List[FacetParam] = params.asJava
 
   override def toString(): String = {
     val buf = new StringBuilder

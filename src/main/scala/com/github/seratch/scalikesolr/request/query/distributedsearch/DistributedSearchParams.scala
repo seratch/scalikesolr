@@ -16,10 +16,21 @@
 
 package com.github.seratch.scalikesolr.request.query.distributedsearch
 
-import reflect.BeanProperty
 import java.lang.StringBuilder
 
-case class DistributedSearchParams(@BeanProperty val shards: List[String] = Nil) {
+case class DistributedSearchParams(var shards: List[String] = Nil) {
+
+  def this() {
+    this (Nil)
+  }
+
+  import collection.JavaConverters._
+
+  def setShardsInJava(shardsInJava: java.util.List[String]): Unit = {
+    shards = shardsInJava.asScala.toList
+  }
+
+  def getShardsInJava(): java.util.List[String] = shards.asJava
 
   override def toString(): String = {
     val buf = new StringBuilder
