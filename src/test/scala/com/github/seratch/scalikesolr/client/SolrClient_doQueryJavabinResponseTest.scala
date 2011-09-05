@@ -115,8 +115,9 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def availableWithGroupParams() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(enabled = true, field = GroupField("author_t")))
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(enabled = true, field = GroupField("author_t"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -142,8 +143,9 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def availableWithGroupParamsWithSimpleFormat() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple")))
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -166,13 +168,13 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def availableWithGroupParamsWithSimpleFormatAndMain() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(
-        enabled = true,
-        field = GroupField("author_t"),
-        format = GroupFormat("simple"),
-        main = AsMainResultWhenUsingSimpleFormat(true)
-      )
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(
+      enabled = true,
+      field = GroupField("author_t"),
+      format = GroupFormat("simple"),
+      main = AsMainResultWhenUsingSimpleFormat(true)
     )
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
@@ -194,8 +196,9 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
       query = Query("author:Rick"),
-      sort = Sort("page_i desc"),
-      highlighting = HighlightingParams(true))
+      sort = Sort("page_i desc")
+    )
+    request.highlighting = HighlightingParams(true)
     val response = client.doQuery(request)
     log.debug(response.toString)
     assert(response.responseHeader != null)
@@ -219,8 +222,9 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def availableWithMoreLikeThisParams() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("author:Rick"),
-      moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body")))
+      query = Query("author:Rick")
+    )
+    request.moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body"))
     val response = client.doQuery(request)
     log.debug(response.toString)
     assert(response.responseHeader != null)
@@ -241,10 +245,10 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
   def availableWithFacetParams() {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("author:Rick"),
-      facet = new FacetParams(enabled = true,
-        params = List(new FacetParam(Param("facet.field"), Value("title")))
-      )
+      query = Query("author:Rick")
+    )
+    request.facet = new FacetParams(enabled = true,
+      params = List(new FacetParam(Param("facet.field"), Value("title")))
     )
     val response = client.doQuery(request)
     log.debug(response.toString)

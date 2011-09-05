@@ -15,6 +15,7 @@ import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, 
 import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.Assertions
 import java.io.IOException
+import com.github.seratch.scalikesolr.request.query.distributedsearch.DistributedSearchParams
 
 class SolrClient_doQueryTest extends Assertions {
 
@@ -88,6 +89,33 @@ class SolrClient_doQueryTest extends Assertions {
   }
 
   @Test
+  def availableWithDistributedSearch() {
+    val client = Solr.httpServer(new URL("http://localhost:8984/solr")).newClient()
+    val request = new QueryRequest(Query("author:Rick"))
+    request.shards = DistributedSearchParams(shards = List("localhost:8983/solr"))
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+
+    assert(response.responseHeader != null)
+    assert(response.responseHeader.status >= 0)
+    assert(response.responseHeader.qTime >= 0)
+    assert(response.responseHeader.params != null)
+
+    log.debug("-----------------------------")
+    log.debug(response.response.documents.toString)
+    response.response.documents foreach {
+      case doc => {
+        log.debug(doc.get("id").toString()) // "978-1423103349"
+        log.debug(doc.get("cat").toListOrElse(Nil).toString) // List(book, hardcover)
+        log.debug(doc.get("title").toString()) // "The Lightning Thief"
+        log.debug(doc.get("pages_i").toIntOrElse(0).toString) // 384
+        log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
+      }
+    }
+    assert(response.response.documents.size == 10)
+  }
+
+  @Test
   def availableWithMultibyteQuery() {
     val request = new QueryRequest(Query("author:日本人"))
     val response = client.doQuery(request)
@@ -104,8 +132,9 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithGroupParams() {
     val request = new QueryRequest(
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(enabled = true, field = GroupField("author_t")))
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(enabled = true, field = GroupField("author_t"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -131,8 +160,9 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithGroupParamsWithSimpleFormat() {
     val request = new QueryRequest(
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple")))
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -154,13 +184,13 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithGroupParamsWithSimpleFormatAndMain() {
     val request = new QueryRequest(
-      query = Query("genre_s:fantasy"),
-      group = GroupParams(
-        enabled = true,
-        field = GroupField("author_t"),
-        format = GroupFormat("simple"),
-        main = AsMainResultWhenUsingSimpleFormat(true)
-      )
+      query = Query("genre_s:fantasy")
+    )
+    request.group = GroupParams(
+      enabled = true,
+      field = GroupField("author_t"),
+      format = GroupFormat("simple"),
+      main = AsMainResultWhenUsingSimpleFormat(true)
     )
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
@@ -180,8 +210,9 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithHighlightingParams() {
     val request = new QueryRequest(
-      query = Query("author:Rick"),
-      highlighting = HighlightingParams(true))
+      query = Query("author:Rick")
+    )
+    request.highlighting = HighlightingParams(true)
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -206,8 +237,9 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithMoreLikeThisParams() {
     val request = new QueryRequest(
-      query = Query("author:Rick"),
-      moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body")))
+      query = Query("author:Rick")
+    )
+    request.moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body"))
     val response = client.doQuery(request)
     log.debug(response.toString)
     assert(response.responseHeader != null)
@@ -227,10 +259,10 @@ class SolrClient_doQueryTest extends Assertions {
   @Test
   def availableWithFacetParams() {
     val request = new QueryRequest(
-      query = Query("author:Rick"),
-      facet = new FacetParams(enabled = true,
-        params = List(new FacetParam(Param("facet.field"), Value("title")))
-      )
+      query = Query("author:Rick")
+    )
+    request.facet = new FacetParams(enabled = true,
+      params = List(new FacetParam(Param("facet.field"), Value("title")))
     )
     val response = client.doQuery(request)
     log.debug(response.toString)

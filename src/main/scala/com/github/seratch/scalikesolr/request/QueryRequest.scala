@@ -19,6 +19,7 @@ package com.github.seratch.scalikesolr.request
 import common.{RequestParam, WriterType}
 import reflect.BeanProperty
 import query._
+import distributedsearch.DistributedSearchParams
 import facet.FacetParams
 import group.GroupParams
 import morelikethis.MoreLikeThisParams
@@ -28,19 +29,14 @@ import util.QueryStringUtil
 import java.net.URLEncoder
 
 case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                        @BeanProperty var echoParams: EchoParams = EchoParams(),
                         @BeanProperty var explainOther: ExplainOther = ExplainOther(),
-                        @BeanProperty var facet: FacetParams = FacetParams(),
                         @BeanProperty var fieldsToReturn: FieldsToReturn = FieldsToReturn(),
                         @BeanProperty var filterQuery: FilterQuery = FilterQuery(),
-                        @BeanProperty var group: GroupParams = GroupParams(),
-                        @BeanProperty var highlighting: HighlightingParams = HighlightingParams(),
                         @BeanProperty var isIndentEnabled: IsIndentEnabled = IsIndentEnabled(),
                         @BeanProperty var isDebugQueryEnabled: IsDebugQueryEnabled = IsDebugQueryEnabled(),
                         @BeanProperty var isEchoHandlerEnabled: IsEchoHandlerEnabled = IsEchoHandlerEnabled(),
                         @BeanProperty var isOmitHeaderEnabled: IsOmitHeaderEnabled = IsOmitHeaderEnabled(),
                         @BeanProperty var maximumRowsReturned: MaximumRowsReturned = MaximumRowsReturned(),
-                        @BeanProperty var moreLikeThis: MoreLikeThisParams = MoreLikeThisParams(),
                         @BeanProperty var query: Query,
                         @BeanProperty var queryParserType: QueryParserType = QueryParserType(),
                         @BeanProperty var queryType: QueryType = QueryType(),
@@ -49,6 +45,18 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
                         @BeanProperty var startRow: StartRow = StartRow(),
                         @BeanProperty var timeoutMilliseconds: TimeoutMilliseconds = TimeoutMilliseconds(),
                         @BeanProperty var version: Version = Version()) {
+
+  @BeanProperty var echoParams: EchoParams = EchoParams()
+
+  @BeanProperty var facet: FacetParams = FacetParams()
+
+  @BeanProperty var group: GroupParams = GroupParams()
+
+  @BeanProperty var highlighting: HighlightingParams = HighlightingParams()
+
+  @BeanProperty var moreLikeThis: MoreLikeThisParams = MoreLikeThisParams()
+
+  @BeanProperty var shards: DistributedSearchParams = DistributedSearchParams()
 
   private val extraParams = new collection.mutable.HashMap[String, Any]
 
@@ -59,19 +67,14 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
   def this(query: Query) = {
     this (
       core = SolrCore(""),
-      echoParams = EchoParams(),
       explainOther = ExplainOther(),
-      facet = FacetParams(),
       fieldsToReturn = FieldsToReturn(),
       filterQuery = FilterQuery(),
-      group = GroupParams(),
-      highlighting = HighlightingParams(),
       isIndentEnabled = IsIndentEnabled(),
       isDebugQueryEnabled = IsDebugQueryEnabled(),
       isEchoHandlerEnabled = IsEchoHandlerEnabled(),
       isOmitHeaderEnabled = IsOmitHeaderEnabled(),
       maximumRowsReturned = MaximumRowsReturned(),
-      moreLikeThis = MoreLikeThisParams(),
       query = query,
       queryType = QueryType(),
       queryParserType = QueryParserType(),
@@ -86,19 +89,14 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
   def this(core: SolrCore, query: Query) = {
     this (
       core = core,
-      echoParams = EchoParams(),
       explainOther = ExplainOther(),
-      facet = FacetParams(),
       fieldsToReturn = FieldsToReturn(),
       filterQuery = FilterQuery(),
-      group = GroupParams(),
-      highlighting = HighlightingParams(),
       isIndentEnabled = IsIndentEnabled(),
       isDebugQueryEnabled = IsDebugQueryEnabled(),
       isEchoHandlerEnabled = IsEchoHandlerEnabled(),
       isOmitHeaderEnabled = IsOmitHeaderEnabled(),
       maximumRowsReturned = MaximumRowsReturned(),
-      moreLikeThis = MoreLikeThisParams(),
       query = query,
       queryType = QueryType(),
       queryParserType = QueryParserType(),
@@ -185,6 +183,11 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     if (this.facet.enabled) {
       if (buf.length > 0) buf.append("&")
       buf.append(this.facet.toQueryString)
+    }
+    val shards = this.shards.toQueryString
+    if (!shards.isEmpty) {
+      if (buf.length > 0) buf.append("&")
+      buf.append(this.shards.toQueryString)
     }
     if (extraParams.size > 0) {
       extraParams.keys.foreach {

@@ -35,7 +35,7 @@ class SolrClient_doUpdateTest extends Assertions {
 
   @Test(expected = classOf[IOException])
   def tooSmallConnectTimeoutValue() {
-    val client = Solr.httpServer(new URL("http://localhost:8984/solr")).newClient(
+    val client = Solr.httpServer(new URL("http://localhost:9999/solr")).newClient(
       connectTimeout = 1,
       readTimeout = 10000
     )
