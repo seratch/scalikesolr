@@ -147,11 +147,11 @@ It is also possible to specify user-defined type that has one argument(String) c
 Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParameters):
 
     val request = new QueryRequest(
-      writerType = WriterType.JSON,
+      writerType = WriterType.JSON, // but JSON format might be slow...
       query = Query("author:Rick"),
-      sort = Sort("page_i desc"),
-      highlighting = HighlightingParams(true)
+      sort = Sort("page_i desc")
     )
+    request.highlighting = HighlightingParams(true)
     val response = client.doQuery(request)
     println(response.highlightings)
     response.highlightings.keys foreach {
@@ -165,13 +165,11 @@ Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParamete
 
 Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
 
-    val request = new QueryRequest(
-      query = Query("author:Rick"),
-      moreLikeThis = MoreLikeThisParams(
-        enabled = true,
-        count = 3,
-        fieldsToUseForSimilarity = FieldsToUseForSimilarity("body")
-      )
+    val request = new QueryRequest(Query("author:Rick"))
+    request.moreLikeThis = MoreLikeThisParams(
+      enabled = true,
+      count = 3,
+      fieldsToUseForSimilarity = FieldsToUseForSimilarity("body")
     )
     val response = client.doQuery(request)
     println(response.moreLikeThis)
@@ -190,12 +188,10 @@ Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
 
 Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameters):
 
-    val request = new QueryRequest(
-      query = Query("author:Rick"),
-      facet = new FacetParams(
-        enabled = true,
-        params = List(new FacetParam(Param("facet.field"), Value("title")))
-      )
+    val request = new QueryRequest(Query("author:Rick"))
+    request.facet = new FacetParams(
+      enabled = true,
+      params = List(new FacetParam(Param("facet.field"), Value("title")))
     )
     val response = client.doQuery(request)
     println(response.facet.facetFields)
@@ -213,12 +209,10 @@ Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameter
 
 Using [Result Groupiong / Field Collapsing](http://wiki.apache.org/solr/FieldCollapsing):
 
-    val request = new QueryRequest(
-      query = Query("genre_s:fantasy"),
-      group = new GroupParams(
-        enabled = true,
-        field = Field("author_t")
-      )
+    val request = new QueryRequest(Query("genre_s:fantasy"))
+    request.group = new GroupParams(
+      enabled = true,
+      field = Field("author_t")
     )
     val response = client.doQuery(request)
     println(response.groups.toString)
