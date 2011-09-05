@@ -43,7 +43,7 @@ Currently following Scala versions are supported:
 Example of "project/build/MyProject.scala":
 
     val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.7" withSources ()
+    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.9" withSources ()
 
 ### Maven
 
@@ -221,6 +221,20 @@ Using [Result Groupiong / Field Collapsing](http://wiki.apache.org/solr/FieldCol
       // "r.r" -> List(SolrDocument(...
       // "glen" -> List(SolrDocument(...
     }
+
+#### Distributed Search
+
+Using [Distributed Search](http://wiki.apache.org/solr/DistributedSearch):
+
+    val request = new QueryRequest(Query("genre_s:fantasy"))
+    request.shards = new DistributedSearchParams(
+      shards = List(
+        "localhost:8984/solr",
+        "localhost:8985/solr"
+      )
+    )
+    val response = client.doQuery(request)
+    println(response.groups.toString)
 
 ### DIH Command
 
