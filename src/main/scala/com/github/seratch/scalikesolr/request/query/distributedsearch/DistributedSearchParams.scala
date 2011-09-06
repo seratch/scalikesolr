@@ -46,7 +46,7 @@ case class DistributedSearchParams(var shards: List[String] = Nil) {
         }
       }
     }
-    buf.toString
+    buf.toString.replaceFirst(",$", "")
   }
 
   def toQueryString(): String = toString()
