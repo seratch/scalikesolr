@@ -87,7 +87,8 @@ object Highlightings {
                 writerType = WriterType.JSON,
                 map = (element.iterator.asScala map {
                   case eachInValue: java.util.Map.Entry[String, Any] => {
-                    (eachInValue.getKey.toString, new SolrDocumentValue(eachInValue.getValue.toString))
+                    val value = eachInValue.getValue.toString.replaceFirst("^\\[", "").replaceFirst("\\]$", "")
+                    (eachInValue.getKey.toString, new SolrDocumentValue(value))
                   }
                 }).toMap))
             }

@@ -213,7 +213,9 @@ class SolrClient_doQueryJavabinResponseTest extends Assertions {
     log.debug(response.highlightings.toString)
     response.highlightings.keys() foreach {
       case key => {
-        log.debug(key + "->" + response.highlightings.get(key).get("author").toString)
+        val value = response.highlightings.get(key).get("author").toString
+        log.debug(key + "->" + value)
+        assert(!value.startsWith("["))
       }
     }
   }
