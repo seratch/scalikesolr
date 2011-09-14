@@ -1,6 +1,6 @@
 name := "scalikesolr"
 
-// version := "3.3.5-SNAPSHOT"
+// version := "3.4.1-SNAPSHOT"
 
 organization := "Kazuhiro Sera"
 
@@ -20,7 +20,7 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
   Seq(
     "joda-time"                % "joda-time"          % "1.6.2"           % "provided",
     "ch.qos.logback"           % "logback-classic"    % "0.9.26"          % "provided",
-    "org.apache.solr"          % "solr-solrj"         % "3.3.0"           % "provided",
+    "org.apache.solr"          % "solr-solrj"         % "3.4.0"           % "provided",
     "junit"                    % "junit"              % "4.8.2"           % "test",
     "org.mockito"              % "mockito-all"        % "1.8.2"           % "test",
     "org.scalatest"            %% "scalatest"         % scalatestVersion  % "test",

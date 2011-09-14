@@ -47,7 +47,7 @@ Example of "project/build/MyProject.scala":
 
 ### Maven
 
-"3.1","3.2","3.3","3.4" means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.4.x" will be incremented.
+"3.4"(or "3.1","3.2","3.3") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.4.x" will be incremented.
 
     <repositories>
       <repository>
