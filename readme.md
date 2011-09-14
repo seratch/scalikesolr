@@ -9,7 +9,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.8.1</artifactId>
-      <version>[3.3,)</version>
+      <version>[3.4,)</version>
     </dependency>
 
 ### Scala 2.9.0.final
@@ -17,7 +17,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.0</artifactId>
-      <version>[3.3,)</version>
+      <version>[3.4,)</version>
     </dependency>
 
 ### Scala 2.9.0.1
@@ -25,7 +25,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.0-1</artifactId>
-      <version>[3.3,)</version>
+      <version>[3.4,)</version>
     </dependency>
 
 ### Scala 2.9.1.final
@@ -33,7 +33,7 @@ Currently following Scala versions are supported:
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.1</artifactId>
-      <version>[3.3,)</version>
+      <version>[3.4,)</version>
     </dependency>
 
 ## How to install
@@ -43,11 +43,11 @@ Currently following Scala versions are supported:
 Example of "project/build/MyProject.scala":
 
     val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.3.10" withSources ()
+    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.4.0" withSources ()
 
 ### Maven
 
-"3.3"(or "3.1","3.2") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.3.x" will be incremented.
+"3.1","3.2","3.3","3.4" means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.4.x" will be incremented.
 
     <repositories>
       <repository>
@@ -63,7 +63,7 @@ Example of "project/build/MyProject.scala":
     <dependency>
       <groupId>com.github.seratch</groupId>
       <artifactId>scalikesolr_2.9.1</artifactId>
-      <version>[3.3,)</version>
+      <version>[3.4,)</version>
     </dependency>
 
 ## Usage
