@@ -84,7 +84,7 @@ object Highlightings {
             case e: java.util.Map.Entry[String, Any] => {
               val element = e.getValue.asInstanceOf[NamedList[Any]]
               (e.getKey.toString -> new SolrDocument(
-                writerType = WriterType.JSON,
+                writerType = WriterType.JavaBinary,
                 map = (element.iterator.asScala map {
                   case eachInValue: java.util.Map.Entry[String, Any] => {
                     val value = eachInValue.getValue.toString.replaceFirst("^\\[", "").replaceFirst("\\]$", "")
