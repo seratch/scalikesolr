@@ -1,8 +1,6 @@
 name := "scalikesolr"
 
-// version := "3.4.1-SNAPSHOT"
-
-organization := "Kazuhiro Sera"
+organization := "com.github.seratch"
 
 scalaVersion := "2.9.1"
 
