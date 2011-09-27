@@ -42,8 +42,12 @@ Currently following Scala versions are supported:
 
 Example of "project/build/MyProject.scala":
 
-    val ScalikeSolrClientLibraryReleases = "Scalike Solr Client Library Releases Repository" at "https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases"
-    val scalikesolr = "com.github.seratch" %% "scalikesolr" % "3.4.0" withSources ()
+    resolvers ++= Seq(
+      "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
+    )
+    libraryDependencies ++= Seq(
+      "com.github.seratch" %% "scalikesolr" % "3.4.0" withSources ()
+    )
 
 ### Maven
 
@@ -51,12 +55,14 @@ Example of "project/build/MyProject.scala":
 
     <repositories>
       <repository>
-        <id>ScalikeSolrClientLibraryReleases</id>
-        <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases</url>
+        <id>seratch.github.com releases</id>
+        <name>seratch.github.com releases</name>
+	<url>http://seratch.github.com/mvn-repo/releases</url>
       </repository>
       <repository>
-        <id>ScalikeSolrClientLibrarySnapshots</id>
-        <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/snapshots</url>
+        <id>seratch.github.com snapshots</id>
+        <name>seratch.github.com snapshots</name>
+        <url>http://seratch.github.com/mvn-repo/snapshots</url>
       </repository>
     </repositories>
 
