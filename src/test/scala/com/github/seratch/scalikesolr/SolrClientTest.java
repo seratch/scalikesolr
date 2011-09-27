@@ -1,12 +1,20 @@
 package com.github.seratch.scalikesolr;
 
-import com.github.seratch.scalikesolr.request.*;
+import com.github.seratch.scalikesolr.request.AddRequest;
+import com.github.seratch.scalikesolr.request.DeleteRequest;
+import com.github.seratch.scalikesolr.request.PingRequest;
+import com.github.seratch.scalikesolr.request.QueryRequest;
+import com.github.seratch.scalikesolr.request.UpdateRequest;
 import com.github.seratch.scalikesolr.request.common.WriterType;
 import com.github.seratch.scalikesolr.request.query.Query;
 import com.github.seratch.scalikesolr.request.query.Sort;
 import com.github.seratch.scalikesolr.request.query.morelikethis.FieldsToUseForSimilarity;
 import com.github.seratch.scalikesolr.request.query.morelikethis.MoreLikeThisParams;
-import com.github.seratch.scalikesolr.response.*;
+import com.github.seratch.scalikesolr.response.AddResponse;
+import com.github.seratch.scalikesolr.response.DeleteResponse;
+import com.github.seratch.scalikesolr.response.PingResponse;
+import com.github.seratch.scalikesolr.response.QueryResponse;
+import com.github.seratch.scalikesolr.response.UpdateResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -16,9 +24,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 public class SolrClientTest {
 
