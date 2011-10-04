@@ -76,7 +76,7 @@ object GroupField {
 /**
  * TODO This parameter only is supported on 4.0
  */
-case class GroupFunctionalQeury(@BeanProperty val func: String) extends RequestParam {
+case class GroupFunctionalQuery(@BeanProperty val func: String) extends RequestParam {
 
   override def isEmpty() = func == null || func.isEmpty
 
@@ -86,8 +86,8 @@ case class GroupFunctionalQeury(@BeanProperty val func: String) extends RequestP
 
 }
 
-object GroupFunctionalQeury {
-  def as(func: String) = GroupFunctionalQeury(func)
+object GroupFunctionalQuery {
+  def as(func: String) = GroupFunctionalQuery(func)
 }
 
 case class GroupQuery(@BeanProperty val query: String = "") extends RequestParam {
