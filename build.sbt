@@ -29,4 +29,4 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
 
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
-defaultExcludes ~= (_ || "*~")
+//defaultExcludes ~= (_ || "*~")
