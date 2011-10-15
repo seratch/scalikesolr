@@ -48,12 +48,11 @@ Currently following Scala versions are supported:
 
 ### sbt
 
-Example of "project/build/MyProject.scala":
-
 ```scala
 resolvers ++= Seq(
   "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
 )
+
 libraryDependencies ++= Seq(
   "com.github.seratch" %% "scalikesolr" % "3.4.0" withSources ()
 )
