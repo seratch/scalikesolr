@@ -2,49 +2,15 @@
 
 "scalikesolr" is a simple Solr client library for Scala. And it also works fine with Java.
 
-Currently following Scala versions are supported:
-
-### Scala 2.8.1.final
-
-```xml
-<dependency>
-  <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.8.1</artifactId>
-  <version>[3.4,)</version>
-</dependency>
-```
-
-### Scala 2.9.0.final
-
-```xml
-<dependency>
-  <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.9.0</artifactId>
-  <version>[3.4,)</version>
-</dependency>
-```
-
-### Scala 2.9.0.1
-
-```xml
-<dependency>
-  <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.9.0-1</artifactId>
-  <version>[3.4,)</version>
-</dependency>
-```
-
-### Scala 2.9.1.final
-
-```xml
-<dependency>
-  <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.9.1</artifactId>
-  <version>[3.4,)</version>
-</dependency>
-```
-
 ## How to install
+
+Supported scala versions: 2.8.1, 2.9.0, 2.9.0-1, 2.9.1
+
+Solr/Lucene versions: 3.2, 3.3, 3.4
+
+Please download from the following repository:
+
+https://github.com/seratch/seratch.github.com/tree/master/mvn-repo/releases/com/github/seratch
 
 ### sbt
 
@@ -60,7 +26,7 @@ libraryDependencies ++= Seq(
 
 ### Maven
 
-"3.4"(or "3.1","3.2","3.3") means Solr/Lucene release version that is supported by scalikesolr. The "x" of "3.4.x" will be incremented.
+The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
 
 ```xml
 <repositories>
