@@ -569,6 +569,7 @@ class SolrClient_doQuerySuite extends FunSuite {
       val start = new DateTime()
       log.info("scalikesolr start :" + start)
 
+      val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
       val request = new QueryRequest(
         query = Query("author:Rick"),
         maximumRowsReturned = MaximumRowsReturned(1000)
@@ -577,12 +578,116 @@ class SolrClient_doQuerySuite extends FunSuite {
 
       val response = client.doQuery(request)
       response.responseHeader
-      val docsFromScalikesolr = response.response.documents
+      response.response.documents
 
       val end = new DateTime()
       log.info("scalikesolr end   :" + end)
       log.info("scalikesolr result :" + (end.getMillis - start.getMillis))
     }
+
+    /**
+     * solrj result :232
+     * scalikesolr result :30
+     *
+     * solrj result :338
+     * scalikesolr result :34
+     *
+     * solrj result :348
+     * scalikesolr result :25
+     */
+
+
+  }
+
+  test("checkPerformanceOfSimpleQuery(query only) vs Solrj") {
+
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    log.isDebugEnabled = false
+    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
+    val currentCount = client.doQuery(new QueryRequest(
+      query = Query("author:Rick"),
+      maximumRowsReturned = MaximumRowsReturned(1))
+    ).response.numFound
+
+    if (currentCount < 100) {
+      val addReq = new AddRequest()
+      val ids = (Range(0, 10000) map {
+        i => "unittest" + i.toString
+      }).toList
+      addReq.documents = ids map {
+        id => SolrDocument(
+          writerType = WriterType.JSON,
+          rawBody = """{"id" : """" + id + """",
+         "cat" : ["book","hardcover"],
+         "title" : "The Lightning Thief",
+         "author" : "Rick Riordan",
+         "series_t" : "Percy Jackson and the Olympians",
+         "sequence_i" : 1,
+         "genre_s" : "fantasy",
+         "inStock" : true,
+         "price" : 12.50,
+         "pages_i" : 384
+       }
+       """
+        )
+      }
+      client.doAddDocuments(addReq)
+      client.doCommit(new UpdateRequest)
+    }
+
+    // solrj
+    {
+
+      val server = new CommonsHttpSolrServer("http://localhost:8983/solr")
+      server.setParser(new BinaryResponseParser())
+      val query = new SolrQuery();
+      query.setQuery("author:Rick");
+      query.setRows(1000)
+
+      val start = new DateTime()
+      log.info("[query only] solrj start :" + start)
+
+      val response = server.query(query)
+      response.getResults
+
+      val end = new DateTime()
+      log.info("[query only] solrj end   :" + end)
+      log.info("[query only] solrj result :" + (end.getMillis - start.getMillis))
+    }
+
+    // scalikesolr
+    {
+
+      val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
+      val request = new QueryRequest(
+        query = Query("author:Rick"),
+        maximumRowsReturned = MaximumRowsReturned(1000)
+      )
+      request.writerType = WriterType.JavaBinary
+
+      val start = new DateTime()
+      log.info("[query only] scalikesolr start :" + start)
+
+      val response = client.doQuery(request)
+      response.responseHeader
+      response.response.documents
+
+      val end = new DateTime()
+      log.info("[query only] scalikesolr end   :" + end)
+      log.info("[query only] scalikesolr result :" + (end.getMillis - start.getMillis))
+    }
+
+    /**
+     * [query only] solrj result :31
+     * [query only] scalikesolr result :34
+     *
+     * [query only] solrj result :37
+     * [query only] scalikesolr result :23
+     *
+     * [query only] solrj result :52
+     * [query only] scalikesolr result :35
+     */
+
 
   }
 
