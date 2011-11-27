@@ -9,7 +9,7 @@ object ScalikeSolrBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "3.4.0",
+    version := "3.5.0-SNAPSHOT",
     publishTo := Some(
       Resolver.file(
         "Github Pages", 
