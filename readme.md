@@ -4,11 +4,11 @@
 
 ## How to install
 
-Supported scala versions: 2.8.1, 2.9.0, 2.9.0-1, 2.9.1
+Supported scala versions: 2.9.0, 2.9.0-1, 2.9.1
 
-Solr/Lucene versions: 3.2, 3.3, 3.4
+Solr/Lucene versions: 3.2, 3.3, 3.4, 3.5
 
-Please download from the following repository:
+see also:
 
 https://github.com/seratch/seratch.github.com/tree/master/mvn-repo/releases/com/github/seratch
 
@@ -20,7 +20,7 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "3.4.0" withSources ()
+  "com.github.seratch" %% "scalikesolr" % "3.5.0" withSources ()
 )
 ```
 
@@ -39,7 +39,7 @@ The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
 <dependency>
   <groupId>com.github.seratch</groupId>
   <artifactId>scalikesolr_2.9.1</artifactId>
-  <version>[3.4,)</version>
+  <version>[3.5,)</version>
 </dependency>
 ```
 
