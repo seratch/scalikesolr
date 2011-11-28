@@ -24,6 +24,15 @@ libraryDependencies ++= Seq(
 )
 ```
 
+via ls:
+
+http://ls.implicit.ly/seratch/scalikesolr
+
+```
+ls -n scalikesolr
+ls-install scalikesolr
+```
+
 ### Maven
 
 The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
