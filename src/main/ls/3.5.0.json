@@ -1,0 +1,36 @@
+{
+ # a maven/ivy organization identifier
+ "organization":"com.github.seratch",
+ # name of your library
+ "name":"scalikesolr",
+ # version of your library
+ "version":"3.5.0",
+ # quaint description of what it provides
+ "description":"Apache Solr Client for Scala/Java",
+ # a uri for more info & resources
+ "site":"https://github.com/seratch/scalikesolr",
+ # keywords to help others to find your library
+ "tags": ["Solr", "Apache Solr"],
+ # a uri for version-specific api docs
+ "docs":"https://github.com/seratch/scalikesolr",
+ # licenses if you care for them
+ "licenses": [{
+   "name": "Apache License, Version 2.0",
+   "url":"http://www.apache.org/licenses/LICENSE-2.0"
+  }],
+ # where can your library be downloaded from
+ "resolvers": ["http://seratch.github.com/mvn-repo/releases"],
+ # what does your library depend on
+ "dependencies": [
+   { "organization":"joda-time",       "name": "joda-time",       "version": "1.6.2" },
+   { "organization":"ch.qos.logback",  "name": "logback-classic", "version": "0.9.26" },
+   { "organization":"org.apache.solr", "name": "solr-solr",       "version": "3.5.0" }
+  ],
+ # scala cross-binary dialects
+ "scalas": [
+   "2.9.0","2.9.0-1","2.9.1"
+  ],
+ # is this an sbt plugin?
+ "sbt": false
+}
+
