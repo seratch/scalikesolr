@@ -22,8 +22,6 @@ import com.github.seratch.scalikesolr.util.JSONUtil
 import com.github.seratch.scalikesolr.response.common.ResponseHeader
 import com.github.seratch.scalikesolr.{SolrDocument, SolrDocumentValue}
 import xml.XML
-import org.apache.solr.common.SolrDocumentList
-import com.github.seratch.scalikesolr.response.query.Response
 import org.apache.solr.common.util.{SimpleOrderedMap, NamedList}
 
 object ResponseParser {
@@ -68,7 +66,7 @@ object ResponseParser {
         val responseHeader = rawJavaBin.get("responseHeader").asInstanceOf[NamedList[Any]]
         import collection.JavaConverters._
         val docMap = (responseHeader.get("params").asInstanceOf[SimpleOrderedMap[Any]].asScala map {
-          case e: java.util.Map.Entry[String, Any] => (e.getKey.toString, new SolrDocumentValue(e.getValue.toString))
+          case e: java.util.Map.Entry[_, _] => (e.getKey.toString, new SolrDocumentValue(e.getValue.toString))
         }).toMap
         new ResponseHeader(
           responseHeader.get("status").toString.toInt,

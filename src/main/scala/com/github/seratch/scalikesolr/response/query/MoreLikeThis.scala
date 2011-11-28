@@ -106,8 +106,8 @@ object MoreLikeThis {
         var start: Int = 0
         val moreLikeThis = rawJavabin.get("moreLikeThis").asInstanceOf[NamedList[Any]]
         val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.asScala flatMap {
-          case e: java.util.Map.Entry[String, Any] => {
-            val id = e.getKey
+          case e: java.util.Map.Entry[_, _] => {
+            val id: String = e.getKey
             val mlt = e.getValue.asInstanceOf[SolrDocumentList]
             numFound = mlt.getNumFound.toInt
             start = mlt.getStart.toInt

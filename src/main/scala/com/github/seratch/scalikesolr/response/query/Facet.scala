@@ -25,12 +25,22 @@ import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
                  @BeanProperty val facetFields: Map[String, SolrDocument],
-                 @deprecated @BeanProperty val facetDates: Map[String, SolrDocument],
+                 @deprecated(message = """
+   NOTE: as of Solr3.1 Date Faceting has been deprecated
+   in favor of the more general Range Faceting described below.
+   The response structure is slightly differnet, but the funtionality is equivilent
+   (except that it supports numeric fields as well as dates)
+   """, since = "Solr 3.1") @BeanProperty val facetDates: Map[String, SolrDocument],
                  @BeanProperty val facetRanges: Map[String, SolrDocument]) {
 
   def getFromFacetFields(name: String): SolrDocument = facetFields.getOrElse(name, null)
 
-  @deprecated def getFromFacetDates(date: String): SolrDocument = facetDates.getOrElse(date, null)
+  @deprecated(message = """
+   NOTE: as of Solr3.1 Date Faceting has been deprecated
+   in favor of the more general Range Faceting described below.
+   The response structure is slightly differnet, but the funtionality is equivilent
+   (except that it supports numeric fields as well as dates)
+   """, since = "Solr 3.1") def getFromFacetDates(date: String): SolrDocument = facetDates.getOrElse(date, null)
 
   def getFromFacetRanges(range: String): SolrDocument = facetRanges.getOrElse(range, null)
 
@@ -188,11 +198,11 @@ object Facet {
         def castToNamedList(obj: Any): NamedList[Any] = obj.asInstanceOf[NamedList[Any]]
 
         def fromListToMap(namedList: NamedList[Any]): Map[String, SolrDocument] = {
-          type MapEntry = java.util.Map.Entry[String, Any]
+          type MapEntry = java.util.Map.Entry[_, _]
           import collection.JavaConverters._
           (namedList.asScala map {
             case e: MapEntry => {
-              val docKey = e.getKey
+              val docKey = e.getKey.asInstanceOf[String]
               val doc = e.getValue.asInstanceOf[NamedList[Any]]
               val map = (doc.asScala.map {
                 case e: MapEntry => {

@@ -188,7 +188,7 @@ object Groups {
       }
       case WriterType.JavaBinary => {
 
-        type MapEntry = java.util.Map.Entry[String, Any]
+        type MapEntry = java.util.Map.Entry[_, _]
         import collection.JavaConverters._
 
         var matches: Int = 0
@@ -227,7 +227,7 @@ object Groups {
                 // group.format=grouped
                 val groupsList = e.getValue.asInstanceOf[java.util.List[NamedList[Any]]]
                 groups = (groupsList.asScala map {
-                  case g: NamedList[Any] => {
+                  case g: NamedList[_] => {
                     val groupValue = g.get("groupValue")
                     val doclist = g.get("doclist").asInstanceOf[SolrDocumentList]
                     new Group(

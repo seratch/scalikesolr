@@ -81,12 +81,12 @@ object Highlightings {
         import collection.JavaConverters._
         new Highlightings(
           highlightings = (highlighting.iterator().asScala map {
-            case e: java.util.Map.Entry[String, Any] => {
+            case e: java.util.Map.Entry[_, _] => {
               val element = e.getValue.asInstanceOf[NamedList[Any]]
               (e.getKey.toString -> new SolrDocument(
                 writerType = WriterType.JavaBinary,
                 map = (element.iterator.asScala map {
-                  case eachInValue: java.util.Map.Entry[String, Any] => {
+                  case eachInValue: java.util.Map.Entry[_, _] => {
                     val value = eachInValue.getValue.toString.replaceFirst("^\\[", "").replaceFirst("\\]$", "")
                     (eachInValue.getKey.toString, new SolrDocumentValue(value))
                   }

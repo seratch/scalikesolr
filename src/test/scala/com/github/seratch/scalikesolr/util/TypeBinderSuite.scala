@@ -10,7 +10,6 @@ import org.joda.time.DateTime
 import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.ShouldMatchers
-import org.junit.runner.RunWith
 
 case class PageI(val value: String = "")
 
@@ -40,6 +39,7 @@ case class Person(var name: String = "",
     this ("", 0, null, Nil)
   }
 }
+
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])

@@ -55,7 +55,7 @@ object Response {
       case WriterType.JSON => {
         val response = toMap(jsonMapFromRawBody.get("response"))
         val documents: Seq[SolrDocument] = toList(response.get("docs")) map {
-          case doc: Map[String, Option[Any]] => {
+          case doc: Map[_, _] => {
             new SolrDocument(
               writerType = writerType,
               map = doc flatMap {
