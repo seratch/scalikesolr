@@ -195,43 +195,22 @@ object Groups {
         var groups: List[Group] = Nil
 
         val grouped = rawJavaBin.get("grouped").asInstanceOf[SimpleOrderedMap[Any]]
-        grouped.asScala foreach {
-          case e: MapEntry => {
-            val groupedValue = e.getValue.asInstanceOf[NamedList[Any]]
-            groupedValue.asScala foreach {
-              case e: MapEntry if e.getKey == "matches" => {
-                matches = e.getValue.toString.toInt
-              }
-              case e: MapEntry if e.getKey == "doclist" => {
-                // group.format=simple
-                val doclist = e.getValue.asInstanceOf[SolrDocumentList]
-                groups = List(
-                  new Group(
-                    groupValue = null,
-                    numFound = doclist.getNumFound.toInt,
-                    start = doclist.getStart.toInt,
-                    documents = (doclist.asScala map {
-                      case doc: SolrjSolrDocument => {
-                        new SolrDocument(
-                          writerType = writerType,
-                          map = (doc.keySet.asScala.map {
-                            case key => (key, new SolrDocumentValue(doc.get(key).toString))
-                          }).toMap
-                        )
-                      }
-                    }).toList
-                  )
-                )
-              }
-              case e: MapEntry if e.getKey == "groups" => {
-                // group.format=grouped
-                val groupsList = e.getValue.asInstanceOf[java.util.List[NamedList[Any]]]
-                groups = (groupsList.asScala map {
-                  case g: NamedList[_] => {
-                    val groupValue = g.get("groupValue")
-                    val doclist = g.get("doclist").asInstanceOf[SolrDocumentList]
+        // since Solr 3.5: when specifying "main=true",
+        // the "grouped" element does not exist and it causes NPE.
+        if (grouped != null) {
+          grouped.asScala foreach {
+            case e: MapEntry => {
+              val groupedValue = e.getValue.asInstanceOf[NamedList[Any]]
+              groupedValue.asScala foreach {
+                case e: MapEntry if e.getKey == "matches" => {
+                  matches = e.getValue.toString.toInt
+                }
+                case e: MapEntry if e.getKey == "doclist" => {
+                  // group.format=simple
+                  val doclist = e.getValue.asInstanceOf[SolrDocumentList]
+                  groups = List(
                     new Group(
-                      groupValue = if (groupValue == null) "" else groupValue.toString,
+                      groupValue = null,
                       numFound = doclist.getNumFound.toInt,
                       start = doclist.getStart.toInt,
                       documents = (doclist.asScala map {
@@ -245,8 +224,33 @@ object Groups {
                         }
                       }).toList
                     )
-                  }
-                }).toList
+                  )
+                }
+                case e: MapEntry if e.getKey == "groups" => {
+                  // group.format=grouped
+                  val groupsList = e.getValue.asInstanceOf[java.util.List[NamedList[Any]]]
+                  groups = (groupsList.asScala map {
+                    case g: NamedList[_] => {
+                      val groupValue = g.get("groupValue")
+                      val doclist = g.get("doclist").asInstanceOf[SolrDocumentList]
+                      new Group(
+                        groupValue = if (groupValue == null) "" else groupValue.toString,
+                        numFound = doclist.getNumFound.toInt,
+                        start = doclist.getStart.toInt,
+                        documents = (doclist.asScala map {
+                          case doc: SolrjSolrDocument => {
+                            new SolrDocument(
+                              writerType = writerType,
+                              map = (doc.keySet.asScala.map {
+                                case key => (key, new SolrDocumentValue(doc.get(key).toString))
+                              }).toMap
+                            )
+                          }
+                        }).toList
+                      )
+                    }
+                  }).toList
+                }
               }
             }
           }
