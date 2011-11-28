@@ -9,14 +9,14 @@ object ScalikeSolrBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "3.5.0-SNAPSHOT",
-    publishTo := Some(
-      Resolver.file(
-        "Github Pages", 
-        Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / "releases" asFile
+    version := "3.5.0",
+    publishTo <<= (version) { version: String =>
+      Some(
+        Resolver.file("GitHub Pages", Path.userHome / "github" / "seratch.github.com" / "mvn-repo" / {
+          if (version.trim.endsWith("SNAPSHOT")) "snapshots" else "releases" 
+        })
       )
-      (Patterns(true, Resolver.mavenStyleBasePattern))
-    ),
+    },
     publishMavenStyle := true,
     scalacOptions ++= Seq("-deprecation", "-unchecked")
   )
