@@ -17,11 +17,11 @@
 
     <distributionManagement>
         <repository>
-            <id>repo</id>
+            <id>seratch-github-repo</id>
             <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases</url>
         </repository>
         <snapshotRepository>
-            <id>snapshot-repo</id>
+            <id>seratch-github-snapshot-repo</id>
             <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
@@ -68,7 +68,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>[0.9,)</version>
+            <version>1.0.0</version>
         </dependency>
 
         <!-- Unit Testing -->
