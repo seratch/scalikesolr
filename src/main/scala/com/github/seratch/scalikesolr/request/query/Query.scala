@@ -27,7 +27,6 @@ case class Query(@BeanProperty val q: String) extends RequestParam {
 
   override def getValue() = toString(q)
 
-
 }
 
 object Query {

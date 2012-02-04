@@ -23,16 +23,16 @@ import com.github.seratch.scalikesolr.SolrCore
 import util.QueryStringUtil
 
 case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                         @BeanProperty var requestBody: String = "",
-                         @BeanProperty var writerType: WriterType = WriterType.Standard,
-                         @BeanProperty var additionalQueryString: String = "") {
+    @BeanProperty var requestBody: String = "",
+    @BeanProperty var writerType: WriterType = WriterType.Standard,
+    @BeanProperty var additionalQueryString: String = "") {
 
   def this() = {
-    this (SolrCore(), "", WriterType.Standard, "")
+    this(SolrCore(), "", WriterType.Standard, "")
   }
 
   def this(core: SolrCore) = {
-    this (core, "", WriterType.Standard, "")
+    this(core, "", WriterType.Standard, "")
   }
 
   def toQueryString(): String = {

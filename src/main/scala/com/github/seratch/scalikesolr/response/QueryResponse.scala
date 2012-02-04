@@ -29,8 +29,8 @@ import collection.immutable.Map
 import org.apache.solr.common.util.NamedList
 
 case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
-                         @BeanProperty val rawBody: String = "",
-                         @BeanProperty val rawJavabin: NamedList[Any] = null) {
+    @BeanProperty val rawBody: String = "",
+    @BeanProperty val rawJavabin: NamedList[Any] = null) {
 
   @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
     writerType,

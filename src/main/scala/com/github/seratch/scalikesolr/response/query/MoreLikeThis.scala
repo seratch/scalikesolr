@@ -21,16 +21,16 @@ import reflect.BeanProperty
 import collection.JavaConverters._
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{Node, XML}
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import xml.{ Node, XML }
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import com.github.seratch.scalikesolr.util.JSONUtil._
 import scala.Option._
 import org.apache.solr.common.SolrDocumentList
 import com.github.seratch.scalikesolr.SolrjSolrDocument
 
 case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
-                        @BeanProperty val start: Int = 0,
-                        @BeanProperty val idAndRecommendations: Map[String, List[SolrDocument]]) {
+    @BeanProperty val start: Int = 0,
+    @BeanProperty val idAndRecommendations: Map[String, List[SolrDocument]]) {
 
   def getList(name: String): List[SolrDocument] = idAndRecommendations.getOrElse(name, Nil)
 
@@ -41,9 +41,9 @@ case class MoreLikeThis(@BeanProperty val numFound: Int = 0,
 object MoreLikeThis {
 
   def extract(writerType: WriterType = WriterType.Standard,
-              rawBody: String = "",
-              jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavabin: NamedList[Any] = null): MoreLikeThis = {
+    rawBody: String = "",
+    jsonMapFromRawBody: Map[String, Option[Any]],
+    rawJavabin: NamedList[Any] = null): MoreLikeThis = {
 
     writerType match {
       case WriterType.Standard => {
@@ -58,11 +58,12 @@ object MoreLikeThis {
                 numFound = ((result \ "@numFound").text).toInt
                 start = ((result \ "@start").text).toInt
                 val solrDocs = (result \ "doc") map {
-                  doc => {
-                    new SolrDocument(map = (doc.child map {
-                      case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
-                    }).toMap)
-                  }
+                  doc =>
+                    {
+                      new SolrDocument(map = (doc.child map {
+                        case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
+                      }).toMap)
+                    }
                 }
                 Map((result \ "@name").text -> solrDocs.toList)
               }

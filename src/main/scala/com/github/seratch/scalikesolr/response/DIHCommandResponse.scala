@@ -16,21 +16,21 @@
 
 package com.github.seratch.scalikesolr.response
 
-import dih.{StatusMessages, InitArgs}
+import dih.{ StatusMessages, InitArgs }
 import java.lang.UnsupportedOperationException
 
 import parser.ResponseParser
-import xml.{Node, XML}
+import xml.{ Node, XML }
 import reflect.BeanProperty
 
 import common.ResponseHeader
 import com.github.seratch.scalikesolr.request.common.WriterType
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import util.parsing.json.JSON
 import com.github.seratch.scalikesolr.util.JSONUtil
 
 case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
-                              @BeanProperty val rawBody: String = "") {
+    @BeanProperty val rawBody: String = "") {
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
     writerType match {

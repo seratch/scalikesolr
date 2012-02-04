@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr.request
 
-import common.{RequestParam, WriterType}
+import common.{ RequestParam, WriterType }
 import reflect.BeanProperty
 import query._
 import distributedsearch.DistributedSearchParams
@@ -29,22 +29,22 @@ import util.QueryStringUtil
 import java.net.URLEncoder
 
 case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                        @BeanProperty var explainOther: ExplainOther = ExplainOther(),
-                        @BeanProperty var fieldsToReturn: FieldsToReturn = FieldsToReturn(),
-                        @BeanProperty var filterQuery: FilterQuery = FilterQuery(),
-                        @BeanProperty var isIndentEnabled: IsIndentEnabled = IsIndentEnabled(),
-                        @BeanProperty var isDebugQueryEnabled: IsDebugQueryEnabled = IsDebugQueryEnabled(),
-                        @BeanProperty var isEchoHandlerEnabled: IsEchoHandlerEnabled = IsEchoHandlerEnabled(),
-                        @BeanProperty var isOmitHeaderEnabled: IsOmitHeaderEnabled = IsOmitHeaderEnabled(),
-                        @BeanProperty var maximumRowsReturned: MaximumRowsReturned = MaximumRowsReturned(),
-                        @BeanProperty var query: Query,
-                        @BeanProperty var queryParserType: QueryParserType = QueryParserType(),
-                        @BeanProperty var queryType: QueryType = QueryType(),
-                        @BeanProperty var writerType: WriterType = WriterType(),
-                        @BeanProperty var sort: Sort = Sort(),
-                        @BeanProperty var startRow: StartRow = StartRow(),
-                        @BeanProperty var timeoutMilliseconds: TimeoutMilliseconds = TimeoutMilliseconds(),
-                        @BeanProperty var version: Version = Version()) {
+    @BeanProperty var explainOther: ExplainOther = ExplainOther(),
+    @BeanProperty var fieldsToReturn: FieldsToReturn = FieldsToReturn(),
+    @BeanProperty var filterQuery: FilterQuery = FilterQuery(),
+    @BeanProperty var isIndentEnabled: IsIndentEnabled = IsIndentEnabled(),
+    @BeanProperty var isDebugQueryEnabled: IsDebugQueryEnabled = IsDebugQueryEnabled(),
+    @BeanProperty var isEchoHandlerEnabled: IsEchoHandlerEnabled = IsEchoHandlerEnabled(),
+    @BeanProperty var isOmitHeaderEnabled: IsOmitHeaderEnabled = IsOmitHeaderEnabled(),
+    @BeanProperty var maximumRowsReturned: MaximumRowsReturned = MaximumRowsReturned(),
+    @BeanProperty var query: Query,
+    @BeanProperty var queryParserType: QueryParserType = QueryParserType(),
+    @BeanProperty var queryType: QueryType = QueryType(),
+    @BeanProperty var writerType: WriterType = WriterType(),
+    @BeanProperty var sort: Sort = Sort(),
+    @BeanProperty var startRow: StartRow = StartRow(),
+    @BeanProperty var timeoutMilliseconds: TimeoutMilliseconds = TimeoutMilliseconds(),
+    @BeanProperty var version: Version = Version()) {
 
   @BeanProperty var echoParams: EchoParams = EchoParams()
 
@@ -65,7 +65,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
   def remove(key: String) = extraParams.remove(key)
 
   def this(query: Query) = {
-    this (
+    this(
       core = SolrCore(""),
       explainOther = ExplainOther(),
       fieldsToReturn = FieldsToReturn(),
@@ -87,7 +87,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
   }
 
   def this(core: SolrCore, query: Query) = {
-    this (
+    this(
       core = core,
       explainOther = ExplainOther(),
       fieldsToReturn = FieldsToReturn(),
@@ -191,12 +191,13 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     }
     if (extraParams.size > 0) {
       extraParams.keys.foreach {
-        key => {
-          if (buf.length > 0) buf.append("&")
-          buf.append(key)
-          buf.append("=")
-          buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
-        }
+        key =>
+          {
+            if (buf.length > 0) buf.append("&")
+            buf.append(key)
+            buf.append("=")
+            buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
+          }
       }
     }
     "?" + buf.toString

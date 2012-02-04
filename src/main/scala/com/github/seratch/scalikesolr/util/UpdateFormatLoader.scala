@@ -16,10 +16,10 @@
 
 package com.github.seratch.scalikesolr.util
 
-import xml.{Node, XML}
+import xml.{ Node, XML }
 import com.github.seratch.scalikesolr.request.common.WriterType
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
-import java.io.{FileInputStream, File}
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
+import java.io.{ FileInputStream, File }
 
 import collection.JavaConverters._
 
@@ -27,12 +27,13 @@ object UpdateFormatLoader {
 
   def fromXML(xml: File): List[SolrDocument] = {
     IO.using(new FileInputStream(xml)) {
-      fis => {
-        val xmlData = XML.load(fis)
-        (xmlData \\ "doc").map({
-          case doc: Node => new SolrDocument(writerType = WriterType.Standard, rawBody = doc.toString)
-        }).toList
-      }
+      fis =>
+        {
+          val xmlData = XML.load(fis)
+          (xmlData \\ "doc").map({
+            case doc: Node => new SolrDocument(writerType = WriterType.Standard, rawBody = doc.toString)
+          }).toList
+        }
     }
   }
 

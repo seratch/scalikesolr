@@ -17,16 +17,16 @@
 package com.github.seratch.scalikesolr.response.query
 
 import com.github.seratch.scalikesolr.request.common.WriterType
-import xml.{Node, XML}
+import xml.{ Node, XML }
 import com.github.seratch.scalikesolr.util.JSONUtil._
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import org.apache.solr.common.SolrDocumentList
 import reflect.BeanProperty
 import org.apache.solr.common.util.NamedList
 
 case class Response(@BeanProperty val numFound: Int,
-                    @BeanProperty val start: Int,
-                    @BeanProperty val documents: List[SolrDocument]) {
+    @BeanProperty val start: Int,
+    @BeanProperty val documents: List[SolrDocument]) {
 
   def getDocumentsInJava(): java.util.List[SolrDocument] = java.util.Arrays.asList(documents.toArray: _*)
 
@@ -35,9 +35,9 @@ case class Response(@BeanProperty val numFound: Int,
 object Response {
 
   def extract(writerType: WriterType = WriterType.Standard,
-              rawBody: String = "",
-              jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavaBin: NamedList[Any] = null): Response = {
+    rawBody: String = "",
+    jsonMapFromRawBody: Map[String, Option[Any]],
+    rawJavaBin: NamedList[Any] = null): Response = {
 
     writerType match {
       case WriterType.Standard => {

@@ -21,10 +21,10 @@ import java.lang.StringBuilder
 import java.net.URLEncoder
 
 case class FacetParams(@BeanProperty var enabled: Boolean = false,
-                       var params: List[FacetParam] = Nil) {
+    var params: List[FacetParam] = Nil) {
 
   def this(enabled: Boolean) {
-    this (enabled, Nil)
+    this(enabled, Nil)
   }
 
   import collection.JavaConverters._
@@ -40,17 +40,18 @@ case class FacetParams(@BeanProperty var enabled: Boolean = false,
     if (this.enabled) {
       buf.append("facet=true")
       params foreach {
-        param => {
-          buf.append("&")
-          if (!param.field.field.isEmpty) {
-            buf.append("f.")
-            buf.append(param.field.field)
-            buf.append(".")
+        param =>
+          {
+            buf.append("&")
+            if (!param.field.field.isEmpty) {
+              buf.append("f.")
+              buf.append(param.field.field)
+              buf.append(".")
+            }
+            buf.append(param.param.param)
+            buf.append("=")
+            buf.append(URLEncoder.encode(param.value.value, "UTF-8"))
           }
-          buf.append(param.param.param)
-          buf.append("=")
-          buf.append(URLEncoder.encode(param.value.value, "UTF-8"))
-        }
       }
     }
     buf.toString
@@ -67,7 +68,7 @@ object FacetParams {
 case class FacetParam(val field: Field = Field(""), val param: Param, val value: Value) {
 
   def this(param: Param, value: Value) = {
-    this (Field(""), param, value)
+    this(Field(""), param, value)
   }
 
 }

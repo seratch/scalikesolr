@@ -20,19 +20,19 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
 case class MoreLikeThisParams(@BeanProperty var enabled: Boolean = false,
-                              @BeanProperty var count: Int = 0,
-                              @BeanProperty var fieldsToUseForSimilarity: FieldsToUseForSimilarity = FieldsToUseForSimilarity(),
-                              @BeanProperty var isBoostedQueryEnabled: IsBoostedQueryEnabled = IsBoostedQueryEnabled(),
-                              @BeanProperty var maximumNumberOfQueryTerms: MaximumNumberOfQueryTerms = MaximumNumberOfQueryTerms(),
-                              @BeanProperty var maximumNumberOfTokensToParseInEachDocument: MaximumNumberOfTokensToParseInEachDocument = MaximumNumberOfTokensToParseInEachDocument(),
-                              @BeanProperty var maximumWordLengthAboveToBeIgnored: MaximumWordLengthAboveToBeIgnored = MaximumWordLengthAboveToBeIgnored(),
-                              @BeanProperty var minimumDocumentFrequency: MinimumDocumentFrequency = MinimumDocumentFrequency(),
-                              @BeanProperty var minimumTermFrequency: MinimumTermFrequency = MinimumTermFrequency(),
-                              @BeanProperty var minimumWordLengthBelowToBeIgnored: MinimumWordLengthBelowToBeIgnored = MinimumWordLengthBelowToBeIgnored(),
-                              @BeanProperty var queryFields: QueryFields = QueryFields()) {
+    @BeanProperty var count: Int = 0,
+    @BeanProperty var fieldsToUseForSimilarity: FieldsToUseForSimilarity = FieldsToUseForSimilarity(),
+    @BeanProperty var isBoostedQueryEnabled: IsBoostedQueryEnabled = IsBoostedQueryEnabled(),
+    @BeanProperty var maximumNumberOfQueryTerms: MaximumNumberOfQueryTerms = MaximumNumberOfQueryTerms(),
+    @BeanProperty var maximumNumberOfTokensToParseInEachDocument: MaximumNumberOfTokensToParseInEachDocument = MaximumNumberOfTokensToParseInEachDocument(),
+    @BeanProperty var maximumWordLengthAboveToBeIgnored: MaximumWordLengthAboveToBeIgnored = MaximumWordLengthAboveToBeIgnored(),
+    @BeanProperty var minimumDocumentFrequency: MinimumDocumentFrequency = MinimumDocumentFrequency(),
+    @BeanProperty var minimumTermFrequency: MinimumTermFrequency = MinimumTermFrequency(),
+    @BeanProperty var minimumWordLengthBelowToBeIgnored: MinimumWordLengthBelowToBeIgnored = MinimumWordLengthBelowToBeIgnored(),
+    @BeanProperty var queryFields: QueryFields = QueryFields()) {
 
   def this(enabled: Boolean, count: Int, fieldsToUseForSimilarity: FieldsToUseForSimilarity) {
-    this (
+    this(
       enabled = enabled,
       count = count,
       isBoostedQueryEnabled = IsBoostedQueryEnabled(),
@@ -52,7 +52,6 @@ object MoreLikeThisParams {
     new MoreLikeThisParams(enabled, count, fieldsToUseForSimilarity)
   }
 }
-
 
 case class FieldsToUseForSimilarity(@BeanProperty val fl: String = "*") extends RequestParam {
 

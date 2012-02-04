@@ -29,7 +29,6 @@ case class IsOmitHeaderEnabled(@BeanProperty val omitHeader: Boolean = false) ex
 
 }
 
-
 object IsOmitHeaderEnabled {
   def as(omitHeader: Boolean): IsOmitHeaderEnabled = new IsOmitHeaderEnabled(omitHeader)
 }

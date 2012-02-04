@@ -19,21 +19,21 @@ package com.github.seratch.scalikesolr.request
 import common.WriterType
 import reflect.BeanProperty
 
-import com.github.seratch.scalikesolr.{SolrDocument, SolrCore}
+import com.github.seratch.scalikesolr.{ SolrDocument, SolrCore }
 import collection.JavaConverters._
 import util.QueryStringUtil
 
 case class AddRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                      var documents: List[SolrDocument] = Nil,
-                      @BeanProperty var writerType: WriterType = WriterType.Standard,
-                      @BeanProperty var additionalQueryString: String = "") {
+    var documents: List[SolrDocument] = Nil,
+    @BeanProperty var writerType: WriterType = WriterType.Standard,
+    @BeanProperty var additionalQueryString: String = "") {
 
   def this() = {
-    this (SolrCore(), Nil, WriterType.Standard, "")
+    this(SolrCore(), Nil, WriterType.Standard, "")
   }
 
   def this(core: SolrCore) = {
-    this (core, Nil, WriterType.Standard, "")
+    this(core, Nil, WriterType.Standard, "")
   }
 
   def getDocumentsInJava(): java.util.List[SolrDocument] = documents.asJava

@@ -25,17 +25,17 @@ import collection.JavaConverters._
 import util.QueryStringUtil
 
 case class DeleteRequest(@BeanProperty var core: SolrCore = SolrCore(),
-                         var uniqueKeysToDelete: List[String] = Nil,
-                         var queries: List[Query] = Nil,
-                         @BeanProperty var writerType: WriterType = WriterType.Standard,
-                         @BeanProperty var additionalQueryString: String = "") {
+    var uniqueKeysToDelete: List[String] = Nil,
+    var queries: List[Query] = Nil,
+    @BeanProperty var writerType: WriterType = WriterType.Standard,
+    @BeanProperty var additionalQueryString: String = "") {
 
   def this() = {
-    this (SolrCore(), Nil, Nil, WriterType.Standard, "")
+    this(SolrCore(), Nil, Nil, WriterType.Standard, "")
   }
 
   def this(core: SolrCore) = {
-    this (core, Nil, Nil, WriterType.Standard, "")
+    this(core, Nil, Nil, WriterType.Standard, "")
   }
 
   def getUniqueKeysToDetelteInJava(): java.util.List[String] = uniqueKeysToDelete.asJava

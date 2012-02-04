@@ -21,11 +21,11 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.SolrCore
 
 case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),
-                             @BeanProperty val writerType: WriterType = WriterType(),
-                             @BeanProperty val command: String) {
+    @BeanProperty val writerType: WriterType = WriterType(),
+    @BeanProperty val command: String) {
 
   def this(command: String) {
-    this (
+    this(
       core = SolrCore(),
       writerType = WriterType(),
       command = command
@@ -33,7 +33,7 @@ case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),
   }
 
   def this(core: SolrCore, command: String) {
-    this (
+    this(
       core = core,
       writerType = WriterType(),
       command = command
@@ -52,12 +52,13 @@ case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),
     buf.append(command)
     if (extraParams.size > 0) {
       extraParams.keys.foreach {
-        key => {
-          if (buf.length > 0) buf.append("&")
-          buf.append(key)
-          buf.append("=")
-          buf.append(extraParams.getOrElse(key, ""))
-        }
+        key =>
+          {
+            if (buf.length > 0) buf.append("&")
+            buf.append(key)
+            buf.append("=")
+            buf.append(extraParams.getOrElse(key, ""))
+          }
       }
     }
     "?" + buf.toString

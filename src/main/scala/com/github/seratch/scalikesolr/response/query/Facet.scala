@@ -19,19 +19,19 @@ package com.github.seratch.scalikesolr.response.query
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{Node, XML}
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import xml.{ Node, XML }
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
-                 @BeanProperty val facetFields: Map[String, SolrDocument],
-                 @deprecated(message = """
+    @BeanProperty val facetFields: Map[String, SolrDocument],
+    @deprecated(message = """
    NOTE: as of Solr3.1 Date Faceting has been deprecated
    in favor of the more general Range Faceting described below.
    The response structure is slightly differnet, but the funtionality is equivilent
    (except that it supports numeric fields as well as dates)
-   """, since = "Solr 3.1") @BeanProperty val facetDates: Map[String, SolrDocument],
-                 @BeanProperty val facetRanges: Map[String, SolrDocument]) {
+   """, since = "Solr 3.1")@BeanProperty val facetDates: Map[String, SolrDocument],
+    @BeanProperty val facetRanges: Map[String, SolrDocument]) {
 
   def getFromFacetFields(name: String): SolrDocument = facetFields.getOrElse(name, null)
 
@@ -49,9 +49,9 @@ case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
 object Facet {
 
   def extract(writerType: WriterType = WriterType.Standard,
-              rawBody: String = "",
-              jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavabin: NamedList[Any] = null): Facet = {
+    rawBody: String = "",
+    jsonMapFromRawBody: Map[String, Option[Any]],
+    rawJavabin: NamedList[Any] = null): Facet = {
 
     writerType match {
       case WriterType.Standard => {
@@ -71,34 +71,38 @@ object Facet {
                 (node \ "@name").text match {
                   case "facet_queries" => {
                     (node \ "lst") foreach {
-                      query => {
-                        val element = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
-                      }
+                      query =>
+                        {
+                          val element = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                          facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+                        }
                     }
                   }
                   case "facet_fields" => {
                     node.child foreach {
-                      field => {
-                        val element = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
-                      }
+                      field =>
+                        {
+                          val element = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                          facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                        }
                     }
                   }
                   case "facet_dates" => {
                     (node \ "lst") foreach {
-                      date => {
-                        val element = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
-                      }
+                      date =>
+                        {
+                          val element = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                          facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                        }
                     }
                   }
                   case "facet_ranges" => {
                     (node \ "lst") foreach {
-                      range => {
-                        val element = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
-                      }
+                      range =>
+                        {
+                          val element = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                          facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                        }
                     }
                   }
                   case _ =>
@@ -120,8 +124,7 @@ object Facet {
         def castToList(obj: Any): List[Any] = obj.asInstanceOf[List[Any]]
 
         def fromListToMap(facets: List[Any]): Map[String, SolrDocumentValue] = {
-          def parseFacetsToMap(facets: List[Any], docHashMap: collection.mutable.HashMap[String, SolrDocumentValue])
-          : collection.mutable.HashMap[String, SolrDocumentValue] = {
+          def parseFacetsToMap(facets: List[Any], docHashMap: collection.mutable.HashMap[String, SolrDocumentValue]): collection.mutable.HashMap[String, SolrDocumentValue] = {
             facets.size match {
               case 0 => docHashMap
               case _ => {

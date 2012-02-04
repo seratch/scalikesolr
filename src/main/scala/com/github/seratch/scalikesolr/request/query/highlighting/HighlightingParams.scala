@@ -20,28 +20,28 @@ import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
 case class HighlightingParams(@BeanProperty var enabled: Boolean = false,
-                              @BeanProperty var alterField: AlternateField = AlternateField(),
-                              @BeanProperty var fieldsHighlighted: FieldsHighlighted = FieldsHighlighted(),
-                              @BeanProperty var formatter: Formatter = Formatter(),
-                              @BeanProperty var fragListBuilder: FragListBuilder = FragListBuilder(),
-                              @BeanProperty var fragmenter: Fragmenter = Fragmenter(),
-                              @BeanProperty var fragmentsBuilder: FragmentsBuilder = FragmentsBuilder(),
-                              @BeanProperty var fragsize: FragSize = FragSize(),
-                              @BeanProperty var isFastVectorHigighterEnabled: IsFastVectorHigighterEnabled = IsFastVectorHigighterEnabled(),
-                              @BeanProperty var isFieldMatchRequred: IsFieldMatchEnabled = IsFieldMatchEnabled(),
-                              @BeanProperty var isMergeContiguousEnabled: IsMergeContiguousEnabled = IsMergeContiguousEnabled(),
-                              @BeanProperty var isMultiTermHighlightingEnabled: IsMultiTermHighlightingEnabled = IsMultiTermHighlightingEnabled(),
-                              @BeanProperty var isPhraseHigighterEnabled: IsPhraseHigighterEnabled = IsPhraseHigighterEnabled(),
-                              @BeanProperty var maxAlternateFieldLength: MaxAlternateFieldLength = MaxAlternateFieldLength(),
-                              @BeanProperty var maxAnalyzedChars: MaxAnalyzedChars = MaxAnalyzedChars(),
-                              @BeanProperty var numOfSnippets: NumOfSnippets = NumOfSnippets(),
-                              @BeanProperty var regexpFragmenterSlop: RegexFragmenterSlop = RegexFragmenterSlop(),
-                              @BeanProperty var regexpMaxAnalyzedChars: RegexMaxAnalyzedChars = RegexMaxAnalyzedChars(),
-                              @BeanProperty var simplePrefix: SimplePrefix = SimplePrefix(),
-                              @BeanProperty var simpleSuffix: SimpleSuffix = SimpleSuffix()) {
+    @BeanProperty var alterField: AlternateField = AlternateField(),
+    @BeanProperty var fieldsHighlighted: FieldsHighlighted = FieldsHighlighted(),
+    @BeanProperty var formatter: Formatter = Formatter(),
+    @BeanProperty var fragListBuilder: FragListBuilder = FragListBuilder(),
+    @BeanProperty var fragmenter: Fragmenter = Fragmenter(),
+    @BeanProperty var fragmentsBuilder: FragmentsBuilder = FragmentsBuilder(),
+    @BeanProperty var fragsize: FragSize = FragSize(),
+    @BeanProperty var isFastVectorHigighterEnabled: IsFastVectorHigighterEnabled = IsFastVectorHigighterEnabled(),
+    @BeanProperty var isFieldMatchRequred: IsFieldMatchEnabled = IsFieldMatchEnabled(),
+    @BeanProperty var isMergeContiguousEnabled: IsMergeContiguousEnabled = IsMergeContiguousEnabled(),
+    @BeanProperty var isMultiTermHighlightingEnabled: IsMultiTermHighlightingEnabled = IsMultiTermHighlightingEnabled(),
+    @BeanProperty var isPhraseHigighterEnabled: IsPhraseHigighterEnabled = IsPhraseHigighterEnabled(),
+    @BeanProperty var maxAlternateFieldLength: MaxAlternateFieldLength = MaxAlternateFieldLength(),
+    @BeanProperty var maxAnalyzedChars: MaxAnalyzedChars = MaxAnalyzedChars(),
+    @BeanProperty var numOfSnippets: NumOfSnippets = NumOfSnippets(),
+    @BeanProperty var regexpFragmenterSlop: RegexFragmenterSlop = RegexFragmenterSlop(),
+    @BeanProperty var regexpMaxAnalyzedChars: RegexMaxAnalyzedChars = RegexMaxAnalyzedChars(),
+    @BeanProperty var simplePrefix: SimplePrefix = SimplePrefix(),
+    @BeanProperty var simpleSuffix: SimpleSuffix = SimpleSuffix()) {
 
   def this(enabled: Boolean) {
-    this (
+    this(
       enabled = enabled,
       alterField = AlternateField(),
       fieldsHighlighted = FieldsHighlighted(),
@@ -191,7 +191,6 @@ case class Formatter(@BeanProperty val formatter: String = "simple") extends Req
   override def getKey() = "hl.formatter"
 
   override def getValue() = toString(formatter)
-
 
 }
 

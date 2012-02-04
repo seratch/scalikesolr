@@ -18,24 +18,24 @@ package com.github.seratch.scalikesolr.request.query.group
 
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
-import com.github.seratch.scalikesolr.request.query.{Sort, StartRow, MaximumRowsReturned}
+import com.github.seratch.scalikesolr.request.query.{ Sort, StartRow, MaximumRowsReturned }
 
 case class GroupParams(@BeanProperty var enabled: Boolean = false,
-                       @BeanProperty var field: GroupField = GroupField(),
-                       @BeanProperty var query: GroupQuery = GroupQuery(),
-                       @BeanProperty var rows: MaximumRowsReturned = MaximumRowsReturned(),
-                       @BeanProperty var start: StartRow = StartRow(),
-                       @BeanProperty var limit: GroupLimit = GroupLimit(),
-                       @BeanProperty var offset: GroupOffset = GroupOffset(),
-                       @BeanProperty var sort: Sort = Sort(),
-                       @BeanProperty var groupSort: GroupSort = GroupSort(),
-                       @BeanProperty var format: GroupFormat = GroupFormat(),
-                       @BeanProperty var main: AsMainResultWhenUsingSimpleFormat = AsMainResultWhenUsingSimpleFormat(),
-                       @BeanProperty var ngroups: WithNumberOfGroups = WithNumberOfGroups(),
-                       @BeanProperty var cachePercent: GroupingCachePercent = GroupingCachePercent()) {
+    @BeanProperty var field: GroupField = GroupField(),
+    @BeanProperty var query: GroupQuery = GroupQuery(),
+    @BeanProperty var rows: MaximumRowsReturned = MaximumRowsReturned(),
+    @BeanProperty var start: StartRow = StartRow(),
+    @BeanProperty var limit: GroupLimit = GroupLimit(),
+    @BeanProperty var offset: GroupOffset = GroupOffset(),
+    @BeanProperty var sort: Sort = Sort(),
+    @BeanProperty var groupSort: GroupSort = GroupSort(),
+    @BeanProperty var format: GroupFormat = GroupFormat(),
+    @BeanProperty var main: AsMainResultWhenUsingSimpleFormat = AsMainResultWhenUsingSimpleFormat(),
+    @BeanProperty var ngroups: WithNumberOfGroups = WithNumberOfGroups(),
+    @BeanProperty var cachePercent: GroupingCachePercent = GroupingCachePercent()) {
 
   def this(enabled: Boolean, field: GroupField) {
-    this (enabled = enabled,
+    this(enabled = enabled,
       field = field,
       query = GroupQuery(),
       rows = MaximumRowsReturned(),

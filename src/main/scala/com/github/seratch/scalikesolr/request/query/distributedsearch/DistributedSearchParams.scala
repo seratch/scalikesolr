@@ -21,7 +21,7 @@ import java.lang.StringBuilder
 case class DistributedSearchParams(var shards: List[String] = Nil) {
 
   def this() {
-    this (Nil)
+    this(Nil)
   }
 
   import collection.JavaConverters._

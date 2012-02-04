@@ -17,21 +17,21 @@
 package com.github.seratch.scalikesolr
 
 import reflect.BeanProperty
-import util.{TypeBinder, JSONUtil}
-import xml.{Node, XML}
+import util.{ TypeBinder, JSONUtil }
+import xml.{ Node, XML }
 import scala.util.parsing.json.JSON
 
 case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.Standard,
-                        @BeanProperty val rawBody: String = "",
-                        @BeanProperty val rawJavabin: SolrjSolrDocument = new SolrjSolrDocument,
-                        @BeanProperty val map: Map[String, SolrDocumentValue] = Map()) {
+    @BeanProperty val rawBody: String = "",
+    @BeanProperty val rawJavabin: SolrjSolrDocument = new SolrjSolrDocument,
+    @BeanProperty val map: Map[String, SolrDocumentValue] = Map()) {
 
   def this(writerType: WriterType, rawBody: String) {
-    this (writerType = writerType, rawBody = rawBody, rawJavabin = new SolrjSolrDocument, map = Map())
+    this(writerType = writerType, rawBody = rawBody, rawJavabin = new SolrjSolrDocument, map = Map())
   }
 
   def this(writerType: WriterType, map: Map[String, SolrDocumentValue]) {
-    this (writerType = writerType, rawBody = "", rawJavabin = new SolrjSolrDocument, map = map)
+    this(writerType = writerType, rawBody = "", rawJavabin = new SolrjSolrDocument, map = map)
   }
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {

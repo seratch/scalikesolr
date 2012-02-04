@@ -34,26 +34,26 @@ package com.github.seratch.scalikesolr.response.query
 
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
-import xml.{Node, XML}
+import xml.{ Node, XML }
 import com.github.seratch.scalikesolr.util.JSONUtil._
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument, SolrjSolrDocument}
-import org.apache.solr.common.util.{NamedList, SimpleOrderedMap}
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, SolrjSolrDocument }
+import org.apache.solr.common.util.{ NamedList, SimpleOrderedMap }
 import org.apache.solr.common.SolrDocumentList
 
 case class Groups(@BeanProperty val matches: Int = 0,
-                  @BeanProperty val groups: List[Group])
+  @BeanProperty val groups: List[Group])
 
 case class Group(@BeanProperty val numFound: Int = 0,
-                 @BeanProperty val start: Int = 0,
-                 @BeanProperty val groupValue: String,
-                 @BeanProperty val documents: List[SolrDocument])
+  @BeanProperty val start: Int = 0,
+  @BeanProperty val groupValue: String,
+  @BeanProperty val documents: List[SolrDocument])
 
 object Groups {
 
   def extract(writerType: WriterType = WriterType.Standard,
-              rawBody: String = "",
-              jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavaBin: NamedList[Any] = null): Groups = {
+    rawBody: String = "",
+    jsonMapFromRawBody: Map[String, Option[Any]],
+    rawJavaBin: NamedList[Any] = null): Groups = {
 
     writerType match {
       case WriterType.Standard => {

@@ -19,9 +19,9 @@ package com.github.seratch.scalikesolr
 import scala.reflect.BeanProperty
 import collection.JavaConverters._
 import util.JSONUtil
-import org.joda.time.{DateTime, LocalDate, LocalTime}
+import org.joda.time.{ DateTime, LocalDate, LocalTime }
 import java.text.SimpleDateFormat
-import java.util.{Locale, Date, Calendar}
+import java.util.{ Locale, Date, Calendar }
 
 case class SolrDocumentValue(@BeanProperty val rawValue: String) {
 
@@ -207,7 +207,6 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
       case _ => defaultValue
     }
   }
-
 
   override def toString(): String = rawValue
 

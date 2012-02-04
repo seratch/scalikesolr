@@ -20,15 +20,15 @@ import com.github.seratch.scalikesolr.request.common.WriterType
 import util.parsing.json.JSON
 import com.github.seratch.scalikesolr.util.JSONUtil
 import com.github.seratch.scalikesolr.response.common.ResponseHeader
-import com.github.seratch.scalikesolr.{SolrDocument, SolrDocumentValue}
+import com.github.seratch.scalikesolr.{ SolrDocument, SolrDocumentValue }
 import xml.XML
-import org.apache.solr.common.util.{SimpleOrderedMap, NamedList}
+import org.apache.solr.common.util.{ SimpleOrderedMap, NamedList }
 
 object ResponseParser {
 
   def getResponseHeader(writerType: WriterType,
-                        rawBody: String,
-                        rawJavaBin: NamedList[Any] = null): ResponseHeader = {
+    rawBody: String,
+    rawJavaBin: NamedList[Any] = null): ResponseHeader = {
     writerType match {
       case WriterType.Standard => {
         val xml = XML.loadString(rawBody)

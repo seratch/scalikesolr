@@ -16,11 +16,11 @@
 
 package com.github.seratch.scalikesolr.http
 
-import java.net.{URL, HttpURLConnection}
+import java.net.{ URL, HttpURLConnection }
 import java.io._
 import com.github.seratch.scalikesolr.util.IO
 import collection.JavaConverters._
-import org.apache.solr.common.util.{NamedList, JavaBinCodec}
+import org.apache.solr.common.util.{ NamedList, JavaBinCodec }
 import reflect.BeanProperty
 
 object HttpClient {
@@ -29,7 +29,7 @@ object HttpClient {
 }
 
 class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-                 @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS) {
+    @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS) {
 
   def getAsJavabin(url: String): JavabinHttpResponse = {
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
@@ -45,8 +45,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         headers,
         response
       )
-    }
-    catch {
+    } catch {
       case e: IOException => throw e
     }
   }
@@ -65,8 +64,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         conn.getResponseCode,
         headers,
         getResponseContent(conn, charset))
-    }
-    catch {
+    } catch {
       case e: IOException => throw e
     }
 
@@ -88,11 +86,12 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
     conn.setRequestProperty("Content-Length", dataBinary.size.toString)
     conn.setDoOutput(true);
     IO.using(conn.getOutputStream) {
-      os => {
-        IO.using(new OutputStreamWriter(os, charset)) {
-          writer => writer.write(dataBinary)
+      os =>
+        {
+          IO.using(new OutputStreamWriter(os, charset)) {
+            writer => writer.write(dataBinary)
+          }
         }
-      }
     }
     try {
       val headersInJava = conn.getHeaderFields
@@ -102,8 +101,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         headers,
         getResponseContent(conn, charset)
       )
-    }
-    catch {
+    } catch {
       case e: IOException => throw e
     }
 

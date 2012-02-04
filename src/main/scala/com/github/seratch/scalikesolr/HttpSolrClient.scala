@@ -20,16 +20,15 @@ import http.HttpClient
 import java.net.URL
 import reflect.BeanProperty
 import org.slf4j.LoggerFactory
-import util.{Log, XMLStringBuilder}
+import util.{ Log, XMLStringBuilder }
 
 class HttpSolrClient(@BeanProperty val url: URL,
-                     @BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
-                     @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS,
-                     @BeanProperty val log: Log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))
-                      ) extends SolrClient {
+    @BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
+    @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS,
+    @BeanProperty val log: Log = new Log(LoggerFactory.getLogger(classOf[HttpSolrClient].getCanonicalName))) extends SolrClient {
 
   def this(url: URL, log: Log) = {
-    this (
+    this(
       url = url,
       connectTimeout = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
       readTimeout = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS,

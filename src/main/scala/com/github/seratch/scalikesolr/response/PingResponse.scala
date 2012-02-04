@@ -25,7 +25,7 @@ import util.parsing.json.JSON
 import com.github.seratch.scalikesolr.util.JSONUtil
 
 case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
-                        @BeanProperty val rawBody: String = "") {
+    @BeanProperty val rawBody: String = "") {
 
   private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
     writerType match {

@@ -17,8 +17,8 @@
 package com.github.seratch.scalikesolr.util
 
 import com.github.seratch.scalikesolr.SolrDocument
-import org.joda.time.{LocalDate, DateTime}
-import java.util.{Date, Calendar}
+import org.joda.time.{ LocalDate, DateTime }
+import java.util.{ Date, Calendar }
 import org.slf4j.LoggerFactory
 import util.matching.Regex
 import java.lang.reflect.Modifier

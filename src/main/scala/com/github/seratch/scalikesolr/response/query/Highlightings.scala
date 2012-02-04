@@ -19,8 +19,8 @@ package com.github.seratch.scalikesolr.response.query
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{Node, XML}
-import com.github.seratch.scalikesolr.{SolrDocumentValue, SolrDocument}
+import xml.{ Node, XML }
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocument]) {
@@ -36,9 +36,9 @@ case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocume
 object Highlightings {
 
   def extract(writerType: WriterType = WriterType.Standard,
-              rawBody: String = "",
-              jsonMapFromRawBody: Map[String, Option[Any]],
-              rawJavaBin: NamedList[Any] = null): Highlightings = {
+    rawBody: String = "",
+    jsonMapFromRawBody: Map[String, Option[Any]],
+    rawJavaBin: NamedList[Any] = null): Highlightings = {
 
     writerType match {
       case WriterType.Standard => {
