@@ -28,3 +28,6 @@ scalacOptions ++= Seq("-deprecation", "-unchecked")
 //defaultExcludes ~= (_ || "*~")
 
 seq(lsSettings :_*)
+
+seq(scalariformSettings: _*)
+
