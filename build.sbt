@@ -50,12 +50,6 @@ publishArtifact in Test := false
 
 pomIncludeRepository := { x => false }
 
-publishMavenStyle := true
-
-publishArtifact in Test := false
-
-pomIncludeRepository := { x => false }
-
 pomExtra := (
   <url>http://seratch.github.com/scalikesolr</url>
   <licenses>
