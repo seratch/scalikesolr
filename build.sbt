@@ -11,7 +11,7 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
   }
   Seq(
     "joda-time"                % "joda-time"          % "1.6.2"           % "provided",
-    "ch.qos.logback"           % "logback-classic"    % "1.0.0"          % "provided",
+    "ch.qos.logback"           % "logback-classic"    % "1.0.0"           % "provided",
     "org.apache.solr"          % "solr-solrj"         % "3.5.0"           % "provided",
     "junit"                    % "junit"              % "4.9"             % "test",
     "org.mockito"              % "mockito-all"        % "1.8.2"           % "test",
@@ -23,9 +23,15 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
 
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
+// ls
+
 seq(lsSettings :_*)
 
+// scalariform
+
 seq(scalariformSettings: _*)
+
+// testgen
 
 seq(testgenSettings: _*)
 
@@ -34,4 +40,40 @@ testgenEncoding in Compile := "UTF-8"
 testgenTestTemplate in Compile := "scalatest.FlatSpec"
 
 testgenScalaTestMatchers in Compile := "ShouldMatchers"
+
+// publish
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { x => false }
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { x => false }
+
+pomExtra := (
+  <url>http://seratch.github.com/scalikesolr</url>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>git@github.com:seratch/scalikesolr.git</url>
+    <connection>scm:git:git@github.com:seratch/scalikesolr.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>seratch</id>
+      <name>Kazuhuiro Sera</name>
+      <url>http://seratch.net/</url>
+    </developer>
+  </developers>
+)
 

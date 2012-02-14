@@ -24,6 +24,14 @@ libraryDependencies ++= Seq(
 )
 ```
 
+Before version 3.5.0, the resolver setting as follows is required:
+
+```
+resolvers ++= Seq(
+  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
+)
+```
+
 via ls:
 
 http://ls.implicit.ly/seratch/scalikesolr
@@ -40,8 +48,8 @@ The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
 ```xml
 <repositories>
   <repository>
-    <id>seratch.github.com releases</id>
-    <url>http://seratch.github.com/mvn-repo/releases</url>
+    <id>scala-tools.org releases</id>
+    <url>http://scala-tools.org/repo-releases</url>
   </repository>
 </repositories>
 
@@ -51,6 +59,18 @@ The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
   <version>[3.5,)</version>
 </dependency>
 ```
+
+Before version 3.5.0, the repository setting as follows is required:
+
+```xml
+<repositories>
+  <repository>
+    <id>seratch.github.com releases</id>
+    <url>http://seratch.github.com/mvn-repo/releases</url>
+  </repository>
+</repositories>
+```
+
 
 ## Usage
 

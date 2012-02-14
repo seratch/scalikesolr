@@ -10,10 +10,9 @@
    "name": "Apache License, Version 2.0",
    "url":"http://www.apache.org/licenses/LICENSE-2.0"
   }],
- "resolvers": ["http://seratch.github.com/mvn-repo/releases"],
+ "resolvers": ["http://scala-tools.org/repo-releases"],
  "dependencies": [
    { "organization":"joda-time",       "name": "joda-time",       "version": "1.6.2" },
-   { "organization":"ch.qos.logback",  "name": "logback-classic", "version": "0.9.26" },
    { "organization":"org.apache.solr", "name": "solr-solr",       "version": "3.5.0" }
   ],
  "scalas": [
