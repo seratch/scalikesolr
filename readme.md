@@ -8,25 +8,17 @@ Supported scala versions: 2.9.0, 2.9.0-1, 2.9.1
 
 Solr/Lucene versions: 3.2, 3.3, 3.4, 3.5
 
-see also:
-
-https://github.com/seratch/seratch.github.com/tree/master/mvn-repo/releases/com/github/seratch
-
 ### sbt
 
 ```scala
-resolvers ++= Seq(
-  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
-)
-
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "3.5.0" withSources ()
+  "com.github.seratch" %% "scalikesolr" % "3.5.1" withSources ()
 )
 ```
 
 Before version 3.5.0, the resolver setting as follows is required:
 
-```
+```scala
 resolvers ++= Seq(
   "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
 )
