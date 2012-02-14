@@ -10,10 +10,11 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
     case _       => "specs_" + scalaVersion
   }
   Seq(
-    "joda-time"                % "joda-time"          % "1.6.2"           % "provided",
-    "ch.qos.logback"           % "logback-classic"    % "1.0.0"           % "provided",
-    "org.apache.solr"          % "solr-solrj"         % "3.5.0"           % "provided",
-    "junit"                    % "junit"              % "4.9"             % "test",
+    "org.slf4j"                % "slf4j-api"          % "1.6.4"           % "compile",
+    "joda-time"                % "joda-time"          % "1.6.2"           % "compile",
+    "org.apache.solr"          % "solr-solrj"         % "3.5.0"           % "compile",
+    "ch.qos.logback"           % "logback-classic"    % "1.0.0"           % "test",
+    "junit"                    % "junit"              % "4.10"            % "test",
     "org.mockito"              % "mockito-all"        % "1.8.2"           % "test",
     "org.scalatest"            %% "scalatest"         % "1.6.1"           % "test",
     "org.scala-tools.testing"  % specsArtifactId      % "1.6.8"           % "test",
