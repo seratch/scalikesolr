@@ -7,17 +7,18 @@ import org.junit._
 import com.github.seratch.scalikesolr.request.UpdateRequest
 import runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{FunSuite, Assertions}
+import org.scalatest.{ FlatSpec, FunSuite, Assertions }
+import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
-class SolrClient_doRollbackSuite extends FunSuite {
+class SolrClient_doRollbackSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrClient#doRollback"
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
-  test("available") {
+  it should "be available" in {
     val request = new UpdateRequest()
     val response = client.doRollback(request)
     log.debug(response.toString)

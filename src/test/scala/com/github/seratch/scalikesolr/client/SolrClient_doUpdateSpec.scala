@@ -4,21 +4,22 @@ import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
 import org.junit._
 import com.github.seratch.scalikesolr.request.common.WriterType
-import com.github.seratch.scalikesolr.request.{QueryRequest, UpdateRequest}
+import com.github.seratch.scalikesolr.request.{ QueryRequest, UpdateRequest }
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.FunSuite
 import runner.RunWith
-import java.net.{SocketTimeoutException, URL}
+import java.net.{ SocketTimeoutException, URL }
+import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
-class SolrClient_doUpdateSuite extends FunSuite {
+class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrClient#doUpdate"
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
-  test("doUpdateInXMLIsAvailable") {
+  "doUpdate in XML" should "be available" in {
     val request = new UpdateRequest(
       requestBody = "<optimize/>"
     )
@@ -26,7 +27,7 @@ class SolrClient_doUpdateSuite extends FunSuite {
     assert(response != null)
   }
 
-  test("doUpdateInJSONIsAvailable") {
+  "doUpdate in JSON" should "be available" in {
     val request = new UpdateRequest(
       writerType = WriterType.JSON,
       requestBody = "{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }"
@@ -35,7 +36,7 @@ class SolrClient_doUpdateSuite extends FunSuite {
     assert(response != null)
   }
 
-  test("tooSmallConnectTimeoutValue") {
+  it should "throw SocketTimeoutException when specifying too small connect timeout" in {
     val client = Solr.httpServer(new URL("http://localhost:9999/solr")).newClient(
       connectTimeout = 1,
       readTimeout = 10000
@@ -45,7 +46,7 @@ class SolrClient_doUpdateSuite extends FunSuite {
     }
   }
 
-  test("tooSmallReadTimeoutValue") {
+  it should "throw SocketTimeoutException when specifying too small read timeout" in {
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(
       connectTimeout = 1000,
       readTimeout = 1

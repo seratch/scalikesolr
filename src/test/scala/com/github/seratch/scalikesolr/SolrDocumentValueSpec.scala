@@ -3,22 +3,22 @@ package com.github.seratch.scalikesolr
 import org.specs.Specification
 import org.slf4j.LoggerFactory
 import org.joda.time.format.DateTimeFormat
-import java.util.{Calendar, Locale}
+import java.util.{ Calendar, Locale }
 
 import org.junit.runner.RunWith
-import org.joda.time.{DateTime, LocalDate, LocalTime}
-import org.scalatest.FunSuite
+import org.joda.time.{ DateTime, LocalDate, LocalTime }
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{ FlatSpec, FunSuite }
 
 @RunWith(classOf[JUnitRunner])
-class SolrDocumentValueSuite extends FunSuite with ShouldMatchers {
+class SolrDocumentValueSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrDocumentValue"
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrDocumentValueSpec")
 
-  test("toDateOrElse") {
+  "toDateOrElse" should "be available" in {
     {
       val value = new SolrDocumentValue("2010-12-31T23:59:59.000Z")
       val expected = new DateTime("2010-12-31T23:59:59.000Z")
@@ -35,7 +35,7 @@ class SolrDocumentValueSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("toDateTimeOrElse") {
+  "toDateTimeOrElse" should "be available" in {
     {
       val value = new SolrDocumentValue("2010-12-31T23:59:59.100Z")
       val expected = new DateTime("2010-12-31T23:59:59.10Z")
@@ -52,7 +52,7 @@ class SolrDocumentValueSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("toLocalTimeOrElse") {
+  "toLocalTimeOrElse" should "be available" in {
     {
       val value = new SolrDocumentValue("2010-12-31T23:59:59.000Z")
       val dateTime = new DateTime("2010-12-31T23:59:59.000Z")
@@ -64,7 +64,7 @@ class SolrDocumentValueSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("toLocalDateOrElse") {
+  "toLocalDateOrElse" should "be available" in {
     {
       val value = new SolrDocumentValue("2010-12-31T23:59:59.000Z")
       val dateTime = new DateTime("2010-12-31T23:59:59.000Z")
@@ -76,7 +76,7 @@ class SolrDocumentValueSuite extends FunSuite with ShouldMatchers {
     }
   }
 
-  test("toCalendarOrElse") {
+  "toCalendarOrElse" should "be available" in {
     {
       val value = new SolrDocumentValue("2010-12-31T23:59:59.000Z")
       val dateTime = new DateTime("2010-12-31T23:59:59.000Z")

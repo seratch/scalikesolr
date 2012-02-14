@@ -7,16 +7,16 @@ import org.junit.Test
 import org.scalatest.matchers.ShouldMatchers
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.FunSuite
+import org.scalatest.{ FlatSpec, FunSuite }
 
 @RunWith(classOf[JUnitRunner])
-class DistributedSearchParamsSuite extends FunSuite with ShouldMatchers {
+class DistributedSearchParamsSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "DistributedSearchParams"
 
-  val log = LoggerFactory.getLogger(classOf[DistributedSearchParamsSuite])
+  val log = LoggerFactory.getLogger(classOf[DistributedSearchParamsSpec])
 
-  test("toStringIsAvailable") {
+  "toString" should "be available" in {
     val params = new DistributedSearchParams(List("server1:8080", "server2:8080"))
     params.toString should equal("shards=server1:8080,server2:8080")
   }

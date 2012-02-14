@@ -4,30 +4,31 @@ import java.net.URL
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
-import com.github.seratch.scalikesolr.request.query.morelikethis.{FieldsToUseForSimilarity, MoreLikeThisParams}
-import com.github.seratch.scalikesolr.{SolrDocument, Solr}
-import com.github.seratch.scalikesolr.request.query.facet.{Param, Value, FacetParam, FacetParams}
-import com.github.seratch.scalikesolr.request.query.group.{AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams}
-import com.github.seratch.scalikesolr.request.{UpdateRequest, AddRequest, QueryRequest}
+import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseForSimilarity, MoreLikeThisParams }
+import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
+import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
+import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
+import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
 import org.joda.time.DateTime
-import com.github.seratch.scalikesolr.request.query.{MaximumRowsReturned, Sort, Query}
+import com.github.seratch.scalikesolr.request.query.{ MaximumRowsReturned, Sort, Query }
 import com.github.seratch.scalikesolr.util.Log
 import com.github.seratch.scalikesolr.request.query.distributedsearch.DistributedSearchParams
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.apache.solr.client.solrj.SolrQuery
-import org.apache.solr.client.solrj.impl.{BinaryResponseParser, CommonsHttpSolrServer}
+import org.apache.solr.client.solrj.impl.{ BinaryResponseParser, CommonsHttpSolrServer }
+import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
-class SolrClient_doQuerySuite extends FunSuite {
+class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrClient#doQuery"
 
-  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
-  test("parepare") {
+  it should "be prepared" in {
     val request = new AddRequest()
     val doc1 = SolrDocument(
       writerType = WriterType.JSON,
@@ -67,7 +68,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     client.doCommit(new UpdateRequest())
   }
 
-  test("available") {
+  it should "be available" in {
     val request = new QueryRequest(Query("author:Rick"))
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -91,7 +92,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     assert(response.response.documents.size == 10)
   }
 
-  test("availableWithDistributedSearch") {
+  "Distributed search" should "be available" in {
     val client = Solr.httpServer(new URL("http://localhost:8984/solr")).newClient()
     val request = new QueryRequest(Query("author:Rick"))
     request.shards = DistributedSearchParams(shards = List("localhost:8983/solr"))
@@ -117,7 +118,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     assert(response.response.documents.size == 10)
   }
 
-  test("availableWithMultibyteQuery") {
+  "Multibyte queries" should "be available" in {
     val request = new QueryRequest(Query("author:日本人"))
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -130,7 +131,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     log.debug(response.toString)
   }
 
-  test("availableWithGroupParams") {
+  "Group params" should "be available" in {
     val request = new QueryRequest(
       query = Query("genre_s:fantasy")
     )
@@ -157,7 +158,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     assert(response.groups.groups.apply(2).start == 0)
   }
 
-  test("availableWithGroupParamsWithSimpleFormat") {
+  "Group params" should "be available with simple format" in {
     val request = new QueryRequest(
       query = Query("genre_s:fantasy")
     )
@@ -180,7 +181,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     assert(response.groups.groups.apply(0).start == 0)
   }
 
-  test("availableWithGroupParamsWithSimpleFormatAndMain") {
+  "Group params" should "be available with simple format, main" in {
     val request = new QueryRequest(
       query = Query("genre_s:fantasy")
     )
@@ -205,7 +206,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     assert(response.groups.groups.size == 0)
   }
 
-  test("availableWithHighlightingParams") {
+  "Highlighting params" should "be available" in {
     val request = new QueryRequest(
       query = Query("author:Rick")
     )
@@ -231,7 +232,7 @@ class SolrClient_doQuerySuite extends FunSuite {
     }
   }
 
-  test("availableWithMoreLikeThisParams") {
+  "MoreLikeThis params" should "be available" in {
     val request = new QueryRequest(
       query = Query("author:Rick")
     )
@@ -245,14 +246,15 @@ class SolrClient_doQuerySuite extends FunSuite {
     log.debug("-----------------------------")
     log.debug(response.moreLikeThis.toString)
     response.response.documents foreach {
-      doc => {
-        val id = doc.get("id").toString
-        log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
-      }
+      doc =>
+        {
+          val id = doc.get("id").toString
+          log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
+        }
     }
   }
 
-  test("availableWithFacetParams") {
+  "FacetParams" should "be available" in {
     val request = new QueryRequest(
       query = Query("author:Rick")
     )
@@ -285,9 +287,9 @@ class SolrClient_doQuerySuite extends FunSuite {
     }
   }
 
-  test("checkPerformanceOfFetching") {
+  "Performance of fetching" should "be expected" in {
 
-    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
     log.isDebugEnabled = false
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
     val currentCount = client.doQuery(new QueryRequest(
@@ -301,9 +303,10 @@ class SolrClient_doQuerySuite extends FunSuite {
         i => "unittest" + i.toString
       }).toList
       addReq.documents = ids map {
-        id => SolrDocument(
-          writerType = WriterType.JSON,
-          rawBody = """{"id" : """" + id + """",
+        id =>
+          SolrDocument(
+            writerType = WriterType.JSON,
+            rawBody = """{"id" : """" + id + """",
          "cat" : ["book","hardcover"],
          "title" : "The Lightning Thief",
          "author" : "Rick Riordan",
@@ -315,7 +318,7 @@ class SolrClient_doQuerySuite extends FunSuite {
          "pages_i" : 384
        }
        """
-        )
+          )
       }
       client.doAddDocuments(addReq)
       client.doCommit(new UpdateRequest)
@@ -351,9 +354,9 @@ class SolrClient_doQuerySuite extends FunSuite {
 
   }
 
-  test("checkPerformanceOfLoadingDocuments") {
+  "Performance of loading documents" should "be expected" in {
 
-    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
     log.isDebugEnabled = false
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
     val currentCount = client.doQuery(new QueryRequest(
@@ -367,9 +370,10 @@ class SolrClient_doQuerySuite extends FunSuite {
         i => "unittest" + i.toString
       }).toList
       addReq.documents = ids map {
-        id => SolrDocument(
-          writerType = WriterType.JSON,
-          rawBody = """{"id" : """" + id + """",
+        id =>
+          SolrDocument(
+            writerType = WriterType.JSON,
+            rawBody = """{"id" : """" + id + """",
          "cat" : ["book","hardcover"],
          "title" : "The Lightning Thief",
          "author" : "Rick Riordan",
@@ -381,7 +385,7 @@ class SolrClient_doQuerySuite extends FunSuite {
          "pages_i" : 384
        }
        """
-        )
+          )
       }
       client.doAddDocuments(addReq)
       client.doCommit(new UpdateRequest)
@@ -428,9 +432,9 @@ class SolrClient_doQuerySuite extends FunSuite {
 
   }
 
-  test("checkPerformanceOfSimpleQuery") {
+  "Performance of simple query" should "be expected" in {
 
-    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
     log.isDebugEnabled = false
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
     val currentCount = client.doQuery(new QueryRequest(
@@ -444,9 +448,10 @@ class SolrClient_doQuerySuite extends FunSuite {
         i => "unittest" + i.toString
       }).toList
       addReq.documents = ids map {
-        id => SolrDocument(
-          writerType = WriterType.JSON,
-          rawBody = """{"id" : """" + id + """",
+        id =>
+          SolrDocument(
+            writerType = WriterType.JSON,
+            rawBody = """{"id" : """" + id + """",
          "cat" : ["book","hardcover"],
          "title" : "The Lightning Thief",
          "author" : "Rick Riordan",
@@ -458,7 +463,7 @@ class SolrClient_doQuerySuite extends FunSuite {
          "pages_i" : 384
        }
        """
-        )
+          )
       }
       client.doAddDocuments(addReq)
       client.doCommit(new UpdateRequest)
@@ -507,9 +512,9 @@ class SolrClient_doQuerySuite extends FunSuite {
 
   }
 
-  test("checkPerformanceOfSimpleQuery vs Solrj") {
+  "Performance of simple query vs Solrj" should "be expected" in {
 
-    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
     log.isDebugEnabled = false
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
     val currentCount = client.doQuery(new QueryRequest(
@@ -523,9 +528,10 @@ class SolrClient_doQuerySuite extends FunSuite {
         i => "unittest" + i.toString
       }).toList
       addReq.documents = ids map {
-        id => SolrDocument(
-          writerType = WriterType.JSON,
-          rawBody = """{"id" : """" + id + """",
+        id =>
+          SolrDocument(
+            writerType = WriterType.JSON,
+            rawBody = """{"id" : """" + id + """",
          "cat" : ["book","hardcover"],
          "title" : "The Lightning Thief",
          "author" : "Rick Riordan",
@@ -537,7 +543,7 @@ class SolrClient_doQuerySuite extends FunSuite {
          "pages_i" : 384
        }
        """
-        )
+          )
       }
       client.doAddDocuments(addReq)
       client.doCommit(new UpdateRequest)
@@ -596,12 +602,11 @@ class SolrClient_doQuerySuite extends FunSuite {
      * scalikesolr result :25
      */
 
-
   }
 
-  test("checkPerformanceOfSimpleQuery(query only) vs Solrj") {
+  "Performance of simple query(query only) vs Solrj" should "be expected" in {
 
-    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySuite]))
+    val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
     log.isDebugEnabled = false
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(log)
     val currentCount = client.doQuery(new QueryRequest(
@@ -615,9 +620,10 @@ class SolrClient_doQuerySuite extends FunSuite {
         i => "unittest" + i.toString
       }).toList
       addReq.documents = ids map {
-        id => SolrDocument(
-          writerType = WriterType.JSON,
-          rawBody = """{"id" : """" + id + """",
+        id =>
+          SolrDocument(
+            writerType = WriterType.JSON,
+            rawBody = """{"id" : """" + id + """",
          "cat" : ["book","hardcover"],
          "title" : "The Lightning Thief",
          "author" : "Rick Riordan",
@@ -629,7 +635,7 @@ class SolrClient_doQuerySuite extends FunSuite {
          "pages_i" : 384
        }
        """
-        )
+          )
       }
       client.doAddDocuments(addReq)
       client.doCommit(new UpdateRequest)
@@ -687,7 +693,6 @@ class SolrClient_doQuerySuite extends FunSuite {
      * [query only] solrj result :52
      * [query only] scalikesolr result :35
      */
-
 
   }
 

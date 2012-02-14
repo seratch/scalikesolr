@@ -5,26 +5,27 @@ import org.slf4j.LoggerFactory
 import org.junit._
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
-import com.github.seratch.scalikesolr.request.query.morelikethis.{FieldsToUseForSimilarity, MoreLikeThisParams}
-import com.github.seratch.scalikesolr.{SolrDocument, Solr}
-import com.github.seratch.scalikesolr.request.query.facet.{Param, Value, FacetParam, FacetParams}
-import com.github.seratch.scalikesolr.request.query.group.{AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams}
-import com.github.seratch.scalikesolr.request.{UpdateRequest, AddRequest, QueryRequest}
-import com.github.seratch.scalikesolr.request.query.{Sort, Query}
+import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseForSimilarity, MoreLikeThisParams }
+import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
+import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
+import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
+import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
+import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
 import com.github.seratch.scalikesolr.util.Log
 import runner.RunWith
-import org.scalatest.FunSuite
 import org.scalatest.junit.JUnitRunner
+import org.scalatest.{ FlatSpec, FunSuite, Assertions }
+import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
-class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
+class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrClient#doQuery JSONResponse"
 
-  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryJavabinResponseSuite]))
+  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryJavabinResponseSpec]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
-  test("parepare") {
+  it should "be parepared" in {
     val request = new AddRequest()
     val doc1 = SolrDocument(
       writerType = WriterType.JSON,
@@ -66,9 +67,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     client.doCommit(new UpdateRequest())
   }
 
-  test("available") {
+  it should "be available" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("id:978-1423103349"))
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -98,9 +99,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     assert(response.response.documents.size == 1)
   }
 
-  test("availableWithMultibyteQuery") {
+  it should "be available with multibyte queries" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("author:日本人"))
     val response = client.doQuery(request)
     assert(response.responseHeader != null)
@@ -110,9 +111,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     log.debug(response.toString)
   }
 
-  test("availableWithGroupParams") {
+  "Group params" should "be available" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(enabled = true, field = GroupField("author_t"))
@@ -138,9 +139,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     assert(response.groups.groups.apply(2).start == 0)
   }
 
-  test("availableWithGroupParamsWithSimpleFormat") {
+  "Group params" should "be available with simple format" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple"))
@@ -161,9 +162,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     assert(response.groups.groups.apply(0).start == 0)
   }
 
-  test("availableWithGroupParamsWithSimpleFormatAndMain") {
+  "Group params" should "be available with simple format, main" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(
@@ -186,9 +187,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     assert(response.groups.groups.size == 0)
   }
 
-  test("availableWithHighlightingParams") {
+  "Highlighting params" should "be available" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("author:Rick"),
       sort = Sort("page_i desc")
     )
@@ -213,9 +214,9 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     }
   }
 
-  test("availableWithMoreLikeThisParams") {
+  "MoreLikeThis params" should "be available" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("author:Rick")
     )
     request.moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body"))
@@ -227,16 +228,17 @@ class SolrClient_doQueryJavabinResponseSuite extends FunSuite {
     log.debug(response.toString)
     log.debug(response.moreLikeThis.toString)
     response.response.documents foreach {
-      doc => {
-        val id = doc.get("id").toString
-        log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
-      }
+      doc =>
+        {
+          val id = doc.get("id").toString
+          log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
+        }
     }
   }
 
-  test("availableWithFacetParams") {
+  "Facet params" should "be available" in {
     val request = new QueryRequest(
-      writerType = WriterType.JavaBinary,
+      writerType = WriterType.JSON,
       query = Query("author:Rick")
     )
     request.facet = new FacetParams(enabled = true,

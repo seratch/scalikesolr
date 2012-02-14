@@ -1,6 +1,4 @@
-name := "scalikesolr"
-
-organization := "com.github.seratch"
+import testgen.TestgenKeys._
 
 scalaVersion := "2.9.1"
 
@@ -25,9 +23,15 @@ libraryDependencies <++= (scalaVersion) { scalaVersion =>
 
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
-//defaultExcludes ~= (_ || "*~")
-
 seq(lsSettings :_*)
 
 seq(scalariformSettings: _*)
+
+seq(testgenSettings: _*)
+
+testgenEncoding in Compile := "UTF-8"
+
+testgenTestTemplate in Compile := "scalatest.FlatSpec"
+
+testgenScalaTestMatchers in Compile := "ShouldMatchers"
 

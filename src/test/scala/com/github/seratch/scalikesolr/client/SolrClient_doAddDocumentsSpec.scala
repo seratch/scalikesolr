@@ -1,23 +1,24 @@
 package com.github.seratch.scalikesolr.client
 
 import com.github.seratch.scalikesolr.request.common.WriterType
-import com.github.seratch.scalikesolr.request.{AddRequest, UpdateRequest}
+import com.github.seratch.scalikesolr.request.{ AddRequest, UpdateRequest }
 import java.net.URL
-import com.github.seratch.scalikesolr.{Solr, SolrDocument}
+import com.github.seratch.scalikesolr.{ Solr, SolrDocument }
 import org.slf4j.LoggerFactory
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
+import org.scalatest.matchers.ShouldMatchers
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class SolrClient_doAddDocumentsSuite extends FunSuite {
+class SolrClient_doAddDocumentsSpec extends FlatSpec with ShouldMatchers {
 
-  type ? = this.type
+  behavior of "SolrClient#doAddDocuments"
 
   val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
-  test("available") {
+  it should "be available" in {
     val request = new AddRequest()
     val doc1 = SolrDocument(
       writerType = WriterType.JSON,
@@ -60,7 +61,7 @@ class SolrClient_doAddDocumentsSuite extends FunSuite {
     assert(response.responseHeader.qTime >= 0)
   }
 
-  test("availableInJSON") {
+  it should "be available with JSON format" in {
     val request = new UpdateRequest(
       requestBody = "id,cat,name,price,inStock,author_t,series_t,sequence_i,genre_s\n" +
         "0553573403,book,A Game of Thrones,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",1,fantasy\n" +
