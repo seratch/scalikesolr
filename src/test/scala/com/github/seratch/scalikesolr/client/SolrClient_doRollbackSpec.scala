@@ -3,11 +3,10 @@ package com.github.seratch.scalikesolr.client
 import java.net.URL
 import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
-import org.junit._
 import com.github.seratch.scalikesolr.request.UpdateRequest
-import runner.RunWith
+import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ FlatSpec, FunSuite, Assertions }
+import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])

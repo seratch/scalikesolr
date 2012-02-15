@@ -9,7 +9,7 @@ import com.github.seratch.scalikesolr.request.query.Query
 import org.joda.time.DateTime
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.FlatSpec
 
 case class PageI(val value: String = "")
 

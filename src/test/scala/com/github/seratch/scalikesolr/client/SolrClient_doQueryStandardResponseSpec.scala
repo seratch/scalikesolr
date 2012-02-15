@@ -2,7 +2,6 @@ package com.github.seratch.scalikesolr.client
 
 import java.net.URL
 import org.slf4j.LoggerFactory
-import org.junit._
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseForSimilarity, MoreLikeThisParams }
@@ -12,9 +11,9 @@ import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsin
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
 import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
 import com.github.seratch.scalikesolr.util.Log
-import runner.RunWith
+import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ FlatSpec, FunSuite, Assertions }
+import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])

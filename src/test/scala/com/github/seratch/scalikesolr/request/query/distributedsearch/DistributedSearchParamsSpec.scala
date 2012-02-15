@@ -1,13 +1,10 @@
 package com.github.seratch.scalikesolr.request.query.distributedsearch
 
 import org.slf4j.LoggerFactory
-import com.github.seratch.scalikesolr.Solr
-import java.net.URL
-import org.junit.Test
 import org.scalatest.matchers.ShouldMatchers
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.FlatSpec
 
 @RunWith(classOf[JUnitRunner])
 class DistributedSearchParamsSpec extends FlatSpec with ShouldMatchers {

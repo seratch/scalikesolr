@@ -2,15 +2,13 @@ package com.github.seratch.scalikesolr.util;
 
 import com.github.seratch.scalikesolr.SolrDocument;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.scalatest.junit.JUnitRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class TypeBinderTest {
 
