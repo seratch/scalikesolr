@@ -14,6 +14,7 @@ class MaximumNumberOfQueryTermsSpec extends FlatSpec with ShouldMatchers {
     val maxqt: Int = 0
     val instance = new MaximumNumberOfQueryTerms(maxqt)
     instance should not be null
+    instance.getKey() should equal("mlt.maxqt")
   }
 
 }

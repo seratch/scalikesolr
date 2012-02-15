@@ -14,6 +14,7 @@ class MaximumRowsReturnedSpec extends FlatSpec with ShouldMatchers {
     val rows: Int = 0
     val instance = new MaximumRowsReturned(rows)
     instance should not be null
+    instance.getKey() should equal("rows")
   }
 
 }

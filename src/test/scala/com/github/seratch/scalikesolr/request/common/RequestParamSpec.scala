@@ -11,12 +11,14 @@ class RequestParamSpec extends FlatSpec with ShouldMatchers {
   behavior of "RequestParam"
 
   it should "be available" in {
-    val mixedin = new Object with RequestParam {
+    val param = new Object with RequestParam {
       override def isEmpty() = false
-      override def getKey() = "mixedin"
+      override def getKey() = "param"
       override def getValue() = "true"
     }
-    mixedin should not be null
+    param should not be null
+    param.getKey() should equal("param")
+    param.getValue() should equal("true")
   }
 
 }

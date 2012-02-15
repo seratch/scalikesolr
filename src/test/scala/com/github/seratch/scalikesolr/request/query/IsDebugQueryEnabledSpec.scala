@@ -14,6 +14,7 @@ class IsDebugQueryEnabledSpec extends FlatSpec with ShouldMatchers {
     val debugQuery: Boolean = false
     val instance = new IsDebugQueryEnabled(debugQuery)
     instance should not be null
+    instance.getKey() should equal("debugQuery")
   }
 
 }

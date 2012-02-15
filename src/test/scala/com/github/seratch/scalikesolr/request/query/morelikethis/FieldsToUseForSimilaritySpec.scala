@@ -14,6 +14,7 @@ class FieldsToUseForSimilaritySpec extends FlatSpec with ShouldMatchers {
     val fl: String = ""
     val instance = new FieldsToUseForSimilarity(fl)
     instance should not be null
+    instance.getKey() should equal("mlt.fl")
   }
 
 }

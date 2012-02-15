@@ -14,6 +14,7 @@ class MinimumWordLengthBelowToBeIgnoredSpec extends FlatSpec with ShouldMatchers
     val minwl: Int = 0
     val instance = new MinimumWordLengthBelowToBeIgnored(minwl)
     instance should not be null
+    instance.getKey() should equal("mlt.minwl")
   }
 
 }

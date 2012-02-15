@@ -14,6 +14,7 @@ class FieldsToReturnSpec extends FlatSpec with ShouldMatchers {
     val fl: String = ""
     val instance = new FieldsToReturn(fl)
     instance should not be null
+    instance.getKey() should equal("fl")
   }
 
 }

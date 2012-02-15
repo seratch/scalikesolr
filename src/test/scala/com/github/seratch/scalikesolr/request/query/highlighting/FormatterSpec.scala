@@ -14,6 +14,7 @@ class FormatterSpec extends FlatSpec with ShouldMatchers {
     val formatter: String = ""
     val instance = new Formatter(formatter)
     instance should not be null
+    instance.getKey() should equal("hl.formatter")
   }
 
 }

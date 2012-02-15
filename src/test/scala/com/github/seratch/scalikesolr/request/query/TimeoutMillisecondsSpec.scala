@@ -14,6 +14,7 @@ class TimeoutMillisecondsSpec extends FlatSpec with ShouldMatchers {
     val timeAllowed: Long = 0L
     val instance = new TimeoutMilliseconds(timeAllowed)
     instance should not be null
+    instance.getKey() should equal("timeAllowed")
   }
 
 }

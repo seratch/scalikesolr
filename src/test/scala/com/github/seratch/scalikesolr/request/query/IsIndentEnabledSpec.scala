@@ -14,6 +14,7 @@ class IsIndentEnabledSpec extends FlatSpec with ShouldMatchers {
     val indent: Boolean = false
     val instance = new IsIndentEnabled(indent)
     instance should not be null
+    instance.getKey() should equal("indent")
   }
 
 }

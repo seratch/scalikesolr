@@ -14,6 +14,7 @@ class FragmenterSpec extends FlatSpec with ShouldMatchers {
     val fragmenter: String = ""
     val instance = new Fragmenter(fragmenter)
     instance should not be null
+    instance.getKey() should equal("hl.fragmenter")
   }
 
 }

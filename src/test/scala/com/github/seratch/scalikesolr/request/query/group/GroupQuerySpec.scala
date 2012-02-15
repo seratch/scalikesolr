@@ -14,6 +14,7 @@ class GroupQuerySpec extends FlatSpec with ShouldMatchers {
     val query: String = ""
     val instance = new GroupQuery(query)
     instance should not be null
+    instance.getKey() should equal("group.query")
   }
 
 }

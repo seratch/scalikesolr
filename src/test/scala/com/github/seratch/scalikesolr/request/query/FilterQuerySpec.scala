@@ -14,6 +14,7 @@ class FilterQuerySpec extends FlatSpec with ShouldMatchers {
     val fq: String = ""
     val instance = new FilterQuery(fq)
     instance should not be null
+    instance.getKey() should equal("fq")
   }
 
 }

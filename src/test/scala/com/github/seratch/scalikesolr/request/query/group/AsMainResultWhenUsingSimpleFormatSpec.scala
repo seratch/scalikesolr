@@ -14,6 +14,7 @@ class AsMainResultWhenUsingSimpleFormatSpec extends FlatSpec with ShouldMatchers
     val main: Boolean = false
     val instance = new AsMainResultWhenUsingSimpleFormat(main)
     instance should not be null
+    instance.getKey() should equal("group.main")
   }
 
 }

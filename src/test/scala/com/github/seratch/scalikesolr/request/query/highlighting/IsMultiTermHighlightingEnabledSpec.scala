@@ -14,6 +14,7 @@ class IsMultiTermHighlightingEnabledSpec extends FlatSpec with ShouldMatchers {
     val higightMultiTerm: Boolean = false
     val instance = new IsMultiTermHighlightingEnabled(higightMultiTerm)
     instance should not be null
+    instance.getKey() should equal("hl.highlightMultiTerm")
   }
 
 }

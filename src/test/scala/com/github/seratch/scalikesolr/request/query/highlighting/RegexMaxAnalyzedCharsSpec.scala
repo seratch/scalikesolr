@@ -14,6 +14,7 @@ class RegexMaxAnalyzedCharsSpec extends FlatSpec with ShouldMatchers {
     val regexMaxAnalyzedChars: Int = 0
     val instance = new RegexMaxAnalyzedChars(regexMaxAnalyzedChars)
     instance should not be null
+    instance.getKey() should equal("hl.regex.maxAnalyzedChars")
   }
 
 }

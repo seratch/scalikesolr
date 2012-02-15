@@ -14,6 +14,7 @@ class GroupFunctionalQuerySpec extends FlatSpec with ShouldMatchers {
     val func: String = ""
     val instance = new GroupFunctionalQuery(func)
     instance should not be null
+    instance.getKey() should equal("group.func")
   }
 
 }

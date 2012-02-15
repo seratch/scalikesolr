@@ -14,6 +14,7 @@ class SortSpec extends FlatSpec with ShouldMatchers {
     val sort: String = ""
     val instance = new Sort(sort)
     instance should not be null
+    instance.getKey() should equal("sort")
   }
 
 }

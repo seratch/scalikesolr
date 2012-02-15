@@ -14,6 +14,7 @@ class VersionSpec extends FlatSpec with ShouldMatchers {
     val version: String = ""
     val instance = new Version(version)
     instance should not be null
+    instance.getKey() should equal("version")
   }
 
 }

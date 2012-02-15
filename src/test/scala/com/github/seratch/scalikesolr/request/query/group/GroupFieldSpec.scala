@@ -14,6 +14,7 @@ class GroupFieldSpec extends FlatSpec with ShouldMatchers {
     val field: String = ""
     val instance = new GroupField(field)
     instance should not be null
+    instance.getKey() should equal("group.field")
   }
 
 }

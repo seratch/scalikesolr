@@ -14,6 +14,7 @@ class IsPhraseHighlighterEnabledSpec extends FlatSpec with ShouldMatchers {
     val usePhraseHigighter: Boolean = false
     val instance = new IsPhraseHighlighterEnabled(usePhraseHigighter)
     instance should not be null
+    instance.getKey() should equal("hl.usePhraseHighlighter")
   }
 
 }

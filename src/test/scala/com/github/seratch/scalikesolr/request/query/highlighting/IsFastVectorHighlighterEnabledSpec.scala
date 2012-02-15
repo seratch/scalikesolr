@@ -14,6 +14,7 @@ class IsFastVectorHighlighterEnabledSpec extends FlatSpec with ShouldMatchers {
     val useFastVectorHighlighter: Boolean = false
     val instance = new IsFastVectorHighlighterEnabled(useFastVectorHighlighter)
     instance should not be null
+    instance.getKey() should equal("hl.useFastVectorHighlighter")
   }
 
 }

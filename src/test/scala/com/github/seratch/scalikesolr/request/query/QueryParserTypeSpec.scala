@@ -14,6 +14,7 @@ class QueryParserTypeSpec extends FlatSpec with ShouldMatchers {
     val defType: String = ""
     val instance = new QueryParserType(defType)
     instance should not be null
+    instance.getKey() should equal("defType")
   }
 
 }

@@ -14,6 +14,7 @@ class GroupFormatSpec extends FlatSpec with ShouldMatchers {
     val format: String = ""
     val instance = new GroupFormat(format)
     instance should not be null
+    instance.getKey() should equal("group.format")
   }
 
 }

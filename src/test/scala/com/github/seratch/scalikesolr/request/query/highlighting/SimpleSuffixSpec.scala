@@ -14,6 +14,7 @@ class SimpleSuffixSpec extends FlatSpec with ShouldMatchers {
     val simplePost: String = ""
     val instance = new SimpleSuffix(simplePost)
     instance should not be null
+    instance.getKey() should equal("hl.simple.post")
   }
 
 }

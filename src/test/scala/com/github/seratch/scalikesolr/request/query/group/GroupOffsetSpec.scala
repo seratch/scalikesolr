@@ -14,6 +14,7 @@ class GroupOffsetSpec extends FlatSpec with ShouldMatchers {
     val offset: Int = 0
     val instance = new GroupOffset(offset)
     instance should not be null
+    instance.getKey() should equal("group.offset")
   }
 
 }
