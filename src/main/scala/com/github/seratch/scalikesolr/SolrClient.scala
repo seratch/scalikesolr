@@ -30,11 +30,19 @@ trait SolrClient {
 
   def doCommit(request: UpdateRequest): UpdateResponse
 
+  def doCommit(): UpdateResponse
+
   def doOptimize(request: UpdateRequest): UpdateResponse
+
+  def doOptimize(): UpdateResponse
 
   def doRollback(request: UpdateRequest): UpdateResponse
 
+  def doRollback(): UpdateResponse
+
   def doPing(request: PingRequest): PingResponse
+
+  def doPing(): PingResponse
 
   @deprecated(message = "Use #doUpdateDocumentsInCSV(UpdateRequest) instead", since = "3.5.2")
   def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse
