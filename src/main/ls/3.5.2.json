@@ -4,7 +4,7 @@
  "version":"3.5.2",
  "description":"Apache Solr Client for Scala/Java",
  "site":"https://github.com/seratch/scalikesolr",
- "tags": ["Solr", "Apache Solr"],
+ "tags": ["Solr", "Apache Solr", "Search"],
  "docs":"https://github.com/seratch/scalikesolr",
  "licenses": [{
    "name": "Apache License, Version 2.0",
@@ -12,9 +12,9 @@
   }],
  "resolvers": ["http://scala-tools.org/repo-releases"],
  "dependencies": [
-   { "organization":"org.slf4j",       "name": "slf4j-api",       "version": "1.6.4" },
-   { "organization":"joda-time",       "name": "joda-time",       "version": "1.6.2" },
-   { "organization":"org.apache.solr", "name": "solr-solr",       "version": "3.5.0" }
+   { "organization":"org.slf4j",       "name": "slf4j-api", "version": "1.6.4" },
+   { "organization":"joda-time",       "name": "joda-time", "version": "1.6.2" },
+   { "organization":"org.apache.solr", "name": "solr-solr", "version": "3.5.0" }
   ],
  "scalas": [
    "2.9.0","2.9.0-1","2.9.1"
