@@ -4,23 +4,11 @@
 
 ## How to install
 
-Supported scala versions: 2.9.0, 2.9.0-1, 2.9.1
-
-Solr/Lucene versions: 3.2, 3.3, 3.4, 3.5
-
 ### sbt
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "3.5.1" withSources ()
-)
-```
-
-Before version 3.5.0, the resolver setting as follows is required:
-
-```scala
-resolvers ++= Seq(
-  "seratch.github.com releases"  at "http://seratch.github.com/mvn-repo/releases"
+  "com.github.seratch" %% "scalikesolr" % "3.5.2"
 )
 ```
 
@@ -47,48 +35,7 @@ The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
 </dependency>
 ```
 
-Before version 3.5.0, the repository setting as follows is required:
-
-```xml
-<repositories>
-  <repository>
-    <id>seratch.github.com releases</id>
-    <url>http://seratch.github.com/mvn-repo/releases</url>
-  </repository>
-</repositories>
-```
-
-
 ## Usage
-
-The following snippets use the indexed data from "example/exampledocs/books.json".
-
-```json
-{
-  "id" : "978-0641723445",
-  "cat" : ["book","hardcover"],
-  "title" : "The Lightning Thief",
-  "author" : "Rick Riordan",
-  "series_t" : "Percy Jackson and the Olympians",
-  "sequence_i" : 1,
-  "genre_s" : "fantasy",
-  "inStock" : true,
-  "price" : 12.50,
-  "pages_i" : 384
-},
-{
-  "id" : "978-1423103349",
-  "cat" : ["book","paperback"],
-  "title" : "The Sea of Monsters",
-  "author" : "Rick Riordan",
-  "series_t" : "Percy Jackson and the Olympians",
-  "sequence_i" : 2,
-  "genre_s" : "fantasy",
-  "inStock" : true,
-  "price" : 6.49,
-  "pages_i" : 304
-}
-```
 
 ### Query
 
@@ -100,7 +47,7 @@ Using [Core Query Paramters](http://wiki.apache.org/solr/CoreQueryParameters) an
 import com.github.seratch.scalikesolr._
 
 val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient
-val request = new QueryRequest(writerType = WriterType.JavaBinary, query = Query("author:Rick")) // faster when using WriterType.JavaBinary
+val request = new QueryRequest(query = Query("author:Rick")) 
 val response = client.doQuery(request)
 println(response.responseHeader)
 println(response.response)
@@ -140,271 +87,9 @@ println(book.pageI.value) // 304
 println(book.sequenceI) // 2
 ```
 
-#### With Highlightings
+See the [documentation](https://github.com/seratch/scalikesolr/wiki) for more detail.
 
-Using [Highlighting Parameters](http://wiki.apache.org/solr/HighlightingParameters):
 
-```scala
-val request = new QueryRequest(
-  writerType = WriterType.JSON, // but JSON format might be slow...
-  query = Query("author:Rick"),
-  sort = Sort("page_i desc")
-)
-request.highlighting = HighlightingParams(true)
-val response = client.doQuery(request)
-println(response.highlightings)
-response.highlightings.keys foreach {
-  case key => {
-    println(key + " -> " + response.highlightings.get(key).get("author").toString)
-    // "978-0641723445" -> "<em>Rick</em> Riordan"
-  }
-}
-```
-
-#### With MoreLikeThis
-
-Using [More Like This](http://wiki.apache.org/solr/MoreLikeThis):
-
-```scala
-val request = new QueryRequest(Query("author:Rick"))
-request.moreLikeThis = MoreLikeThisParams(
-  enabled = true,
-  count = 3,
-  fieldsToUseForSimilarity = FieldsToUseForSimilarity("body")
-)
-val response = client.doQuery(request)
-println(response.moreLikeThis)
-response.response.documents foreach {
-  doc => {
-    val id = doc.get("id").toString
-    response.moreLikeThis.getList(id) foreach {
-      case recommendation => {
-        println(recommendation) // "SolrDocument(WriterType(standard),,Map(start -> 0, numFound -> 0))"
-      }
-    }
-  }
-}
-```
-
-#### With FacetQuery
-
-Using [Simple Facet Parameters](http://wiki.apache.org/solr/SimpleFacetParameters):
-
-```scala
-val request = new QueryRequest(Query("author:Rick"))
-request.facet = new FacetParams(
-  enabled = true,
-  params = List(new FacetParam(Param("facet.field"), Value("title")))
-)
-val response = client.doQuery(request)
-println(response.facet.facetFields)
-response.facet.facetFields.keys foreach {
-  case key => {
-    val facets = response.facet.facetFields.getOrElse(key, new SolrDocument())
-    facets.keys foreach {
-      case facetKey => println(facetKey + " -> " + facets.get(facetKey).toIntOrElse(0))
-      // "thief" -> 1, "sea" -> 1, "monster" -> 1, "lightn" -> 1
-    }
-  }
-}
-```
-
-#### With Result Groupiong / Field Collapsing
-
-Using [Result Groupiong / Field Collapsing](http://wiki.apache.org/solr/FieldCollapsing):
-
-```scala
-val request = new QueryRequest(Query("genre_s:fantasy"))
-request.group = new GroupParams(
-  enabled = true,
-  field = Field("author_t")
-)
-val response = client.doQuery(request)
-println(response.groups.toString)
-response.groups.groups foreach {
-  case group => println(group.groupValue + " -> " + group.documents.toString)
-  // "r.r" -> List(SolrDocument(...
-  // "glen" -> List(SolrDocument(...
-}
-```
-
-#### Distributed Search
-
-Using [Distributed Search](http://wiki.apache.org/solr/DistributedSearch):
-
-```scala
-val request = new QueryRequest(Query("genre_s:fantasy"))
-request.shards = new DistributedSearchParams(
-  shards = List(
-    "localhost:8984/solr",
-    "localhost:8985/solr"
-  )
-)
-val response = client.doQuery(request)
-println(response.groups.toString)
-```
-
-### DIH Command
-
-Commands for [Data Import Handler](http://wiki.apache.org/solr/DataImportHandler):
-
-```scala
-val request = new DIHCommandRequest(command = "delta-import")
-val response = client.doDIHCommand(request)
-println(response.initArgs)
-println(response.command)
-println(response.status)
-println(response.importResponse)
-println(response.statusMessages)
-```
-
-### Update
-
-[XML Messages for Updating a Solr Index](http://wiki.apache.org/solr/UpdateXmlMessages):
-
-#### Add documents
-
-Add documents to Solr:
-
-```scala
-val request = new AddRequest()
-val doc1 = SolrDocument(
-  writerType = WriterType.JSON,
-  rawBody = """
-  { "id" : "978-0641723445",
-    "cat" : ["book","hardcover"],
-    "title" : "The Lightning Thief",
-    "author" : "Rick Riordan",
-    "series_t" : "Percy Jackson and the Olympians",
-    "sequence_i" : 1,
-    "genre_s" : "fantasy",
-    "inStock" : true,
-    "price" : 12.50,
-    "pages_i" : 384
-  }"""
-)
-val doc2 = SolrDocument(
-writerType = WriterType.JSON,
-rawBody = """
-  { "id" : "978-1423103349",
-    "cat" : ["book","paperback"],
-    "title" : "The Sea of Monsters",
-    "author" : "Rick Riordan",
-    "series_t" : "Percy Jackson and the Olympians",
-    "sequence_i" : 2,
-    "genre_s" : "fantasy",
-    "inStock" : true,
-    "price" : 6.49,
-    "pages_i" : 304
-  }"""
-)
-request.documents = List(doc1, doc2)
-val response = client.doAddDocuments(request)
-client.doCommit(new UpdateRequest)
-```
-
-#### Delete documents
-
-```scala
-val request = new DeleteRequest(uniqueKeysToDelete = List("978-0641723445"))
-val response = client.doDeleteDocuments(request)
-client.doCommit(new UpdateRequest)
-```
-
-#### Commit
-
-```scala
-val response = client.doCommit(new UpdateRequest())
-```
-
-#### Rollback
-
-```scala
-val response = client.doRollback(new UpdateRequest())
-```
-
-#### Optimize
-
-```scala
-val response = client.doOptimize(new UpdateRequest())
-```
-
-#### Add documents in CSV format
-
-```scala
-val request = new UpdateRequest(
-  requestBody = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
-)
-val response = client.doAddDocumentsInCSV(request)
-client.doCommit(new UpdateRequest)
-```
-
-#### Update in XML format
-
-```scala
-val request = new UpdateRequest(
-  requestBody = "<optimize/>"
-)
-val response = client.doUpdateInXML(request)
-```
-
-#### Update in JSON format
-
-```scala
-val request = new UpdateRequest(
-  writerType = WriterType.JSON,
-  requestBody = "{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }"
-)
-val response = client.doUpdateInJSON(request)
-```
-
-### Load documents from Update format
-
-JSON format is not supported.
-
-#### [XML format](http://wiki.apache.org/solr/UpdateXmlMessages)
-
-```scala
-val xmlString = "<add><doc><field name=\"employeeId\">05991</field><field name=\"office\">Bridgewater</field>..."
-val docs = UpdateFormatLoader.fromXMLString(xmlString)
-docs foreach {
-  case doc => {
-    println("employeeId:" + doc.get("employeeId").toString()) // "05991"
-    println("office:" + doc.get("office").toString()) // "Bridgewater"
-  }
-}
-```
-
-#### [CSV format](http://wiki.apache.org/solr/UpdateCSV)
-
-```scala
-val csvString = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
-val docs = UpdateFormatLoader.fromCSVString(csvString)
-docs foreach {
-  case doc => {
-    println(doc.get("id")) // "0553573403"
-    println(doc.get("name")) // "A Game of Thrones"
-    println(doc.get("sequence_i").toIntOrElse(0)) // 1
-  }
-}
-```
-
-### Ping
-
-```scala
-val response = client.doPing(new PingRequest())
-println(response.status) // "OK"
-```
-
-### How to know which type is the param mapped?
-
-Name of constructor arg is same as the Solr parameter key.
-
-For example:
-
-```scala
-case class Query(@BeanProperty val q: String) extends RequestParam
-```
 
 ## Using in Java
 
@@ -457,110 +142,12 @@ log.debug(book.getPageI().getValue()); // "304"
 log.debug(book.getSequenceI().toString()); // "2"
 ```
 
-### DIH Command
+See the [documentation](https://github.com/seratch/scalikesolr/wiki) for more detail.
 
-```java
-DIHCommandRequest request = new DIHCommandRequest("delta-import");
-DIHCommandResponse response = client.doDIHCommand(request);
-```
 
-### Update
+## License
 
-#### Add documements
+Apache License, Version 2.0 
 
-```java
-AddRequest request = new AddRequest();
-String jsonString = "{\"id\" : \"978-0641723445\", ... }";
-SolrDocument doc = new SolrDocument(WriterType.JSON(), jsonString);
-List<SolrDocument> docs = new ArrayList<SolrDocument>();
-docs.add(doc);
-request.setDocumentsInJava(docs);
-AddResponse response = client.doAddDocuments(request);
-client.doCommit(new UpdateRequest());
-```
+http://www.apache.org/licenses/LICENSE-2.0.html
 
-#### Delete documents
-
-```java
-DeleteRequest request = new DeleteRequest();
-List<String> uniqueKeys = new ArrayList<String>();
-uniqueKeys.add("978-0641723445");
-request.setUniqueKeysToDetelteInJava(uniqueKeys);
-DeleteResponse response = client.doDeleteDocuments(request);
-client.doCommit(new UpdateRequest());
-```
-
-#### Commit
-
-```java
-UpdateResponse response = client.doCommit(new UpdateRequest());
-```
-
-#### Rollback
-
-```java
-UpdateResponse response = client.doRollback(new UpdateRequest());
-```
-
-#### Optimize
-
-```java
-UpdateResponse response = client.doOptimize(new UpdateRequest());
-```
-
-#### Add documents in CSV format
-
-```java
-UpdateRequest request = new UpdateRequest();
-request.setRequestBody("id,name,sequence_i,...");
-UpdateResponse response = client.doAddDocumentsInCSV(request);
-client.doCommit(new UpdateRequest());
-```
-
-#### Update in XML format
-
-```java
-UpdateRequest request = new UpdateRequest();
-request.setRequestBody("<optimize/>");
-UpdateResponse response = client.doUpdateInXML(request);
-```
-
-#### Update in JSON format
-
-```java
-UpdateRequest request = new UpdateRequest();
-request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
-request.setWriterType(WriterType.JSON());
-request.setAdditionalQueryString("&indent=on");
-UpdateResponse response = client.doUpdateInJSON(request);
-```
-
-### Load documents from Update format
-
-JSON format is not supported.
-
-#### [XML format](http://wiki.apache.org/solr/UpdateXmlMessages)
-
-```java
-String xmlString = "<add><doc><field name=\"employeeId\">05991</field><field name=\"office\">Bridgewater</field>..."
-List<SolrDocument> docs = UpdateFormatLoader.fromXMLStringInJava(xmlString);
-for (SolrDocument doc : docs) {
-  log.debug(doc.toString());
-}
-```
-
-#### [CSV format](http://wiki.apache.org/solr/UpdateCSV)
-
-```java
-String csvString = "id,name,sequence_i\n0553573403,A Game of Thrones,1\n..."
-List<SolrDocument> docs = UpdateFormatLoader.fromCSVStringInJava(csvString);
-for (SolrDocument doc : docs) {
-  log.debug(doc.toString());
-}
-```
-
-### Ping
-
-```java
-PingResponse response = client.doPing(new PingRequest());
-```
