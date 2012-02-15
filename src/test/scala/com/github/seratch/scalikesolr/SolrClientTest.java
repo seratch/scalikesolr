@@ -1,21 +1,14 @@
 package com.github.seratch.scalikesolr;
 
-import com.github.seratch.scalikesolr.request.AddRequest;
-import com.github.seratch.scalikesolr.request.DeleteRequest;
-import com.github.seratch.scalikesolr.request.PingRequest;
-import com.github.seratch.scalikesolr.request.QueryRequest;
-import com.github.seratch.scalikesolr.request.UpdateRequest;
+import com.github.seratch.scalikesolr.request.*;
 import com.github.seratch.scalikesolr.request.common.WriterType;
 import com.github.seratch.scalikesolr.request.query.Query;
 import com.github.seratch.scalikesolr.request.query.Sort;
 import com.github.seratch.scalikesolr.request.query.morelikethis.FieldsToUseForSimilarity;
 import com.github.seratch.scalikesolr.request.query.morelikethis.MoreLikeThisParams;
-import com.github.seratch.scalikesolr.response.AddResponse;
-import com.github.seratch.scalikesolr.response.DeleteResponse;
-import com.github.seratch.scalikesolr.response.PingResponse;
-import com.github.seratch.scalikesolr.response.QueryResponse;
-import com.github.seratch.scalikesolr.response.UpdateResponse;
+import com.github.seratch.scalikesolr.response.*;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,17 +80,18 @@ public class SolrClientTest {
         assertThat(response.getFacet(), is(notNullValue()));
     }
 
-//	@Test
-//	public void doDIHCommand() throws Exception {
-//		DIHCommandRequest request = new DIHCommandRequest("delta-import");
-//		DIHCommandResponse response = client.doDIHCommand(request);
-//		assertThat(response.getCommand(), is(notNullValue()));
-//		assertThat(response.getImportResponse(), is(notNullValue()));
-//		assertThat(response.getRawBody(), is(notNullValue()));
-//		assertThat(response.getStatus(), is(notNullValue()));
-//		assertThat(response.getStatusMessages().getDefaults(), is(notNullValue()));
-//		assertThat(response.getInitArgs().getDefaults(), is(notNullValue()));
-//	}
+    @Ignore
+	@Test
+	public void doDIHCommand() throws Exception {
+		DIHCommandRequest request = new DIHCommandRequest("delta-import");
+		DIHCommandResponse response = client.doDIHCommand(request);
+		assertThat(response.getCommand(), is(notNullValue()));
+		assertThat(response.getImportResponse(), is(notNullValue()));
+		assertThat(response.getRawBody(), is(notNullValue()));
+		assertThat(response.getStatus(), is(notNullValue()));
+		assertThat(response.getStatusMessages().getDefaults(), is(notNullValue()));
+		assertThat(response.getInitArgs().getDefaults(), is(notNullValue()));
+	}
 
     @Test
     public void doDeleteDocuments() throws Exception {

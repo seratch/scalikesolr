@@ -172,6 +172,8 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
+  override def doCommit(): UpdateResponse = doCommit(new UpdateRequest)
+
   override def doCommit(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val requestBody = "<commit/>"
@@ -183,6 +185,8 @@ class HttpSolrClient(@BeanProperty val url: URL,
       rawBody = responseBody
     )
   }
+
+  override def doOptimize(): UpdateResponse = doOptimize(new UpdateRequest)
 
   override def doOptimize(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
@@ -196,6 +200,8 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
+  override def doRollback(): UpdateResponse = doRollback(new UpdateRequest)
+
   override def doRollback(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val requestBody = "<rollback/>"
@@ -207,6 +213,8 @@ class HttpSolrClient(@BeanProperty val url: URL,
       rawBody = responseBody
     )
   }
+
+  override def doPing(): PingResponse = doPing(new PingRequest)
 
   override def doPing(request: PingRequest): PingResponse = {
     val queryString = request.queryString
