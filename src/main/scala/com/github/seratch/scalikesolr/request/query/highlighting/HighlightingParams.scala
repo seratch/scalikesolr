@@ -27,11 +27,11 @@ case class HighlightingParams(@BeanProperty var enabled: Boolean = false,
     @BeanProperty var fragmenter: Fragmenter = Fragmenter(),
     @BeanProperty var fragmentsBuilder: FragmentsBuilder = FragmentsBuilder(),
     @BeanProperty var fragsize: FragSize = FragSize(),
-    @BeanProperty var isFastVectorHigighterEnabled: IsFastVectorHigighterEnabled = IsFastVectorHigighterEnabled(),
+    @BeanProperty var isFastVectorHighlighterEnabled: IsFastVectorHighlighterEnabled = IsFastVectorHighlighterEnabled(),
     @BeanProperty var isFieldMatchRequred: IsFieldMatchEnabled = IsFieldMatchEnabled(),
     @BeanProperty var isMergeContiguousEnabled: IsMergeContiguousEnabled = IsMergeContiguousEnabled(),
     @BeanProperty var isMultiTermHighlightingEnabled: IsMultiTermHighlightingEnabled = IsMultiTermHighlightingEnabled(),
-    @BeanProperty var isPhraseHigighterEnabled: IsPhraseHigighterEnabled = IsPhraseHigighterEnabled(),
+    @BeanProperty var isPhraseHighlighterEnabled: IsPhraseHighlighterEnabled = IsPhraseHighlighterEnabled(),
     @BeanProperty var maxAlternateFieldLength: MaxAlternateFieldLength = MaxAlternateFieldLength(),
     @BeanProperty var maxAnalyzedChars: MaxAnalyzedChars = MaxAnalyzedChars(),
     @BeanProperty var numOfSnippets: NumOfSnippets = NumOfSnippets(),
@@ -50,11 +50,11 @@ case class HighlightingParams(@BeanProperty var enabled: Boolean = false,
       fragmenter = Fragmenter(),
       fragmentsBuilder = FragmentsBuilder(),
       fragsize = FragSize(),
-      isFastVectorHigighterEnabled = IsFastVectorHigighterEnabled(),
+      isFastVectorHighlighterEnabled = IsFastVectorHighlighterEnabled(),
       isFieldMatchRequred = IsFieldMatchEnabled(),
       isMergeContiguousEnabled = IsMergeContiguousEnabled(),
       isMultiTermHighlightingEnabled = IsMultiTermHighlightingEnabled(),
-      isPhraseHigighterEnabled = IsPhraseHigighterEnabled(),
+      isPhraseHighlighterEnabled = IsPhraseHighlighterEnabled(),
       maxAlternateFieldLength = MaxAlternateFieldLength(),
       maxAnalyzedChars = MaxAnalyzedChars(),
       numOfSnippets = NumOfSnippets(),
@@ -268,41 +268,41 @@ object FragmentsBuilder {
   def as(fragmentsBuilder: String) = FragmentsBuilder(fragmentsBuilder)
 }
 
-case class IsFastVectorHigighterEnabled(@BeanProperty val useFastVectorHigighter: Boolean = false) extends RequestParam {
+case class IsFastVectorHighlighterEnabled(@BeanProperty val useFastVectorHighlighter: Boolean = false) extends RequestParam {
 
-  override def isEmpty() = !useFastVectorHigighter
+  override def isEmpty() = !useFastVectorHighlighter
 
-  override def getKey() = "hl.useFastVectorHigighter"
+  override def getKey() = "hl.useFastVectorHighlighter"
 
-  override def getValue() = toString(useFastVectorHigighter)
-
-}
-
-object IsFastVectorHigighterEnabled {
-  def as(useFastVectorHigighter: Boolean) = IsFastVectorHigighterEnabled(useFastVectorHigighter)
-}
-
-case class IsPhraseHigighterEnabled(@BeanProperty val usePhraseHigighter: Boolean = false) extends RequestParam {
-
-  override def isEmpty() = !usePhraseHigighter
-
-  override def getKey() = "hl.usePhraseHigighter"
-
-  override def getValue() = toString(usePhraseHigighter)
+  override def getValue() = toString(useFastVectorHighlighter)
 
 }
 
-object IsPhraseHigighterEnabled {
-  def as(usePhraseHigighter: Boolean) = IsPhraseHigighterEnabled(usePhraseHigighter)
+object IsFastVectorHighlighterEnabled {
+  def as(useFastVectorHighlighter: Boolean) = IsFastVectorHighlighterEnabled(useFastVectorHighlighter)
 }
 
-case class IsMultiTermHighlightingEnabled(@BeanProperty val higightMultiTerm: Boolean = false) extends RequestParam {
+case class IsPhraseHighlighterEnabled(@BeanProperty val usePhraseHighlighter: Boolean = false) extends RequestParam {
 
-  override def isEmpty() = !higightMultiTerm
+  override def isEmpty() = !usePhraseHighlighter
 
-  override def getKey() = "hl.higightMultiTerm"
+  override def getKey() = "hl.usePhraseHighlighter"
 
-  override def getValue() = toString(higightMultiTerm)
+  override def getValue() = toString(usePhraseHighlighter)
+
+}
+
+object IsPhraseHighlighterEnabled {
+  def as(usePhraseHighlighter: Boolean) = IsPhraseHighlighterEnabled(usePhraseHighlighter)
+}
+
+case class IsMultiTermHighlightingEnabled(@BeanProperty val highlightMultiTerm: Boolean = false) extends RequestParam {
+
+  override def isEmpty() = !highlightMultiTerm
+
+  override def getKey() = "hl.highlightMultiTerm"
+
+  override def getValue() = toString(highlightMultiTerm)
 
 }
 

@@ -2,13 +2,12 @@ package com.github.seratch.scalikesolr.client
 
 import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
-import org.junit._
 import com.github.seratch.scalikesolr.request.common.WriterType
-import com.github.seratch.scalikesolr.request.{ QueryRequest, UpdateRequest }
+import com.github.seratch.scalikesolr.request.UpdateRequest
 import org.scalatest.junit.JUnitRunner
-import runner.RunWith
+import org.junit.runner.RunWith
 import java.net.{ SocketTimeoutException, URL }
-import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])

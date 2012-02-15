@@ -17,7 +17,7 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import org.apache.solr.client.solrj.SolrQuery
 import org.apache.solr.client.solrj.impl.{ BinaryResponseParser, CommonsHttpSolrServer }
-import org.scalatest.{ FlatSpec, FunSuite }
+import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 @RunWith(classOf[JUnitRunner])
