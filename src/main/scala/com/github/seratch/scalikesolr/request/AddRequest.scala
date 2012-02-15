@@ -23,6 +23,7 @@ import com.github.seratch.scalikesolr.{ SolrDocument, SolrCore }
 import collection.JavaConverters._
 import util.QueryStringUtil
 
+@deprecated(message = "Use com.github.seratch.scalikesolr.request.UpdateRequest instead", since = "3.5.2")
 case class AddRequest(@BeanProperty var core: SolrCore = SolrCore(),
     var documents: List[SolrDocument] = Nil,
     @BeanProperty var writerType: WriterType = WriterType.Standard,

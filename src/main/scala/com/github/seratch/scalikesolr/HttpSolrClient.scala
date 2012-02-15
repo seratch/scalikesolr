@@ -100,7 +100,21 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
+  @deprecated(message = "Use #doUpdateDocuments(UpdateRequest) instead", since = "3.5.2")
   override def doAddDocuments(request: AddRequest): AddResponse = {
+    val resp = doUpdateDocuments(new UpdateRequest(
+      core = request.core,
+      documents = request.documents,
+      writerType = request.writerType,
+      additionalQueryString = request.additionalQueryString
+    ))
+    new AddResponse(
+      writerType = resp.writerType,
+      rawBody = resp.rawBody
+    )
+  }
+
+  override def doUpdateDocuments(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update" + request.toQueryString
     val xml = new XMLStringBuilder
     xml.append("<add>")
@@ -123,7 +137,7 @@ class HttpSolrClient(@BeanProperty val url: URL,
     logPost(requestUrl, requestBody)
     val responseBody = httpClient.post(requestUrl, requestBody, CONTENT_TYPE_XML, UTF8).content
     logResponse(responseBody)
-    new AddResponse(
+    new UpdateResponse(
       writerType = request.writerType,
       rawBody = responseBody
     )
@@ -206,7 +220,10 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
-  override def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
+  @deprecated(message = "Use #doUpdateDocumentsInCSV(UpdateRequest) instead", since = "3.5.2")
+  override def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse = doUpdateDocumentsInCSV(request)
+
+  override def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update/csv" + request.toQueryString
     logPost(requestUrl, request.requestBody)
     val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
