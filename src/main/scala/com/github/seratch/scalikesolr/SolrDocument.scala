@@ -70,7 +70,11 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
     }
   }
 
-  def keys(): List[String] = document.keys.toList
+  def keys(): List[String] = document.keys.toList filter {
+    k => k != null && !k.isEmpty
+  }
+
+  def keysInJava(): java.util.List[String] = java.util.Arrays.asList(keys().toArray: _*)
 
   def get(key: String): SolrDocumentValue = document.getOrElse(key, SolrDocumentValue(""))
 

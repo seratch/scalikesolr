@@ -27,6 +27,8 @@ case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocume
 
   def keys(): List[String] = highlightings.keys.toList
 
+  def keysInJava(): java.util.List[String] = java.util.Arrays.asList(highlightings.keys.toArray: _*)
+
   def get(name: String): SolrDocument = highlightings.getOrElse(name, new SolrDocument())
 
   def size(): Int = highlightings.size
