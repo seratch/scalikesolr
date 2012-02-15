@@ -19,26 +19,34 @@ package com.github.seratch.scalikesolr.request
 import common.WriterType
 import reflect.BeanProperty
 
-import com.github.seratch.scalikesolr.SolrCore
 import util.QueryStringUtil
+import com.github.seratch.scalikesolr.{ SolrDocument, SolrCore }
+import collection.JavaConverters._
 
 case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
     @BeanProperty var requestBody: String = "",
+    @BeanProperty var documents: List[SolrDocument] = Nil,
     @BeanProperty var writerType: WriterType = WriterType.Standard,
     @BeanProperty var additionalQueryString: String = "") {
 
   def this() = {
-    this(SolrCore(), "", WriterType.Standard, "")
+    this(SolrCore(), "", Nil, WriterType.Standard, "")
   }
 
   def this(core: SolrCore) = {
-    this(core, "", WriterType.Standard, "")
+    this(core, "", Nil, WriterType.Standard, "")
   }
 
   def toQueryString(): String = {
     val buf = new StringBuilder
     QueryStringUtil.appendIfExists(buf, writerType)
     "?" + buf.toString + additionalQueryString
+  }
+
+  def getDocumentsInJava(): java.util.List[SolrDocument] = documents.asJava
+
+  def setDocumentsInJava(newDocuments: java.util.List[SolrDocument]) = {
+    this.documents = newDocuments.asScala.toList
   }
 
 }
