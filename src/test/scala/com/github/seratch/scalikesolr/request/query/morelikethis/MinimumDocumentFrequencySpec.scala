@@ -14,6 +14,7 @@ class MinimumDocumentFrequencySpec extends FlatSpec with ShouldMatchers {
     val mindf: Int = 0
     val instance = new MinimumDocumentFrequency(mindf)
     instance should not be null
+    instance.getKey() should equal("mlt.mindf")
   }
 
 }

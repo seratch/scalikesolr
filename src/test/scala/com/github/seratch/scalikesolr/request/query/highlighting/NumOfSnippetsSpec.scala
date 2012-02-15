@@ -14,6 +14,7 @@ class NumOfSnippetsSpec extends FlatSpec with ShouldMatchers {
     val snippets: Int = 0
     val instance = new NumOfSnippets(snippets)
     instance should not be null
+    instance.getKey() should equal("hl.snippets")
   }
 
 }

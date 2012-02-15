@@ -14,6 +14,7 @@ class MaximumWordLengthAboveToBeIgnoredSpec extends FlatSpec with ShouldMatchers
     val maxwl: Int = 0
     val instance = new MaximumWordLengthAboveToBeIgnored(maxwl)
     instance should not be null
+    instance.getKey() should equal("mlt.maxwl")
   }
 
 }

@@ -14,6 +14,7 @@ class FragListBuilderSpec extends FlatSpec with ShouldMatchers {
     val fragListBuilder: String = ""
     val instance = new FragListBuilder(fragListBuilder)
     instance should not be null
+    instance.getKey() should equal("hl.fragListBuilder")
   }
 
 }

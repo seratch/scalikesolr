@@ -14,6 +14,7 @@ class IsOmitHeaderEnabledSpec extends FlatSpec with ShouldMatchers {
     val omitHeader: Boolean = false
     val instance = new IsOmitHeaderEnabled(omitHeader)
     instance should not be null
+    instance.getKey() should equal("omitHeader")
   }
 
 }

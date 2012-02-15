@@ -14,6 +14,7 @@ class QueryFieldsSpec extends FlatSpec with ShouldMatchers {
     val qf: String = ""
     val instance = new QueryFields(qf)
     instance should not be null
+    instance.getKey() should equal("mlt.qf")
   }
 
 }

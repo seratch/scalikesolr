@@ -14,6 +14,7 @@ class GroupingCachePercentSpec extends FlatSpec with ShouldMatchers {
     val cachePercent: Int = 0
     val instance = new GroupingCachePercent(cachePercent)
     instance should not be null
+    instance.getKey() should equal("group.cache.percent")
   }
 
 }

@@ -14,6 +14,7 @@ class IsBoostedQueryEnabledSpec extends FlatSpec with ShouldMatchers {
     val boost: Boolean = false
     val instance = new IsBoostedQueryEnabled(boost)
     instance should not be null
+    instance.getKey() should equal("mlt.boost")
   }
 
 }

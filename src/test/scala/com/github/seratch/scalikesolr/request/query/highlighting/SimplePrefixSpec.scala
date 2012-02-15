@@ -14,6 +14,7 @@ class SimplePrefixSpec extends FlatSpec with ShouldMatchers {
     val simplePre: String = ""
     val instance = new SimplePrefix(simplePre)
     instance should not be null
+    instance.getKey() should equal("hl.simple.pre")
   }
 
 }

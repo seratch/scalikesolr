@@ -14,6 +14,7 @@ class StartRowSpec extends FlatSpec with ShouldMatchers {
     val start: Int = 0
     val instance = new StartRow(start)
     instance should not be null
+    instance.getKey() should equal("start")
   }
 
 }

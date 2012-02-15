@@ -14,6 +14,7 @@ class WithNumberOfGroupsSpec extends FlatSpec with ShouldMatchers {
     val ngroups: Boolean = false
     val instance = new WithNumberOfGroups(ngroups)
     instance should not be null
+    instance.getKey() should equal("group.ngroups")
   }
 
 }

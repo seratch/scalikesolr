@@ -14,6 +14,7 @@ class GroupSortSpec extends FlatSpec with ShouldMatchers {
     val sort: String = ""
     val instance = new GroupSort(sort)
     instance should not be null
+    instance.getKey() should equal("group.sort")
   }
 
 }

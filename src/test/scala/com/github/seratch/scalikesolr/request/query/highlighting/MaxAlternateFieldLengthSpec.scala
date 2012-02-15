@@ -14,6 +14,7 @@ class MaxAlternateFieldLengthSpec extends FlatSpec with ShouldMatchers {
     val maxAlternateFieldLength: Int = 0
     val instance = new MaxAlternateFieldLength(maxAlternateFieldLength)
     instance should not be null
+    instance.getKey() should equal("hl.maxAlternateFieldLength")
   }
 
 }

@@ -14,6 +14,7 @@ class IsMergeContiguousEnabledSpec extends FlatSpec with ShouldMatchers {
     val mergeContiguous: Boolean = false
     val instance = new IsMergeContiguousEnabled(mergeContiguous)
     instance should not be null
+    instance.getKey() should equal("hl.mergeContiguous")
   }
 
 }

@@ -14,6 +14,7 @@ class MaximumNumberOfTokensToParseInEachDocumentSpec extends FlatSpec with Shoul
     val maxntp: Int = 0
     val instance = new MaximumNumberOfTokensToParseInEachDocument(maxntp)
     instance should not be null
+    instance.getKey() should equal("mlt.maxntp")
   }
 
 }

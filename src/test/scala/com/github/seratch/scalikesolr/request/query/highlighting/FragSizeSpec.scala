@@ -14,6 +14,7 @@ class FragSizeSpec extends FlatSpec with ShouldMatchers {
     val fragsize: Int = 0
     val instance = new FragSize(fragsize)
     instance should not be null
+    instance.getKey() should equal("hl.fragsize")
   }
 
 }

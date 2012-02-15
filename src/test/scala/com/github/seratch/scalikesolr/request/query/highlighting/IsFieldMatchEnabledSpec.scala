@@ -14,6 +14,7 @@ class IsFieldMatchEnabledSpec extends FlatSpec with ShouldMatchers {
     val requireFieldMatch: Boolean = false
     val instance = new IsFieldMatchEnabled(requireFieldMatch)
     instance should not be null
+    instance.getKey() should equal("hl.requireFieldMatch")
   }
 
 }

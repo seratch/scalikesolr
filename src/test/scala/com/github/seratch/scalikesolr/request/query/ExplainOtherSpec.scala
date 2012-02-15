@@ -13,6 +13,7 @@ class ExplainOtherSpec extends FlatSpec with ShouldMatchers {
   it should "be available" in {
     val explainOther: String = ""
     val instance = new ExplainOther(explainOther)
+    instance.getKey() should equal("explainOther")
     instance should not be null
   }
 

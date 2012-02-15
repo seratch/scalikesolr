@@ -14,6 +14,7 @@ class IsEchoHandlerEnabledSpec extends FlatSpec with ShouldMatchers {
     val echoHandler: Boolean = false
     val instance = new IsEchoHandlerEnabled(echoHandler)
     instance should not be null
+    instance.getKey() should equal("echoHandler")
   }
 
 }

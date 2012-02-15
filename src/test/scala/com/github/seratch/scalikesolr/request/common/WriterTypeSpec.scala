@@ -11,9 +11,9 @@ class WriterTypeSpec extends FlatSpec with ShouldMatchers {
   behavior of "WriterType"
 
   it should "be available" in {
-    val wt: String = ""
-    val instance = new WriterType(wt)
-    instance should not be null
+    val wt = new WriterType("json")
+    wt should not be null
+    wt should equal(WriterType.JSON)
   }
 
 }

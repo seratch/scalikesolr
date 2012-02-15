@@ -14,6 +14,7 @@ class MinimumTermFrequencySpec extends FlatSpec with ShouldMatchers {
     val mintf: Int = 0
     val instance = new MinimumTermFrequency(mintf)
     instance should not be null
+    instance.getKey() should equal("mlt.mintf")
   }
 
 }
