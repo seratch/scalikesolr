@@ -24,7 +24,6 @@ trait RequestParam {
 
   def getValue(): String
 
-  protected def toString(value: Any): String = {
-    if (value != null) value.toString else null
-  }
+  protected def toString(value: Any): String = if (value != null) value.toString else null
+
 }

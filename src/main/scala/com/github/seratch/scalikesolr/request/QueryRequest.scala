@@ -192,12 +192,10 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     if (extraParams.size > 0) {
       extraParams.keys.foreach {
         key =>
-          {
-            if (buf.length > 0) buf.append("&")
-            buf.append(key)
-            buf.append("=")
-            buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
-          }
+          if (buf.length > 0) buf.append("&")
+          buf.append(key)
+          buf.append("=")
+          buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
       }
     }
     "?" + buf.toString

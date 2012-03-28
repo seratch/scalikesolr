@@ -47,32 +47,26 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
     } else {
       import collection.JavaConverters._
       (writerType match {
-        case WriterType.Standard => {
+        case WriterType.Standard =>
           XML.loadString(rawBody).child map {
             case elem: Node => ((elem \ "@name").toString, new SolrDocumentValue(elem.text))
           }
-        }
-        case WriterType.JSON => {
+        case WriterType.JSON =>
           jsonMapFromRawBody.keys map {
             case key => {
               val value = JSONUtil.normalizeNum(jsonMapFromRawBody.get(key).getOrElse("").toString)
               (key, new SolrDocumentValue(value))
             }
           }
-        }
-        case WriterType.JavaBinary => {
-          rawJavabin.getFieldNames.asScala map {
-            case e => (e.toString -> new SolrDocumentValue(rawJavabin.get(e).toString))
-          }
-        }
-        case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+        case WriterType.JavaBinary =>
+          rawJavabin.getFieldNames.asScala map (e => (e.toString -> new SolrDocumentValue(rawJavabin.get(e).toString)))
+        case other =>
+          throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
       }).toMap
     }
   }
 
-  def keys(): List[String] = document.keys.toList filter {
-    k => k != null && !k.isEmpty
-  }
+  def keys(): List[String] = document.keys.toList filter (k => k != null && !k.isEmpty)
 
   def keysInJava(): java.util.List[String] = java.util.Arrays.asList(keys().toArray: _*)
 

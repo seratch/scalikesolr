@@ -36,27 +36,21 @@ object IO {
   def readAsString(is: InputStream, charset: String): String = {
     using(is) {
       is =>
-        {
-          using({
-            new BufferedReader(charset match {
-              case null => new InputStreamReader(is)
-              case _ => new InputStreamReader(is, charset)
-            })
-          }) {
-            br =>
-              {
-                val buf = new StringBuilder
-                var line: String = null
-                while ({
-                  line = br.readLine;
-                  line
-                } != null) {
-                  buf.append(line)
-                  buf.append("\n")
-                }
-                buf.toString
-              }
-          }
+        using(new BufferedReader(charset match {
+          case null => new InputStreamReader(is)
+          case _ => new InputStreamReader(is, charset)
+        })) {
+          br =>
+            val buf = new StringBuilder
+            var line: String = null
+            while ({
+              line = br.readLine;
+              line
+            } != null) {
+              buf.append(line)
+              buf.append("\n")
+            }
+            buf.toString
         }
     }
   }

@@ -48,9 +48,9 @@ object TypeBinder {
     val setter = if (isJava) getSetterRegexInJava() else getSetterRegex()
     val methods = clazz.getDeclaredMethods
     methods.foreach {
-      case method if Modifier.isPublic(method.getModifiers) && !Modifier.isStatic(method.getModifiers) => {
+      case method if Modifier.isPublic(method.getModifiers) && !Modifier.isStatic(method.getModifiers) =>
         method.getName match {
-          case setter(name) => {
+          case setter(name) =>
             val solrFieldName = if (isJava) getSolrFieldNameInJava(name) else getSolrFieldName(name)
             try {
               val argType = method.getParameterTypes.apply(0)
@@ -107,20 +107,16 @@ object TypeBinder {
             } catch {
               case e => log.debug("Failed to bind type from Solr document : " + solrFieldName, e)
             }
-          }
           case _ =>
         }
-      }
       case _ =>
     }
     dest
   }
 
-  def toSnakeCase(camelCase: String): String = {
-    camelCase.toCharArray.toList.map({
-      case c if Character.isUpperCase(c) => "_" + Character.toLowerCase(c)
-      case c => c
-    }).mkString
-  }
+  def toSnakeCase(camelCase: String): String = camelCase.toCharArray.toList.map {
+    case c if Character.isUpperCase(c) => "_" + Character.toLowerCase(c)
+    case c => c
+  }.mkString
 
 }

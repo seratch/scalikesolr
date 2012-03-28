@@ -52,23 +52,19 @@ object MoreLikeThis {
         val xml = XML.loadString(rawBody)
         val mltList = (xml \ "lst").filter(lst => (lst \ "@name").text == "moreLikeThis")
         val idAndRecommendations: Map[String, List[SolrDocument]] = mltList.size match {
-          case size if size > 0 => {
-            ((mltList.head \ "result") flatMap {
-              case result: Node => {
+          case size if size > 0 =>
+            (mltList.head \ "result").flatMap {
+              case result: Node =>
                 numFound = ((result \ "@numFound").text).toInt
                 start = ((result \ "@start").text).toInt
                 val solrDocs = (result \ "doc") map {
                   doc =>
-                    {
-                      new SolrDocument(map = (doc.child map {
-                        case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
-                      }).toMap)
-                    }
+                    new SolrDocument(map = doc.child.map {
+                      case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
+                    }.toMap)
                 }
                 Map((result \ "@name").text -> solrDocs.toList)
-              }
-            }).toMap
-          }
+            }.toMap
           case _ => Map()
         }
         new MoreLikeThis(
@@ -81,21 +77,19 @@ object MoreLikeThis {
         var numFound: Int = 0
         var start: Int = 0
         val moreLikeThis = toMap(jsonMapFromRawBody.get("moreLikeThis"))
-        val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.keys flatMap {
-          case id: String => {
+        val idAndRecommendations: Map[String, List[SolrDocument]] = moreLikeThis.keys.flatMap {
+          case id: String =>
             val eachMlt = toMap(moreLikeThis.get(id))
             numFound = normalizeNum(eachMlt.get("numFound").getOrElse(0).toString).toInt
             start = normalizeNum(eachMlt.get("start").getOrElse(0).toString).toInt
             Map(id -> toList(eachMlt.get("docs")).map {
-              case doc => {
-                new SolrDocument(writerType = WriterType.JSON, map = (doc.keys.map {
+              case doc =>
+                new SolrDocument(writerType = WriterType.JSON, map = doc.keys.map {
                   case field => (field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
-                }).toMap)
-              }
+                }.toMap)
             })
-          }
           case _ => None
-        }).toMap
+        }.toMap
         new MoreLikeThis(
           numFound = numFound,
           start = start,
@@ -106,35 +100,33 @@ object MoreLikeThis {
         var numFound: Int = 0
         var start: Int = 0
         val moreLikeThis = rawJavabin.get("moreLikeThis").asInstanceOf[NamedList[Any]]
-        val idAndRecommendations: Map[String, List[SolrDocument]] = (moreLikeThis.asScala flatMap {
+        val idAndRecommendations: Map[String, List[SolrDocument]] = moreLikeThis.asScala.flatMap {
           case e: java.util.Map.Entry[_, _] => {
             val id: String = e.getKey
             val mlt = e.getValue.asInstanceOf[SolrDocumentList]
             numFound = mlt.getNumFound.toInt
             start = mlt.getStart.toInt
-            val recommendations: List[SolrDocument] = (mlt.asScala map {
-              case doc: SolrjSolrDocument => {
+            val recommendations: List[SolrDocument] = mlt.asScala.map {
+              case doc: SolrjSolrDocument =>
                 new SolrDocument(
                   writerType = WriterType.JavaBinary,
-                  map = (doc.keySet.asScala map {
-                    case key => {
-                      (key.toString -> new SolrDocumentValue(doc.get(key).toString))
-                    }
-                  }).toMap
+                  map = doc.keySet.asScala.map {
+                    case key => (key.toString -> new SolrDocumentValue(doc.get(key).toString))
+                  }.toMap
                 )
-              }
-            }).toList
+            }.toList
             Map(id -> recommendations)
           }
           case _ => None
-        }).toMap
+        }.toMap
         new MoreLikeThis(
           numFound = numFound,
           start = start,
           idAndRecommendations = idAndRecommendations
         )
       }
-      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+      case other =>
+        throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
   }
 

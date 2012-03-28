@@ -43,61 +43,53 @@ object Highlightings {
     rawJavaBin: NamedList[Any] = null): Highlightings = {
 
     writerType match {
-      case WriterType.Standard => {
+      case WriterType.Standard =>
         val xml = XML.loadString(rawBody)
         val hlList = (xml \ "lst").filter(lst => (lst \ "@name").text == "highlighting")
         new Highlightings(
           highlightings = hlList.size match {
             case 0 => Map()
-            case _ => {
+            case _ =>
               val hl = hlList(0)
-              ((hl \ "lst") map {
-                case lst: Node => {
-                  val element = (lst \ "arr") map {
-                    arr => ((arr \ "@name").text, new SolrDocumentValue(arr.child.text))
-                  }
+              (hl \ "lst").map {
+                case lst: Node =>
+                  val element = (lst \ "arr") map (arr => ((arr \ "@name").text, new SolrDocumentValue(arr.child.text)))
                   ((lst \ "@name").text, new SolrDocument(map = element.toMap))
-                }
-              }).toMap
-            }
+              }.toMap
           })
-      }
-      case WriterType.JSON => {
+      case WriterType.JSON =>
         val highlighting = toMap(jsonMapFromRawBody.get("highlighting"))
         new Highlightings(
-          highlightings = (highlighting.keys.map {
-            case key => {
+          highlightings = highlighting.keys.map {
+            case key =>
               val docMap = toMap(highlighting.get(key))
               (key, new SolrDocument(
                 writerType = WriterType.JSON,
-                map = (docMap.keys.map {
+                map = docMap.keys.map {
                   case docKey => (docKey, new SolrDocumentValue(docMap.getOrElse(docKey, "").toString))
-                }).toMap
+                }.toMap
               ))
-            }
-          }).toMap
+          }.toMap
         )
-      }
-      case WriterType.JavaBinary => {
+      case WriterType.JavaBinary =>
         val highlighting = rawJavaBin.get("highlighting").asInstanceOf[NamedList[Any]]
         import collection.JavaConverters._
         new Highlightings(
-          highlightings = (highlighting.iterator().asScala map {
+          highlightings = highlighting.iterator().asScala.map {
             case e: java.util.Map.Entry[_, _] => {
               val element = e.getValue.asInstanceOf[NamedList[Any]]
               (e.getKey.toString -> new SolrDocument(
                 writerType = WriterType.JavaBinary,
-                map = (element.iterator.asScala map {
-                  case eachInValue: java.util.Map.Entry[_, _] => {
+                map = element.iterator.asScala.map {
+                  case eachInValue: java.util.Map.Entry[_, _] =>
                     val value = eachInValue.getValue.toString.replaceFirst("^\\[", "").replaceFirst("\\]$", "")
                     (eachInValue.getKey.toString, new SolrDocumentValue(value))
-                  }
-                }).toMap))
+                }.toMap))
             }
-          }).toMap
+          }.toMap
         )
-      }
-      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+      case other =>
+        throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
   }
 

@@ -39,10 +39,9 @@ case class DistributedSearchParams(var shards: List[String] = Nil) {
       case _ => {
         buf.append("shards=")
         shards foreach {
-          case shard => {
+          case shard =>
             buf.append(shard)
             buf.append(",")
-          }
         }
       }
     }

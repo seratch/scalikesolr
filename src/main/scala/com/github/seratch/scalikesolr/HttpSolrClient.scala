@@ -69,22 +69,20 @@ class HttpSolrClient(@BeanProperty val url: URL,
     val requestUrl = basicUrl(request.core) + "/select" + queryString
     logGet(requestUrl)
     request.writerType match {
-      case WriterType.JavaBinary => {
+      case WriterType.JavaBinary =>
         val rawJavaBin = httpClient.getAsJavabin(requestUrl).rawJavaBin
         logResponse(rawJavaBin.toString)
         new QueryResponse(
           writerType = request.writerType,
           rawJavabin = rawJavaBin
         )
-      }
-      case _ => {
+      case _ =>
         val responseBody = httpClient.get(requestUrl, UTF8).content
         logResponse(responseBody)
         new QueryResponse(
           writerType = request.writerType,
           rawBody = responseBody
         )
-      }
     }
   }
 
@@ -122,13 +120,12 @@ class HttpSolrClient(@BeanProperty val url: URL,
       case doc =>
         xml.append("<doc>")
         doc.keys map {
-          case key => {
+          case key =>
             xml.append("<field name=\"")
             xml.appendEscaped(key.toString)
             xml.append("\">")
             xml.appendEscaped(doc.get(key).toString)
             xml.append("</field>")
-          }
         }
         xml.append("</doc>")
     }
@@ -148,18 +145,16 @@ class HttpSolrClient(@BeanProperty val url: URL,
     val xml = new XMLStringBuilder
     xml.append("<delete>")
     request.uniqueKeysToDelete foreach {
-      case uniqueKey => {
+      case uniqueKey =>
         xml.append("<id>")
         xml.appendEscaped(uniqueKey)
         xml.append("</id>")
-      }
     }
     request.queries foreach {
-      case query => {
+      case query =>
         xml.append("<query>")
         xml.appendEscaped(query.toString)
         xml.append("</query>")
-      }
     }
     xml.append("</delete>")
     val requestBody = xml.toString

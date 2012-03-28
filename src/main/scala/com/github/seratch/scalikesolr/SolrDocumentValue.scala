@@ -69,14 +69,13 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       new DateTime(rawValue)
     } catch {
-      case _ => {
+      case _ =>
         try {
           val dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
           new DateTime(dateFormat.parse(rawValue))
         } catch {
           case _ => defaultValue
         }
-      }
     }
   }
 

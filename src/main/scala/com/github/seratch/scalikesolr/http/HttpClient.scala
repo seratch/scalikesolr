@@ -37,13 +37,12 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
     conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
     try {
-      val headersInJava = conn.getHeaderFields
-      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
-      val response: NamedList[Any] = new JavaBinCodec().unmarshal(conn.getInputStream).asInstanceOf[NamedList[Any]]
       new JavabinHttpResponse(
         conn.getResponseCode,
-        headers,
-        response
+        conn.getHeaderFields.asScala.map {
+          case (k, v) => (k, v.asScala.toList)
+        }.toMap,
+        new JavaBinCodec().unmarshal(conn.getInputStream).asInstanceOf[NamedList[Any]]
       )
     } catch {
       case e: IOException => throw e
@@ -57,13 +56,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
     conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
     try {
-      val headersInJava = conn.getHeaderFields
-      // (k -> v) is a pair tuple which is same as (k,v).
-      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
       new HttpResponse(
         conn.getResponseCode,
-        headers,
-        getResponseContent(conn, charset))
+        conn.getHeaderFields.asScala.map {
+          case (k, v) => (k, v.asScala.toList)
+        }.toMap,
+        getResponseContent(conn, charset)
+      )
     } catch {
       case e: IOException => throw e
     }
@@ -87,18 +86,14 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
     conn.setDoOutput(true);
     IO.using(conn.getOutputStream) {
       os =>
-        {
-          IO.using(new OutputStreamWriter(os, charset)) {
-            writer => writer.write(dataBinary)
-          }
-        }
+        IO.using(new OutputStreamWriter(os, charset))(writer => writer.write(dataBinary))
     }
     try {
-      val headersInJava = conn.getHeaderFields
-      val headers = for ((k, v) <- headersInJava.asScala.toMap) yield (k -> v.asScala.toList)
       new HttpResponse(
         conn.getResponseCode,
-        headers,
+        conn.getHeaderFields.asScala.map {
+          case (k, v) => (k, v.asScala.toList)
+        }.toMap,
         getResponseContent(conn, charset)
       )
     } catch {

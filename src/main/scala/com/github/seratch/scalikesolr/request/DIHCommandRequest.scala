@@ -53,12 +53,10 @@ case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),
     if (extraParams.size > 0) {
       extraParams.keys.foreach {
         key =>
-          {
-            if (buf.length > 0) buf.append("&")
-            buf.append(key)
-            buf.append("=")
-            buf.append(extraParams.getOrElse(key, ""))
-          }
+          if (buf.length > 0) buf.append("&")
+          buf.append(key)
+          buf.append("=")
+          buf.append(extraParams.getOrElse(key, ""))
       }
     }
     "?" + buf.toString

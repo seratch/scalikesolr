@@ -45,7 +45,7 @@ case class UpdateRequest(@BeanProperty var core: SolrCore = SolrCore(),
 
   def getDocumentsInJava(): java.util.List[SolrDocument] = documents.asJava
 
-  def setDocumentsInJava(newDocuments: java.util.List[SolrDocument]) = {
+  def setDocumentsInJava(newDocuments: java.util.List[SolrDocument]): Unit = {
     this.documents = newDocuments.asScala.toList
   }
 

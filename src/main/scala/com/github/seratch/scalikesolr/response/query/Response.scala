@@ -55,14 +55,13 @@ object Response {
       case WriterType.JSON => {
         val response = toMap(jsonMapFromRawBody.get("response"))
         val documents: Seq[SolrDocument] = toList(response.get("docs")) map {
-          case doc: Map[_, _] => {
+          case doc: Map[_, _] =>
             new SolrDocument(
               writerType = writerType,
               map = doc flatMap {
                 case (key, value) => Map(key -> new SolrDocumentValue(value.toString))
               }
             )
-          }
         }
         new Response(
           normalizeNum(response.get("numFound").getOrElse("0").toString).toInt,
@@ -83,7 +82,8 @@ object Response {
           }).toList
         )
       }
-      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+      case other =>
+        throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
   }
 

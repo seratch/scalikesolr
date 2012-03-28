@@ -32,7 +32,8 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
     @BeanProperty val rawBody: String = "",
     @BeanProperty val rawJavabin: NamedList[Any] = null) {
 
-  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
+  @BeanProperty
+  lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
     writerType,
     rawBody,
     rawJavabin
@@ -45,35 +46,40 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
     }
   }
 
-  @BeanProperty lazy val response: Response = Response.extract(
+  @BeanProperty
+  lazy val response: Response = Response.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
     rawJavabin
   )
 
-  @BeanProperty lazy val groups: Groups = Groups.extract(
+  @BeanProperty
+  lazy val groups: Groups = Groups.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
     rawJavabin
   )
 
-  @BeanProperty lazy val highlightings: Highlightings = Highlightings.extract(
+  @BeanProperty
+  lazy val highlightings: Highlightings = Highlightings.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
     rawJavabin
   )
 
-  @BeanProperty lazy val moreLikeThis: MoreLikeThis = MoreLikeThis.extract(
+  @BeanProperty
+  lazy val moreLikeThis: MoreLikeThis = MoreLikeThis.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,
     rawJavabin
   )
 
-  @BeanProperty lazy val facet: Facet = Facet.extract(
+  @BeanProperty
+  lazy val facet: Facet = Facet.extract(
     writerType,
     rawBody,
     jsonMapFromRawBody,

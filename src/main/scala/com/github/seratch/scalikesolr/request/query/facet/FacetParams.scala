@@ -41,23 +41,21 @@ case class FacetParams(@BeanProperty var enabled: Boolean = false,
       buf.append("facet=true")
       params foreach {
         param =>
-          {
-            buf.append("&")
-            if (!param.field.field.isEmpty) {
-              buf.append("f.")
-              buf.append(param.field.field)
-              buf.append(".")
-            }
-            buf.append(param.param.param)
-            buf.append("=")
-            buf.append(URLEncoder.encode(param.value.value, "UTF-8"))
+          buf.append("&")
+          if (!param.field.field.isEmpty) {
+            buf.append("f.")
+            buf.append(param.field.field)
+            buf.append(".")
           }
+          buf.append(param.param.param)
+          buf.append("=")
+          buf.append(URLEncoder.encode(param.value.value, "UTF-8"))
       }
     }
     buf.toString
   }
 
-  def toQueryString(): String = toString()
+  def toQueryString(): String = toString
 
 }
 

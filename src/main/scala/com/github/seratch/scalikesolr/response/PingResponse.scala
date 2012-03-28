@@ -34,21 +34,22 @@ case class PingResponse(@BeanProperty val writerType: WriterType = WriterType.St
     }
   }
 
-  @BeanProperty lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
+  @BeanProperty
+  lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
     writerType,
     rawBody
   )
 
-  @BeanProperty lazy val status: String = {
+  @BeanProperty
+  lazy val status: String = {
     writerType match {
-      case WriterType.Standard => {
+      case WriterType.Standard =>
         val xml = XML.loadString(rawBody)
         (xml \ "str").filter(item => (item \ "@name").text == "status").head.text
-      }
-      case WriterType.JSON => {
+      case WriterType.JSON =>
         jsonMapFromRawBody.get("status").getOrElse("").toString
-      }
-      case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
+      case other =>
+        throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
   }
 
