@@ -8,7 +8,7 @@
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "3.5.2"
+  "com.github.seratch" %% "scalikesolr" % "(3.6,)"
 )
 ```
 
@@ -31,7 +31,7 @@ The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
 <dependency>
   <groupId>com.github.seratch</groupId>
   <artifactId>scalikesolr_2.9.1</artifactId>
-  <version>[3.5,)</version>
+  <version>[3.6,)</version>
 </dependency>
 ```
 

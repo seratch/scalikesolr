@@ -3,8 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.seratch</groupId>
-    <artifactId>scalikesolr_2.9.1</artifactId>
-    <version>3.5.2</version>
+    <artifactId>scalikesolr_${scala.version}</artifactId>
+    <version>3.6.0</version>
     <name>${project.artifactId}</name>
     <description>Solr Client library for Scala</description>
     <inceptionYear>2011</inceptionYear>
@@ -12,35 +12,8 @@
     <properties>
         <encoding>UTF-8</encoding>
         <scala.version>2.9.1</scala.version>
-        <solrj.version>3.5.0</solrj.version>
+        <solrj.version>3.6.0</solrj.version>
     </properties>
-
-    <distributionManagement>
-        <repository>
-            <id>seratch-github-repo</id>
-            <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>seratch-github-snapshot-repo</id>
-            <url>https://github.com/seratch/scalikesolr/raw/master/mvn-repo/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
-    <repositories>
-        <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-Tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>scala-tools.org</id>
-            <name>Scala-Tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases</url>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencies>
 
@@ -93,14 +66,7 @@
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.version}</artifactId>
-            <version>1.6.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.scala-tools.testing</groupId>
-            <!--  <artifactId>specs_${scala.version}</artifactId>   -->
-            <artifactId>specs_2.9.0</artifactId>
-            <version>1.6.8</version>
+            <version>1.7.1</version>
             <scope>test</scope>
         </dependency>
 
@@ -127,6 +93,9 @@
                 <groupId>org.scala-tools</groupId>
                 <artifactId>maven-scala-plugin</artifactId>
                 <version>2.15.0</version>
+                <configuration>
+                  <argLine>-Xmx1024m</argLine>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
