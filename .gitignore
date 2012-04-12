@@ -5,6 +5,7 @@ classpath
 *.iml
 *.ipr
 *.iws
+.DS_Store
 dist/
 lib_managed/
 project/boot/
