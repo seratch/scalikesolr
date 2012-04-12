@@ -6,7 +6,7 @@ import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.UpdateRequest
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
-import java.net.{ SocketTimeoutException, URL }
+import java.net.{ ConnectException, SocketTimeoutException, URL }
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
@@ -40,7 +40,7 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
       connectTimeout = 1,
       readTimeout = 10000
     )
-    intercept[SocketTimeoutException] {
+    intercept[ConnectException] {
       client.doOptimize(new UpdateRequest)
     }
   }
