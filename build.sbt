@@ -1,8 +1,8 @@
 import testgen.TestgenKeys._
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
-crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0")
+crossScalaVersions := Seq("2.9.2", "2.9.1", "2.9.0")
 
 libraryDependencies <++= (scalaVersion) { scalaVersion =>
   Seq(
