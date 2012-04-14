@@ -107,6 +107,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
          "inStock" : true,
          "price" : 12.50,
          "pages_i" : 384,
+         "timestamp" : "2006-03-21T13:40:15.518Z",
          "last_modified" : "2006-08-13T11:43:14.000Z"
        }
        """
@@ -125,6 +126,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
           "inStock" : true,
           "price" : 6.49,
           "pages_i" : 304,
+          "timestamp" : "2006-03-21T13:40:15.518Z",
           "last_modified" : "2010-12-31T23:59:59.345Z"
        }
       """
