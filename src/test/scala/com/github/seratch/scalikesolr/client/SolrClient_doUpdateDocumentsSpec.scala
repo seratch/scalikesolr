@@ -56,9 +56,15 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
     request.documents = List(doc1, doc2)
     val response = client.doUpdateDocuments(request)
     client.doCommit(new UpdateRequest())
-    //    log.debug(response.toString)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+      |</response>
+      |""".stripMargin
   }
 
   it should "be available with JSON format" in {
@@ -72,7 +78,15 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
     )
     val response = client.doUpdateDocumentsInCSV(request)
     client.doCommit(new UpdateRequest)
-    assert(response != null)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+      |</response>
+      |""".stripMargin
   }
 
 }

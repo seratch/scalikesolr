@@ -10,18 +10,19 @@ import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetP
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
 import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
+import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
-import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
+import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
 class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doQuery JSONResponse"
 
-  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryJavabinResponseSpec]))
+  val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryJSONResponseSpec]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   it should "be parepared" in {
@@ -73,29 +74,22 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     val response = client.doQuery(request)
     log.debug(response.toString)
 
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
 
-    log.debug("-----------------------------")
     log.debug(response.response.documents.toString)
+    response.response.documents.size should equal(1)
     response.response.documents foreach {
-      case doc => {
-        log.debug(doc.get("id").toString()) // "978-1423103349"
-        log.debug(doc.get("cat").toListOrElse(Nil).toString) // List(book, hardcover)
-        log.debug(doc.get("title").toString()) // "The Lightning Thief"
-        log.debug(doc.get("pages_i").toIntOrElse(0).toString) // 384
-        log.debug(doc.get("price").toDoubleOrElse(0.0).toString) // 12.5
-        log.debug(doc.get("timestamp").toDateOrElse(null).toString) // 12.5
-        assert(doc.get("id") != null)
-        assert(doc.get("cat") != null)
-        assert(doc.get("title") != null)
-        assert(doc.get("pages_i") != null)
-        assert(doc.get("price") != null)
-        assert(doc.get("timestamp") != null)
+      case doc: SolrDocument => {
+        doc.get("id").toString should equal("978-1423103349")
+        doc.get("cat").toListOrElse(Nil).toString should equal("List(List(book,  paperback))")
+        doc.get("title").toString should equal("List(The Sea of Monsters)")
+        doc.get("pages_i").toString should equal("304.0")
+        doc.get("price").toString should equal("6.49")
+        doc.get("timestamp").toString should equal("2006-03-21T13:40:15.518Z")
       }
     }
-    assert(response.response.documents.size == 1)
   }
 
   it should "be available with multibyte queries" in {
@@ -103,10 +97,10 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
       writerType = WriterType.JSON,
       query = Query("author:日本人"))
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.responseHeader.params != null)
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.responseHeader.params should not be null
     log.debug(response.toString)
   }
 
@@ -118,24 +112,24 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     request.group = GroupParams(enabled = true, field = GroupField("author_t"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    log.debug(response.toString)
-    log.debug(response.groups.toString)
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.responseHeader.params should not be null
+
+    response.groups.groups.size should be > 0
     response.groups.groups foreach {
-      case group => {
-        log.debug(group.groupValue + " -> " + group.documents.toString)
-        assert(group.groupValue != null)
-        assert(group.documents.toString != null)
+      case group: Group => {
+        group.groupValue should not be null
+        group.documents.toString should not be null
       }
     }
-    assert(response.groups.groups.apply(0).numFound > 0)
-    assert(response.groups.groups.apply(0).start == 0)
-    assert(response.groups.groups.apply(1).numFound > 0)
-    assert(response.groups.groups.apply(1).start == 0)
-    assert(response.groups.groups.apply(2).numFound > 0)
-    assert(response.groups.groups.apply(2).start == 0)
+    response.groups.groups(0).numFound should be > 0
+    response.groups.groups(0).start should equal(0)
+    response.groups.groups(1).numFound should be > 0
+    response.groups.groups(1).start should equal(0)
+    response.groups.groups(2).numFound should be > 0
+    response.groups.groups(2).start should equal(0)
   }
 
   "Group params" should "be available with simple format" in {
@@ -146,19 +140,20 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     request.group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple"))
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    log.debug(response.toString)
-    log.debug(response.groups.toString)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+
+    response.groups.groups.size should equal(1)
     response.groups.groups foreach {
       case group => {
-        log.debug(group.groupValue + " -> " + group.documents.toString)
+        group.documents.size should be > 0
+        group.documents.toString should not be null
       }
     }
-    assert(response.groups.groups.size == 1)
-    assert(response.groups.groups.apply(0).numFound > 0)
-    assert(response.groups.groups.apply(0).start == 0)
+    response.groups.groups(0).numFound should be > 0
+    response.groups.groups(0).start should equal(0)
   }
 
   "Group params" should "be available with simple format, main" in {
@@ -174,16 +169,18 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     )
     request.sort = Sort("page_i desc")
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 3)
-    log.debug(response.toString)
-    log.debug(response.groups.toString)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+
+    response.response.documents.size should equal(3)
     response.response.documents foreach {
-      case doc => log.debug(doc.toString)
+      case doc: SolrDocument =>
+        doc.writerType should equal(WriterType.JSON)
+        doc.get("author").toString should not be null
     }
-    assert(response.groups.groups.size == 0)
+    response.groups.groups.size should equal(0)
   }
 
   "Highlighting params" should "be available" in {
@@ -194,21 +191,21 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     )
     request.highlighting = HighlightingParams(true)
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 10)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.response.documents.size should equal(10)
     response.response.documents foreach {
-      doc => log.debug(response.highlightings.get(doc.get("id").toString).toString)
+      doc: SolrDocument =>
+        doc.writerType should equal(WriterType.JSON)
+        doc.get("id").toString should not be null
     }
-    assert(response.highlightings.size == 10)
-    log.debug(response.toString)
-    log.debug(response.highlightings.toString)
-    response.highlightings.keys() foreach {
+    response.highlightings.size should equal(10)
+    response.highlightings.keys foreach {
       case key => {
         val value = response.highlightings.get(key).get("author").toString
-        assert(!value.startsWith("["))
-        log.debug(key + "->" + value)
+        value should include regex "<em>"
       }
     }
   }
@@ -219,19 +216,18 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
       query = Query("author:Rick")
     )
     request.moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body"))
+
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 10)
-    log.debug(response.toString)
-    log.debug(response.moreLikeThis.toString)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.response.documents.size should equal(10)
+
     response.response.documents foreach {
-      doc =>
-        {
-          val id = doc.get("id").toString
-          log.debug(id + "->" + response.moreLikeThis.getList(id).toString)
-        }
+      doc: SolrDocument =>
+        val id = doc.get("id").toString
+        response.moreLikeThis.getList(id).toString should not be null
     }
   }
 
@@ -243,19 +239,21 @@ class SolrClient_doQueryJSONResponseSpec extends FlatSpec with ShouldMatchers {
     request.facet = new FacetParams(enabled = true,
       params = List(new FacetParam(Param("facet.field"), Value("title")))
     )
+
     val response = client.doQuery(request)
-    assert(response.responseHeader != null)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.response.documents.size == 10)
-    log.debug(response.toString)
-    log.debug("facetFields:" + response.facet.facetFields.toString)
-    // Solr 3.2: Map(title -> SolrDocument(WriterType(standard),,Map(thief -> 1, sea -> 1, monster -> 1, lightn -> 1)))
-    // Solr 3.3: Map(title -> SolrDocument(WriterType(standard),,Map(sea -> 1, thief -> 1, monsters -> 1, lightning -> 1, of -> 1, the -> 2)))
-    assert(response.facet.facetFields.keys.size == 1)
-    // Solr 3.2: response.facet.facetFields.get("title").get.keys.size must beEqual(4)
-    // Solr 3.3: response.facet.facetFields.get("title").get.keys.size must beEqual(6)
-    assert(response.facet.facetFields.get("title").get.keys.size >= 4)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.response.documents.size should equal(10)
+
+    response.facet.facetFields.get("title") match {
+      case Some(doc: SolrDocument) =>
+        doc.writerType should equal(WriterType.JSON)
+        doc.get("sea").toIntOrElse(-1) should equal(1)
+      case _ => fail("facet field not found")
+    }
+    response.facet.facetFields.get("title").get.keys.size should be >= 4
   }
 
 }

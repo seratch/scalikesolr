@@ -62,6 +62,7 @@ class SolrClient_doAddDocumentsSpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be available with JSON format" in {
+
     val request = new UpdateRequest(
       requestBody = "id,cat,name,price,inStock,author_t,series_t,sequence_i,genre_s\n" +
         "0553573403,book,A Game of Thrones,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",1,fantasy\n" +
@@ -70,9 +71,18 @@ class SolrClient_doAddDocumentsSpec extends FlatSpec with ShouldMatchers {
         "0553293354,book,Foundation,7.99,true,Isaac Asimov,Foundation Novels,1,scifi\n" +
         "0812521390,book,The Black Company,6.99,false,Glen Cook,The Chronicles of The Black Company,1,fantasy\n"
     )
+
     val response = client.doAddDocumentsInCSV(request)
     client.doCommit(new UpdateRequest)
-    assert(response != null)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+      |</response>
+      |""".stripMargin
   }
 
 }

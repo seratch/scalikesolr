@@ -23,7 +23,14 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
       requestBody = "<optimize/>"
     )
     val response = client.doUpdateInXML(request)
-    assert(response != null)
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+      |</response>
+      |""".stripMargin
   }
 
   "doUpdate in JSON" should "be available" in {
@@ -32,7 +39,11 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
       requestBody = "{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }"
     )
     val response = client.doUpdateInJSON(request)
-    assert(response != null)
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """\{"responseHeader":\{"status":0,"QTime":\d+\}\}
+      |""".stripMargin
   }
 
   it should "throw SocketTimeoutException when specifying too small connect timeout" in {

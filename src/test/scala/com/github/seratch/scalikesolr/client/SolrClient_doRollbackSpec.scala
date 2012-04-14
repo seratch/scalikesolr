@@ -20,9 +20,15 @@ class SolrClient_doRollbackSpec extends FlatSpec with ShouldMatchers {
   it should "be available" in {
     val request = new UpdateRequest()
     val response = client.doRollback(request)
-    log.debug(response.toString)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+      |</response>
+      |""".stripMargin
   }
 
 }

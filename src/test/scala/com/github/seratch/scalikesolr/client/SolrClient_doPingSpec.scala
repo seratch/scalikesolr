@@ -21,19 +21,32 @@ class SolrClient_doPingSpec extends FlatSpec with ShouldMatchers {
   it should "be available" in {
     val request = new PingRequest()
     val response = client.doPing(request)
-    log.debug(response.toString)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.status == "OK")
+
+    response should not be null
+    response.status should equal("OK")
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+      |<response>
+      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int><lst name="params"><str name="echoParams">all</str><str name="rows">10</str><str name="echoParams">all</str><str name="wt">standard</str><str name="q">solrpingquery</str><str name="qt">search</str></lst></lst><str name="status">OK</str>
+      |</response>
+      |""".stripMargin
   }
 
   it should "be available with JSON format" in {
     val request = new PingRequest(writerType = WriterType.JSON)
     val response = client.doPing(request)
-    log.debug(response.toString)
-    assert(response.responseHeader.status >= 0)
-    assert(response.responseHeader.qTime >= 0)
-    assert(response.status == "OK")
+
+    response should not be null
+    response.status should equal("OK")
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be > 0
+    response.rawBody.replaceAll("\\s+", "") should fullyMatch regex """\{"responseHeader":
+      \{"status":0,"QTime":\d+,"params":
+        \{"echoParams":"all","rows":"10","echoParams":"all","wt":"json","q":"solrpingquery","qt":"search"\}
+      \},
+      "status":"OK"
+    \}""".replaceAll("\\s+", "")
   }
 
 }
