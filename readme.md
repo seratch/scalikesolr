@@ -25,12 +25,12 @@ ls-install scalikesolr
 
 Available on maven central repository.
 
-The "2.9.1" of "scalikesolr_2.9.1"(artifactId) is the Scala version to use.
+The "2.9.2" of "scalikesolr_2.9.2"(artifactId) is the Scala version to use.
 
 ```xml
 <dependency>
   <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.9.1</artifactId>
+  <artifactId>scalikesolr_2.9.2</artifactId>
   <version>[3.6,)</version>
 </dependency>
 ```
