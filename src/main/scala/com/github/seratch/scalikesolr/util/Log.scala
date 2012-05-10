@@ -20,10 +20,11 @@ import org.slf4j.Logger
 
 case class Log(logger: Logger) {
 
-  val isDebugEnabled: Boolean = logger.isDebugEnabled
-  val isInfoEnabled: Boolean = logger.isInfoEnabled
-  val isWarnEnabled: Boolean = logger.isWarnEnabled
-  val isErrorEnabled: Boolean = logger.isErrorEnabled
+  // use var consciously to enable squeezing later
+  var isDebugEnabled: Boolean = logger.isDebugEnabled
+  var isInfoEnabled: Boolean = logger.isInfoEnabled
+  var isWarnEnabled: Boolean = logger.isWarnEnabled
+  var isErrorEnabled: Boolean = logger.isErrorEnabled
 
   def debug(msg: => String): Unit = {
     if (isDebugEnabled && logger.isDebugEnabled) {
