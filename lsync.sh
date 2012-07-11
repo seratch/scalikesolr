@@ -6,8 +6,7 @@ if [ $# -eq 0 ]; then
 fi
 
 VERSION=$1
-curl -X POST http://ls.implicit.ly/api/1/libraries \
-  -d 'user=seratch&repo=scalikesolr&version=$VERSION'
+curl -X POST http://ls.implicit.ly/api/1/libraries -d 'user=seratch&repo=scalikesolr&version='$VERSION
 
 echo "Done."
 
