@@ -2,12 +2,9 @@ package com.github.seratch.scalikesolr.response
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr._
 
-@RunWith(classOf[JUnitRunner])
 class DIHCommandResponseSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "DIHCommandResponse"
@@ -33,7 +30,7 @@ class DIHCommandResponseSpec extends FlatSpec with ShouldMatchers {
   },
   "WARNING":"This response format is experimental.  It is likely to change in the future."
 }
-"""
+                          """
     val response = new DIHCommandResponse(writerType, rawBody)
     response should not be null
     response.initArgs.defaults should not be null

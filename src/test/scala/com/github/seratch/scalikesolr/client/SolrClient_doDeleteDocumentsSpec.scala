@@ -4,12 +4,9 @@ import java.net.URL
 import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.{ DeleteRequest, UpdateRequest }
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doDeleteDocuments"
@@ -24,11 +21,11 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-      |<response>
-      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-      |</response>
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+                                               |<response>
+                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+                                               |</response>
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
 
     client.doCommit(new UpdateRequest())
   }

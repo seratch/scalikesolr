@@ -2,12 +2,9 @@ package com.github.seratch.scalikesolr.request
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import common.WriterType
 import com.github.seratch.scalikesolr._
 
-@RunWith(classOf[JUnitRunner])
 class AddRequestSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "AddRequest"

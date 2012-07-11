@@ -2,12 +2,9 @@ package com.github.seratch.scalikesolr.response
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import com.github.seratch.scalikesolr.request.common._
 import org.apache.solr.common.util.NamedList
 
-@RunWith(classOf[JUnitRunner])
 class QueryResponseSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "QueryResponse"
@@ -30,7 +27,7 @@ class QueryResponseSpec extends FlatSpec with ShouldMatchers {
 </lst>
 <result name="response" numFound="0" start="0"/>
 </response>
-      """
+                          """
     val rawJavabin: NamedList[Any] = new NamedList[Any]()
     val instance = new QueryResponse(writerType, rawBody, rawJavabin)
     instance should not be null

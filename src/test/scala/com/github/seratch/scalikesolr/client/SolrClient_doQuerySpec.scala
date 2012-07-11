@@ -12,12 +12,9 @@ import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, Query
 import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
 import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doQuery"
@@ -41,7 +38,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
        "pages_i" : 384,
        "timestamp" : "2006-03-21T13:40:15.518Z"
      }
-     """
+                """
     )
     val doc2 = SolrDocument(
       writerType = WriterType.JSON,
@@ -59,7 +56,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
         "pages_i" : 304,
         "timestamp" : "2006-03-21T13:40:15.518Z"
       }
-    """
+                """
     )
     request.documents = List(doc1, doc2)
     client.doAddDocuments(request)

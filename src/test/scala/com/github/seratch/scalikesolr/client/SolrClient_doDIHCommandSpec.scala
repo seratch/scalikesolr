@@ -4,12 +4,9 @@ import java.net.URL
 import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.DIHCommandRequest
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doDIHCommandSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doDIHCommand"

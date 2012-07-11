@@ -82,17 +82,17 @@ public class SolrClientTest {
     }
 
     @Ignore
-	@Test
-	public void doDIHCommand() throws Exception {
-		DIHCommandRequest request = new DIHCommandRequest("delta-import");
-		DIHCommandResponse response = client.doDIHCommand(request);
-		assertThat(response.getCommand(), is(notNullValue()));
-		assertThat(response.getImportResponse(), is(notNullValue()));
-		assertThat(response.getRawBody(), is(notNullValue()));
-		assertThat(response.getStatus(), is(notNullValue()));
-		assertThat(response.getStatusMessages().getDefaults(), is(notNullValue()));
-		assertThat(response.getInitArgs().getDefaults(), is(notNullValue()));
-	}
+    @Test
+    public void doDIHCommand() throws Exception {
+        DIHCommandRequest request = new DIHCommandRequest("delta-import");
+        DIHCommandResponse response = client.doDIHCommand(request);
+        assertThat(response.getCommand(), is(notNullValue()));
+        assertThat(response.getImportResponse(), is(notNullValue()));
+        assertThat(response.getRawBody(), is(notNullValue()));
+        assertThat(response.getStatus(), is(notNullValue()));
+        assertThat(response.getStatusMessages().getDefaults(), is(notNullValue()));
+        assertThat(response.getInitArgs().getDefaults(), is(notNullValue()));
+    }
 
     @Test
     public void doDeleteDocuments() throws Exception {

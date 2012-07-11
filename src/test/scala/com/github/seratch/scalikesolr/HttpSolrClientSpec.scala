@@ -2,13 +2,10 @@ package com.github.seratch.scalikesolr
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import java.net.URL
 import org.slf4j.LoggerFactory
 import util._
 
-@RunWith(classOf[JUnitRunner])
 class HttpSolrClientSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "HttpSolrClient"

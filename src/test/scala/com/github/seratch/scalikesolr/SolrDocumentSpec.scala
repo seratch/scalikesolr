@@ -2,10 +2,7 @@ package com.github.seratch.scalikesolr
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class SolrDocumentSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrDocument"
@@ -41,7 +38,7 @@ class SolrDocumentSpec extends FlatSpec with ShouldMatchers {
   </doc>
 </result>
 </response>
-  """
+                          """
     val rawJavabin: SolrjSolrDocument = null
     val map: Map[String, SolrDocumentValue] = Map()
     val doc = new SolrDocument(writerType, rawBody, rawJavabin, map)
@@ -70,7 +67,7 @@ class SolrDocumentSpec extends FlatSpec with ShouldMatchers {
   </doc>
 </result>
 </response>
-  """
+                          """
     val rawJavabin: SolrjSolrDocument = null
     val map: Map[String, SolrDocumentValue] = Map()
     val doc = new SolrDocument(writerType, rawBody, rawJavabin, map)

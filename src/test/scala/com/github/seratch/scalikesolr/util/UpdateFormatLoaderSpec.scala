@@ -2,12 +2,9 @@ package com.github.seratch.scalikesolr.util
 
 import org.slf4j.LoggerFactory
 
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
 
-@RunWith(classOf[JUnitRunner])
 class UpdateFormatLoaderSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "UpdateFormatLoader"

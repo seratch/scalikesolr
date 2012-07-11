@@ -7,7 +7,6 @@ import java.net.URL
 import com.github.seratch.scalikesolr.request.{ QueryRequest, UpdateRequest, AddRequest }
 import com.github.seratch.scalikesolr.request.query.Query
 import org.joda.time.DateTime
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.FlatSpec
 
@@ -40,9 +39,6 @@ case class Person(var name: String = "",
   }
 }
 
-import org.junit.runner.RunWith
-
-@RunWith(classOf[JUnitRunner])
 class TypeBinderSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "TypeBinder"
@@ -110,7 +106,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
          "timestamp" : "2006-03-21T13:40:15.518Z",
          "last_modified" : "2006-08-13T11:43:14.000Z"
        }
-       """
+                """
     )
     val doc2 = SolrDocument(
       writerType = WriterType.JSON,
@@ -129,7 +125,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
           "timestamp" : "2006-03-21T13:40:15.518Z",
           "last_modified" : "2010-12-31T23:59:59.345Z"
        }
-      """
+                """
     )
     request.documents = List(doc1, doc2)
     val response = client.doAddDocuments(request)

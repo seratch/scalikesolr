@@ -4,13 +4,10 @@ import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.UpdateRequest
-import org.scalatest.junit.JUnitRunner
-import org.junit.runner.RunWith
 import java.net.{ ConnectException, SocketTimeoutException, URL }
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doUpdate"
@@ -26,11 +23,11 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
-    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-      |<response>
-      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-      |</response>
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+                                               |<response>
+                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+                                               |</response>
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
   "doUpdate in JSON" should "be available" in {
@@ -42,8 +39,8 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
-    response.rawBody should fullyMatch regex """\{"responseHeader":\{"status":0,"QTime":\d+\}\}
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """\{"responseHeader":\{"status":0,"QTime":\d+\}\}
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
   it should "throw SocketTimeoutException when specifying too small connect timeout" in {

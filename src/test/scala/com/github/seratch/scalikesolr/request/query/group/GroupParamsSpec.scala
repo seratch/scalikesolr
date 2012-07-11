@@ -2,11 +2,8 @@ package com.github.seratch.scalikesolr.request.query.group
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import com.github.seratch.scalikesolr.request.query._
 
-@RunWith(classOf[JUnitRunner])
 class GroupParamsSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "GroupParams"

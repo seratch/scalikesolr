@@ -3,13 +3,10 @@ package com.github.seratch.scalikesolr
 import org.slf4j.LoggerFactory
 import java.util.Calendar
 
-import org.junit.runner.RunWith
 import org.joda.time.{ DateTime, LocalDate, LocalTime }
 import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 
-@RunWith(classOf[JUnitRunner])
 class SolrDocumentValueSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrDocumentValue"

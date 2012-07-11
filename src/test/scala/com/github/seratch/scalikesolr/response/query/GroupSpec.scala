@@ -2,12 +2,9 @@ package com.github.seratch.scalikesolr.response.query
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import com.github.seratch.scalikesolr._
 import com.github.seratch.scalikesolr.response.query.{ Group => SolrGroup }
 
-@RunWith(classOf[JUnitRunner])
 class GroupSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "Group"

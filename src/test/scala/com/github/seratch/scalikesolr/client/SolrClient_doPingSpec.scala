@@ -5,12 +5,9 @@ import com.github.seratch.scalikesolr.Solr
 import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.PingRequest
 import com.github.seratch.scalikesolr.request.common.WriterType
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doPingSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doPing"
@@ -26,11 +23,11 @@ class SolrClient_doPingSpec extends FlatSpec with ShouldMatchers {
     response.status should equal("OK")
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
-    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-      |<response>
-      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int><lst name="params"><str name="echoParams">all</str><str name="rows">10</str><str name="echoParams">all</str><str name="wt">standard</str><str name="q">solrpingquery</str><str name="qt">search</str></lst></lst><str name="status">OK</str>
-      |</response>
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+                                               |<response>
+                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int><lst name="params"><str name="echoParams">all</str><str name="rows">10</str><str name="echoParams">all</str><str name="wt">standard</str><str name="q">solrpingquery</str><str name="qt">search</str></lst></lst><str name="status">OK</str>
+                                               |</response>
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
   it should "be available with JSON format" in {

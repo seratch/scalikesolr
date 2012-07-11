@@ -2,11 +2,8 @@ package com.github.seratch.scalikesolr.response.query
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 import com.github.seratch.scalikesolr.SolrDocument
 
-@RunWith(classOf[JUnitRunner])
 class HighlightingsSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "Highlightings"

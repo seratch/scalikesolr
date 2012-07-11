@@ -5,12 +5,9 @@ import com.github.seratch.scalikesolr.request.UpdateRequest
 import java.net.URL
 import com.github.seratch.scalikesolr.{ Solr, SolrDocument }
 import org.slf4j.LoggerFactory
-import org.scalatest.junit.JUnitRunner
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
-import org.junit.runner.RunWith
 
-@RunWith(classOf[JUnitRunner])
 class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "SolrClient#doUpdateDocuments"
@@ -34,7 +31,7 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
        "price" : 12.50,
        "pages_i" : 384
      }
-     """
+                """
     )
     val doc2 = SolrDocument(
       writerType = WriterType.JSON,
@@ -52,7 +49,7 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
         "pages_i" : 304,
         "timestamp" : "2006-03-21T13:40:15.518Z"
       }
-    """
+                """
     )
     request.documents = List(doc1, doc2)
     val response = client.doUpdateDocuments(request)
@@ -61,11 +58,11 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
-    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-      |<response>
-      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-      |</response>
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+                                               |<response>
+                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+                                               |</response>
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
   it should "be available with JSON format" in {
@@ -83,11 +80,11 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
-    response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-      |<response>
-      |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-      |</response>
-      |""".stripMargin
+    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
+                                               |<response>
+                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+                                               |</response>
+                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
 }

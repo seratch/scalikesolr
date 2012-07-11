@@ -2,10 +2,7 @@ package com.github.seratch.scalikesolr.request.common
 
 import org.scalatest._
 import org.scalatest.matchers._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
 
-@RunWith(classOf[JUnitRunner])
 class RequestParamSpec extends FlatSpec with ShouldMatchers {
 
   behavior of "RequestParam"
@@ -13,7 +10,9 @@ class RequestParamSpec extends FlatSpec with ShouldMatchers {
   it should "be available" in {
     val param = new Object with RequestParam {
       override def isEmpty() = false
+
       override def getKey() = "param"
+
       override def getValue() = "true"
     }
     param should not be null
