@@ -16,11 +16,18 @@
 
 package com.github.seratch.scalikesolr.request.query
 
+import collection.JavaConverters._
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
 case class FilterQuery(@BeanProperty val fq: String = "",
     @BeanProperty val multiple: Seq[String] = Nil) extends RequestParam {
+
+  // for Java users
+  def this(fq: String) = this(fq, Nil)
+
+  // for Java users
+  def this(juList: java.util.List[String]) = this("", juList.asScala)
 
   override def isEmpty() = (fq == null || fq.isEmpty) && multiple.isEmpty
 

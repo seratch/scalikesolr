@@ -7,6 +7,26 @@ class FilterQuerySpec extends FlatSpec with ShouldMatchers {
 
   behavior of "FilterQuery"
 
+  it should "be available with single value for Java users" in {
+    val fq = new FilterQuery("+popularity:[10 TO *] +section:0")
+    fq.getKey() should equal("fq")
+    fq.isMultiple() should equal(false)
+    fq.getValue() should equal("+popularity:[10 TO *] +section:0")
+  }
+
+  it should "be available with multiple values for Java users" in {
+    val fq = new FilterQuery(java.util.Arrays.asList(
+      "popularity:[10 TO *]",
+      "section:0"
+    ))
+    fq.getKey() should equal("fq")
+    fq.isMultiple() should equal(true)
+    fq.getValues() should equal(Seq(
+      "popularity:[10 TO *]",
+      "section:0"
+    ))
+  }
+
   it should "be available with single value" in {
     val fq = new FilterQuery(fq = "+popularity:[10 TO *] +section:0")
     fq.getKey() should equal("fq")
