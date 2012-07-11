@@ -188,13 +188,13 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
     response.response.documents foreach {
       doc: SolrDocument =>
         doc.writerType should equal(WriterType.Standard)
         doc.get("id").toString should not be null
     }
-    response.highlightings.size should equal(10)
+    response.highlightings.size should equal(2)
     response.highlightings.keys foreach {
       case key => {
         val value = response.highlightings.get(key).get("author").toString
@@ -214,7 +214,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
 
     response.response.documents foreach {
       doc: SolrDocument =>
@@ -236,7 +236,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
 
     response.facet.facetFields.get("title") match {
       case Some(doc: SolrDocument) =>

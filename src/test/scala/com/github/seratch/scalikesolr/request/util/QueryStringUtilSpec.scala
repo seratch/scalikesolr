@@ -49,4 +49,17 @@ class QueryStringUtilSpec extends FlatSpec with ShouldMatchers {
     buf.toString should equal("param=")
   }
 
+  it should "execute appendIfExists when the value is multiple" in {
+    val buf = new StringBuilder
+    val rp = new RequestParam {
+      override def isEmpty() = false
+      override def isMultiple() = true
+      override def getKey() = "k"
+      override def getValue() = ""
+      override def getValues() = Seq("a", "b", "c")
+    }
+    QueryStringUtil.appendIfExists(buf, rp)
+    buf.toString should equal("k=a&k=b&k=c")
+  }
+
 }

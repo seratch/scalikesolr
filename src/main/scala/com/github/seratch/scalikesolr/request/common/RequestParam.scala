@@ -20,9 +20,13 @@ trait RequestParam {
 
   def isEmpty(): Boolean
 
+  def isMultiple(): Boolean = false
+
   def getKey(): String
 
   def getValue(): String
+
+  def getValues(): Seq[String] = Nil
 
   protected def toString(value: Any): String = if (value != null) value.toString else null
 

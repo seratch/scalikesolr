@@ -23,7 +23,7 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
 
     response should not be null
     response.responseHeader.status should equal(0)
-    response.responseHeader.qTime should be > 0
+    response.responseHeader.qTime should be >= 0
     response.rawBody should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
       |<response>
       |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>

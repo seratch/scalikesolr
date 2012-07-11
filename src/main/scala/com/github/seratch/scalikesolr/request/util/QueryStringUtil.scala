@@ -23,10 +23,19 @@ private[request] object QueryStringUtil {
 
   def appendIfExists[RP <: RequestParam](buf: StringBuilder, param: RP): Unit = {
     if (param != null && !param.isEmpty) {
-      if (buf.length > 0) buf.append("&")
-      buf.append(param.getKey())
-      buf.append("=")
-      buf.append(URLEncoder.encode(param.getValue, "UTF-8"))
+      if (param.isMultiple) {
+        param.getValues.foreach { value =>
+          if (buf.length > 0) buf.append("&")
+          buf.append(param.getKey())
+          buf.append("=")
+          buf.append(URLEncoder.encode(value, "UTF-8"))
+        }
+      } else {
+        if (buf.length > 0) buf.append("&")
+        buf.append(param.getKey())
+        buf.append("=")
+        buf.append(URLEncoder.encode(param.getValue, "UTF-8"))
+      }
     }
   }
 

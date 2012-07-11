@@ -19,13 +19,18 @@ package com.github.seratch.scalikesolr.request.query
 import reflect.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
-case class FilterQuery(@BeanProperty val fq: String = "") extends RequestParam {
+case class FilterQuery(@BeanProperty val fq: String = "",
+    @BeanProperty val multiple: Seq[String] = Nil) extends RequestParam {
 
-  override def isEmpty() = fq == null || fq.isEmpty
+  override def isEmpty() = (fq == null || fq.isEmpty) && multiple.isEmpty
+
+  override def isMultiple() = !multiple.isEmpty
 
   override def getKey() = "fq"
 
   override def getValue() = toString(fq)
+
+  override def getValues() = multiple
 
 }
 

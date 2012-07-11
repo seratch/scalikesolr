@@ -9,7 +9,7 @@ import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
 import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
-import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
+import com.github.seratch.scalikesolr.request.query.{ Sort, Query, FilterQuery }
 import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.junit.JUnitRunner
@@ -196,13 +196,13 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
     response.response.documents foreach {
       doc: SolrDocument =>
         doc.writerType should equal(WriterType.JavaBinary)
         doc.get("id").toString should not be null
     }
-    response.highlightings.size should equal(10)
+    response.highlightings.size should equal(2)
     response.highlightings.keys foreach {
       case key => {
         val value = response.highlightings.get(key).get("author").toString
@@ -223,7 +223,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
 
     response.response.documents foreach {
       doc: SolrDocument =>
@@ -246,7 +246,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(10)
+    response.response.documents.size should equal(2)
 
     response.facet.facetFields.get("title") match {
       case Some(doc: SolrDocument) =>
@@ -255,6 +255,26 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
       case _ => fail("facet field not found")
     }
     response.facet.facetFields.get("title").get.keys.size should be >= 4
+  }
+
+  "single FilterQuery" should "be available" in {
+    val request = new QueryRequest(
+      writerType = WriterType.JavaBinary,
+      query = Query("name:A Game of Thrones"),
+      filterQuery = FilterQuery(fq = "+name:of +id:0553573403")
+    )
+    val response = client.doQuery(request)
+    response.response.documents.size should equal(1)
+  }
+
+  "multiple FilterQuery" should "be available" in {
+    val request = new QueryRequest(
+      writerType = WriterType.JavaBinary,
+      query = Query("name:A Game of Thrones"),
+      filterQuery = FilterQuery(multiple = Seq("name:of", "id:0553573403"))
+    )
+    val response = client.doQuery(request)
+    response.response.documents.size should equal(1)
   }
 
 }

@@ -49,7 +49,8 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
         "genre_s" : "fantasy",
         "inStock" : true,
         "price" : 6.49,
-        "pages_i" : 304
+        "pages_i" : 304,
+        "timestamp" : "2006-03-21T13:40:15.518Z"
       }
     """
     )
