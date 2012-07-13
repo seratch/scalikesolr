@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $# -eq 0 ]; then
-  echo "[usage] $0 [vesrion]"
+  echo "[usage] $0 [version]"
   exit 1
 fi
 
