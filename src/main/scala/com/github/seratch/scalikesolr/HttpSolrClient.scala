@@ -153,7 +153,7 @@ class HttpSolrClient(@BeanProperty val url: URL,
     request.queries foreach {
       case query =>
         xml.append("<query>")
-        xml.appendEscaped(query.toString)
+        xml.appendEscaped(query.getValue)
         xml.append("</query>")
     }
     xml.append("</delete>")
