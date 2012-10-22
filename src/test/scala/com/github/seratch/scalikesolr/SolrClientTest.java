@@ -106,19 +106,6 @@ public class SolrClientTest {
     }
 
     @Test
-    public void doAddDocuments() throws Exception {
-        AddRequest request = new AddRequest();
-        String jsonString = "{\"id\" : \"978-0641723445\", \"cat\" : [\"book\",\"hardcover\"], \"title\" : \"The Lightning Thief\", \"author\" : \"Rick Riordan\", \"series_t\" : \"Percy Jackson and the Olympians\", \"sequence_i\" : 1, \"genre_s\" : \"fantasy\", \"inStock\" : true, \"price\" : 12.50, \"pages_i\" : 384}";
-        SolrDocument doc = new SolrDocument(JSON, jsonString);
-        List<SolrDocument> docs = new ArrayList<SolrDocument>();
-        docs.add(doc);
-        request.setDocumentsInJava(docs);
-        AddResponse response = client.doAddDocuments(request);
-        assertThat(response.responseHeader(), is(notNullValue()));
-        client.doCommit(new UpdateRequest());
-    }
-
-    @Test
     public void doCommit() throws Exception {
         UpdateRequest request = new UpdateRequest();
         UpdateResponse response = client.doCommit(request);
@@ -144,16 +131,6 @@ public class SolrClientTest {
         PingRequest request = new PingRequest();
         PingResponse response = client.doPing(request);
         assertThat(response.responseHeader(), is(notNullValue()));
-    }
-
-
-    @Test
-    public void doAddDocumentsInCSV() throws Exception {
-        UpdateRequest request = new UpdateRequest();
-        request.setRequestBody("id,cat,name,price,inStock,author_t,series_t,sequence_i,genre_s\n0553573403,book,A Game of Thrones,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",1,fantasy\n0553579908,book,A Clash of Kings,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",2,fantasy\n055357342X,book,A Storm of Swords,7.99,true,George R.R. Martin,\"A Song of Ice and Fire\",3,fantasy\n0553293354,book,Foundation,7.99,true,Isaac Asimov,Foundation Novels,1,scifi\n0812521390,book,The Black Company,6.99,false,Glen Cook,The Chronicles of The Black Company,1,fantasy\n");
-        UpdateResponse response = client.doAddDocumentsInCSV(request);
-        assertThat(response.responseHeader(), is(notNullValue()));
-        client.doCommit(new UpdateRequest());
     }
 
     @Test

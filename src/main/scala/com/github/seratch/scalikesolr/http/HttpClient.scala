@@ -18,10 +18,11 @@ package com.github.seratch.scalikesolr.http
 
 import java.net.{ URL, HttpURLConnection }
 import java.io._
-import com.github.seratch.scalikesolr.util.IO
+import com.github.seratch.scalikesolr.util.{ Log, IO }
 import collection.JavaConverters._
 import org.apache.solr.common.util.{ NamedList, JavaBinCodec }
 import reflect.BeanProperty
+import org.slf4j.LoggerFactory
 
 object HttpClient {
   val DEFAULT_CONNECT_TIMEOUT_MILLIS = 3000
@@ -30,6 +31,8 @@ object HttpClient {
 
 class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONNECT_TIMEOUT_MILLIS,
     @BeanProperty val readTimeout: Int = HttpClient.DEFAULT_READ_TIMEOUT_MILLIS) {
+
+  val log: Log = new Log(LoggerFactory.getLogger(classOf[HttpClient].getCanonicalName))
 
   def getAsJavabin(url: String): JavabinHttpResponse = {
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
@@ -45,7 +48,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         new JavaBinCodec().unmarshal(conn.getInputStream).asInstanceOf[NamedList[Any]]
       )
     } catch {
-      case e: IOException => throw e
+      case e: IOException =>
+        IO.using(conn.getErrorStream()) {
+          case error: InputStream =>
+            val body = IO.readAsString(error)
+            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+        }
+        throw e
     }
   }
 
@@ -64,7 +73,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         getResponseContent(conn, charset)
       )
     } catch {
-      case e: IOException => throw e
+      case e: IOException =>
+        IO.using(conn.getErrorStream()) {
+          case error: InputStream =>
+            val body = IO.readAsString(error)
+            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+        }
+        throw e
     }
 
   }
@@ -97,7 +112,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         getResponseContent(conn, charset)
       )
     } catch {
-      case e: IOException => throw e
+      case e: IOException =>
+        IO.using(conn.getErrorStream()) {
+          case error: InputStream =>
+            val body = IO.readAsString(error)
+            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+        }
+        throw e
     }
 
   }

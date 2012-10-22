@@ -33,7 +33,7 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
   "doUpdate in JSON" should "be available" in {
     val request = new UpdateRequest(
       writerType = WriterType.JSON,
-      requestBody = "{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }"
+      requestBody = "{ \"optimize\": { \"waitSearcher\":false } }"
     )
     val response = client.doUpdateInJSON(request)
     response should not be null
@@ -49,16 +49,6 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
       readTimeout = 10000
     )
     intercept[ConnectException] {
-      client.doOptimize(new UpdateRequest)
-    }
-  }
-
-  it should "throw SocketTimeoutException when specifying too small read timeout" in {
-    val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient(
-      connectTimeout = 1000,
-      readTimeout = 1
-    )
-    intercept[SocketTimeoutException] {
       client.doOptimize(new UpdateRequest)
     }
   }

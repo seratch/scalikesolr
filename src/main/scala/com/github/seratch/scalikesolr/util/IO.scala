@@ -33,7 +33,7 @@ object IO {
     }
   }
 
-  def readAsString(is: InputStream, charset: String): String = {
+  def readAsString(is: InputStream, charset: String = "UTF-8"): String = {
     using(is) {
       is =>
         using(new BufferedReader(charset match {

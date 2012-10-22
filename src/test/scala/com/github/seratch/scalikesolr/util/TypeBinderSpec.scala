@@ -4,7 +4,7 @@ import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.{ Solr, SolrDocument }
 import java.net.URL
-import com.github.seratch.scalikesolr.request.{ QueryRequest, UpdateRequest, AddRequest }
+import com.github.seratch.scalikesolr.request.{ QueryRequest, UpdateRequest }
 import com.github.seratch.scalikesolr.request.query.Query
 import org.joda.time.DateTime
 import org.scalatest.matchers.ShouldMatchers
@@ -89,7 +89,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
   "DateTime mapping" should "be available" in {
 
     // Arrange
-    val request = new AddRequest()
+    val request = new UpdateRequest()
     val doc1 = SolrDocument(
       writerType = WriterType.JSON,
       rawBody = """
@@ -128,7 +128,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
                 """
     )
     request.documents = List(doc1, doc2)
-    val response = client.doAddDocuments(request)
+    val response = client.doUpdateDocuments(request)
     client.doCommit(new UpdateRequest())
     log.debug(response.toString)
     response.responseHeader.status should be >= 0

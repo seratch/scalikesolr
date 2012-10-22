@@ -26,11 +26,6 @@ package object scalikesolr {
   type QueryResponse = response.QueryResponse
   val QueryResponse = response.QueryResponse
 
-  type AddRequest = request.AddRequest
-  val AddRequest = request.AddRequest
-  type AddResponse = response.AddResponse
-  val AddResponse = response.AddResponse
-
   type DeleteRequest = request.DeleteRequest
   val DeleteRequest = request.DeleteRequest
   type DeleteResponse = response.DeleteResponse

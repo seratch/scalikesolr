@@ -9,19 +9,19 @@ object ScalikeSolrBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "3.6.2",
+    version := "4.0.0",
     scalaVersion := "2.9.2",
-    crossScalaVersions := Seq("2.9.2", "2.9.1", "2.9.0"),
+    crossScalaVersions := Seq("2.9.2", "2.9.1"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
       Seq(
-        "org.slf4j"                % "slf4j-api"          % "1.6.4"           % "compile",
+        "org.slf4j"                % "slf4j-api"          % "1.7.2"           % "compile",
         "joda-time"                % "joda-time"          % "2.1"             % "compile",
         "org.joda"                 % "joda-convert"       % "1.2"             % "compile",
-        "org.apache.solr"          % "solr-solrj"         % "3.6.0"           % "compile",
-        "ch.qos.logback"           % "logback-classic"    % "1.0.0"           % "test",
+        "org.apache.solr"          % "solr-solrj"         % "4.0.0"           % "compile",
+        "ch.qos.logback"           % "logback-classic"    % "1.0.7"           % "test",
         "junit"                    % "junit"              % "4.10"            % "test",
-        "org.mockito"              % "mockito-all"        % "1.8.2"           % "test",
-        "org.scalatest"            %% "scalatest"         % "1.7.1"           % "test",
+        "org.mockito"              % "mockito-all"        % "1.9.0"           % "test",
+        "org.scalatest"            %% "scalatest"         % "1.8"             % "test",
         "org.scala-lang"           % "scala-compiler"     % scalaVersion      % "test"
       )
     },

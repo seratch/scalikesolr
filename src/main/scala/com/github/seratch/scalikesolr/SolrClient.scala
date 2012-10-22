@@ -21,9 +21,6 @@ trait SolrClient {
 
   def doDIHCommand(request: DIHCommandRequest): DIHCommandResponse
 
-  @deprecated(message = "Use #doUpdateDocuments(UpdateRequest) instead", since = "3.5.2")
-  def doAddDocuments(request: AddRequest): AddResponse
-
   def doUpdateDocuments(request: UpdateRequest): UpdateResponse
 
   def doDeleteDocuments(request: DeleteRequest): DeleteResponse
@@ -43,9 +40,6 @@ trait SolrClient {
   def doPing(request: PingRequest): PingResponse
 
   def doPing(): PingResponse
-
-  @deprecated(message = "Use #doUpdateDocumentsInCSV(UpdateRequest) instead", since = "3.5.2")
-  def doAddDocumentsInCSV(request: UpdateRequest): UpdateResponse
 
   def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse
 

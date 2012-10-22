@@ -8,7 +8,7 @@ import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseFo
 import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
 import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
-import com.github.seratch.scalikesolr.request.{ UpdateRequest, AddRequest, QueryRequest }
+import com.github.seratch.scalikesolr.request.{ UpdateRequest, QueryRequest }
 import com.github.seratch.scalikesolr.request.query.{ Sort, Query, FilterQuery }
 import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
@@ -23,7 +23,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   it should "be parepared" in {
-    val request = new AddRequest()
+    val request = new UpdateRequest()
     val doc1 = SolrDocument(
       writerType = WriterType.JSON,
       rawBody = """
@@ -60,7 +60,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
                 """
     )
     request.documents = List(doc1, doc2)
-    client.doAddDocuments(request)
+    client.doUpdateDocuments(request)
     client.doCommit(new UpdateRequest())
   }
 
