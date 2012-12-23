@@ -19,12 +19,13 @@ case class Book(
     var price: Double = 0.0,
     var pageI: PageI = PageI(),
     var sequenceI: Int = 0,
+    var timestamp: DateTime = null,
     var lastModified: DateTime) {
 
   private var secret: String = ""
 
   def this() = {
-    this("", Nil, "", 0.0, PageI(), 0, new DateTime())
+    this("", Nil, "", 0.0, PageI(), 0, new DateTime(), new DateTime())
   }
 }
 
@@ -39,7 +40,7 @@ case class Person(var name: String = "",
   }
 }
 
-class TypeBinderSpec extends FlatSpec with ShouldMatchers {
+class TypeBinderSpec extends FlatSpec with ShouldMatchers with testutil.PreparingDocuments {
 
   behavior of "TypeBinder"
 
@@ -89,52 +90,7 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
   "DateTime mapping" should "be available" in {
 
     // Arrange
-    val request = new UpdateRequest()
-    val doc1 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-        {"id" : "978-0641723445",
-         "cat" : ["book","hardcover"],
-         "title" : "The Lightning Thief",
-         "author" : "Rick Riordan",
-         "series_t" : "Percy Jackson and the Olympians",
-         "sequence_i" : 1,
-         "genre_s" : "fantasy",
-         "inStock" : true,
-         "price" : 12.50,
-         "pages_i" : 384,
-         "timestamp" : "2006-03-21T13:40:15.518Z",
-         "last_modified" : "2006-08-13T11:43:14.000Z"
-       }
-                """
-    )
-    val doc2 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-       {
-          "id" : "978-1423103349",
-          "cat" : ["book","paperback"],
-          "title" : "The Sea of Monsters",
-          "author" : "Rick Riordan",
-          "series_t" : "Percy Jackson and the Olympians",
-          "sequence_i" : 2,
-          "genre_s" : "fantasy",
-          "inStock" : true,
-          "price" : 6.49,
-          "pages_i" : 304,
-          "timestamp" : "2006-03-21T13:40:15.518Z",
-          "last_modified" : "2010-12-31T23:59:59.345Z"
-       }
-                """
-    )
-    request.documents = List(doc1, doc2)
-    val response = client.doUpdateDocuments(request)
-    client.doCommit(new UpdateRequest())
-    log.debug(response.toString)
-    response.responseHeader.status should be >= 0
-    response.responseHeader.qTime should be >= 0
-
-    val query = new QueryRequest(Query.as("id:978-1423103349"))
+    val query = QueryRequest(query = Query.as("id:978-1423103349"))
     val queryResponse = client.doQuery(query)
     queryResponse.response.documents foreach {
       case doc => {
@@ -143,8 +99,8 @@ class TypeBinderSpec extends FlatSpec with ShouldMatchers {
         log.debug(book.toString)
         // Assert
         book.id should equal("978-1423103349")
-        val lastModified = new DateTime("2010-12-31T23:59:59.345Z")
-        book.lastModified should equal(lastModified)
+        val timestamp = new DateTime("2006-03-21T13:40:15.518Z")
+        book.timestamp should equal(timestamp)
       }
     }
   }

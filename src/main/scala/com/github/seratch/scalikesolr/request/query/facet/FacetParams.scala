@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr.request.query.facet
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import java.lang.StringBuilder
 import java.net.URLEncoder
 
@@ -27,7 +27,7 @@ case class FacetParams(@BeanProperty var enabled: Boolean = false,
     this(enabled, Nil)
   }
 
-  import collection.JavaConverters._
+  import scala.collection.JavaConverters._
 
   def setParamsInJava(paramsInJava: java.util.List[FacetParam]): Unit = {
     params = paramsInJava.asScala.toList

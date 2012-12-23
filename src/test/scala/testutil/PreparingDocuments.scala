@@ -1,21 +1,17 @@
-package com.github.seratch.scalikesolr.client
+package testutil
 
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.UpdateRequest
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, Solr }
 import java.net.URL
-import com.github.seratch.scalikesolr.{ SolrDocumentValue, Solr, SolrDocument }
+import com.github.seratch.scalikesolr.util.Log
 import org.slf4j.LoggerFactory
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
 
-class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
+trait PreparingDocuments {
 
-  behavior of "SolrClient#doUpdateDocuments"
+  private val logger4PreparingDocuments = new Log(LoggerFactory.getLogger(classOf[PreparingDocuments]))
 
-  val log = LoggerFactory.getLogger("com.github.seratch.scalikesolr.SolrClientSpec")
-  val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
-
-  it should "be available" in {
+  def updateDocuments() {
     val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
     val request = new UpdateRequest()
     val doc1 = SolrDocument(
@@ -52,17 +48,13 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
 
     )
     request.documents = List(doc1, doc2)
-    val response = client.doUpdateDocuments(request)
+    client.doUpdateDocuments(request)
     client.doCommit(new UpdateRequest())
-
-    response should not be null
-    response.responseHeader.status should equal(0)
-    response.responseHeader.qTime should be > 0
-    response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-                                                                                              |<response>
-                                                                                              |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-                                                                                              |</response>
-                                                                                              | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
+
+  logger4PreparingDocuments.info("updating docuemnts...")
+  updateDocuments()
+  Thread.sleep(300L)
+  logger4PreparingDocuments.info("updating docuemnts... Done.")
 
 }

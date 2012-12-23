@@ -16,8 +16,8 @@
 
 package com.github.seratch.scalikesolr.request.query
 
-import collection.JavaConverters._
-import reflect.BeanProperty
+import scala.collection.JavaConverters._
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
 case class FilterQuery(@BeanProperty val fq: String = "",

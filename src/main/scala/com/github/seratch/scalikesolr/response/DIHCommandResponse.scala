@@ -20,22 +20,15 @@ import dih.{ StatusMessages, InitArgs }
 import java.lang.UnsupportedOperationException
 
 import parser.ResponseParser
-import xml.{ Node, XML }
-import reflect.BeanProperty
+import scala.xml.{ Node, XML }
+import scala.beans.BeanProperty
 
 import common.ResponseHeader
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
-import util.parsing.json.JSON
-import com.github.seratch.scalikesolr.util.JSONUtil
 
 case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
     @BeanProperty val rawBody: String = "") {
-
-  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = writerType match {
-    case WriterType.JSON => JSONUtil.toMap(JSON.parseFull(rawBody))
-    case _ => Map()
-  }
 
   @BeanProperty
   lazy val responseHeader: ResponseHeader = ResponseParser.getResponseHeader(
@@ -55,15 +48,6 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
           case elem: Node => ((elem \ "@name").text, SolrDocumentValue(elem.text))
         }.toMap
         new InitArgs(defaults = SolrDocument(map = docMap))
-      case WriterType.JSON =>
-        val initArgs = (jsonMapFromRawBody.get("initArgs").getOrElse(Nil) match {
-          case Nil => Map()
-          case list: Seq[_] => Map(list.head -> Some(list.tail.head))
-        }).asInstanceOf[Map[String, Option[Any]]]
-        val docMap = initArgs.map {
-          case (k, v) => (k, new SolrDocumentValue(v.getOrElse("").toString))
-        }.toMap
-        new InitArgs(defaults = new SolrDocument(writerType = writerType, map = docMap))
       case other =>
         throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -75,8 +59,6 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       case WriterType.Standard =>
         val xml = XML.loadString(rawBody)
         (xml \ "str").filter(lst => (lst \ "@name").text == "command")(0).text
-      case WriterType.JSON =>
-        jsonMapFromRawBody.get("command").getOrElse("").toString
       case other =>
         throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -88,8 +70,6 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       case WriterType.Standard =>
         val xml = XML.loadString(rawBody)
         (xml \ "str").filter(lst => (lst \ "@name").text == "status")(0).text
-      case WriterType.JSON =>
-        jsonMapFromRawBody.get("status").getOrElse("").toString
       case other =>
         throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -101,8 +81,6 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
       case WriterType.Standard =>
         val xml = XML.loadString(rawBody)
         (xml \ "str").filter(lst => (lst \ "@name").text == "importResponse")(0).text
-      case WriterType.JSON =>
-        jsonMapFromRawBody.get("importResponse").getOrElse("").toString
       case other =>
         throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
@@ -116,12 +94,6 @@ case class DIHCommandResponse(@BeanProperty val writerType: WriterType = WriterT
         val statusMessages = (xml \ "lst").filter(lst => (lst \ "@name").text == "statusMessages")(0)
         val docMap = statusMessages.child.map {
           case elem: Node => ((elem \ "@name").text, SolrDocumentValue(elem.text))
-        }.toMap
-        new StatusMessages(defaults = new SolrDocument(map = docMap))
-      case WriterType.JSON =>
-        val doc = JSONUtil.toMap(jsonMapFromRawBody.get("statusMessages"))
-        val docMap = doc.keys.map {
-          case docKey => (docKey, new SolrDocumentValue(doc.getOrElse(docKey, "").toString))
         }.toMap
         new StatusMessages(defaults = new SolrDocument(map = docMap))
       case other =>

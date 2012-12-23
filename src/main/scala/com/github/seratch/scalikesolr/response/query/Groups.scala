@@ -16,10 +16,9 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
-import xml.{ Node, XML }
-import com.github.seratch.scalikesolr.util.JSONUtil._
+import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, SolrjSolrDocument }
 import org.apache.solr.common.util.{ NamedList, SimpleOrderedMap }
 import org.apache.solr.common.SolrDocumentList
@@ -42,7 +41,6 @@ object Groups {
 
   def extract(writerType: WriterType = WriterType.Standard,
     rawBody: String = "",
-    jsonMapFromRawBody: Map[String, Option[Any]],
     rawJavaBin: NamedList[Any] = null): Groups = {
 
     writerType match {
@@ -99,64 +97,6 @@ object Groups {
           matches = matches,
           groups = groups.toList
         )
-      }
-      case WriterType.JSON => {
-        val grouped = toMap(jsonMapFromRawBody.get("grouped"))
-        grouped.keys.size match {
-          case 0 =>
-            // group.format=simple&group.main=true
-            new Groups(
-              matches = 0,
-              groups = Nil
-            )
-          case _ =>
-            val fieldName = toMap(grouped.get(grouped.keys.toSeq.head))
-            val groupsList = toList(fieldName.get("groups"))
-            groupsList.size match {
-              case 0 =>
-                // group.format=simple
-                val doclist = toMap(fieldName.get("doclist"))
-                new Groups(
-                  matches = normalizeNum(fieldName.getOrElse("matches", "0").toString).toInt,
-                  groups = List(new Group(
-                    groupValue = "",
-                    numFound = normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
-                    start = normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
-                    documents = toList(doclist.get("docs")) map {
-                      case doc =>
-                        new SolrDocument(
-                          writerType = writerType,
-                          map = doc flatMap {
-                            case (key, value) => Map(key -> new SolrDocumentValue(value.toString))
-                          }
-                        )
-                    }
-                  ))
-                )
-              case _ =>
-                // group.format=grouped
-                var matches: Int = 0
-                val groups = groupsList.map {
-                  case groupDoc =>
-                    matches = normalizeNum(groupDoc.getOrElse("matches", "0").toString).toInt
-                    val doclist = toMap(groupDoc.get("doclist"))
-                    val groupValue = groupDoc.getOrElse("groupValue", "")
-                    new Group(
-                      groupValue = if (groupValue == null) "" else groupValue.toString,
-                      numFound = normalizeNum(doclist.getOrElse("numFound", 0).toString).toInt,
-                      start = normalizeNum(doclist.getOrElse("start", 0).toString).toInt,
-                      documents = toList(doclist.get("docs")) map {
-                        case doc => new SolrDocument(writerType = writerType, map = doc map {
-                          case (key, value) => (key, new SolrDocumentValue(value.toString))
-                        })
-                      })
-                }.toList
-                new Groups(
-                  matches = matches,
-                  groups = groups
-                )
-            }
-        }
       }
       case WriterType.JavaBinary => {
 

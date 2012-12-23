@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr.response.common
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.SolrDocument
 
 case class ResponseHeader(@BeanProperty val status: Int,

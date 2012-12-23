@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr.request.query
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
 case class EchoParams(@BeanProperty val echoParams: String = "none") extends RequestParam {

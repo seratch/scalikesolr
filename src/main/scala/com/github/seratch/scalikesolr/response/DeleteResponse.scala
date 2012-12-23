@@ -18,7 +18,7 @@ package com.github.seratch.scalikesolr.response
 
 import common.ResponseHeader
 import parser.ResponseParser
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 
 case class DeleteResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,

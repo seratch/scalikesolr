@@ -17,11 +17,9 @@
 package com.github.seratch.scalikesolr.response.parser
 
 import com.github.seratch.scalikesolr.request.common.WriterType
-import util.parsing.json.JSON
-import com.github.seratch.scalikesolr.util.JSONUtil
 import com.github.seratch.scalikesolr.response.common.ResponseHeader
 import com.github.seratch.scalikesolr.{ SolrDocument, SolrDocumentValue }
-import xml.XML
+import scala.xml.XML
 import org.apache.solr.common.util.{ SimpleOrderedMap, NamedList }
 
 object ResponseParser {
@@ -48,17 +46,6 @@ object ResponseParser {
               SolrDocument(writerType = writerType, rawBody = params.toString)
             )
         }
-      }
-      case WriterType.JSON => {
-        val jsonMap = JSONUtil.toMap(JSON.parseFull(rawBody))
-        val responseHeader = JSONUtil.toMap(jsonMap.get("responseHeader"))
-        val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
-        val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
-        val params = JSONUtil.toMap(responseHeader.get("params"))
-        val docMap = params.keys.map {
-          case key => (key, new SolrDocumentValue(params.getOrElse(key, "").toString))
-        }.toMap
-        new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap))
       }
       case WriterType.JavaBinary => {
         val responseHeader = rawJavaBin.get("responseHeader").asInstanceOf[NamedList[Any]]

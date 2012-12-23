@@ -21,7 +21,7 @@ import java.io._
 import com.github.seratch.scalikesolr.util.{ Log, IO }
 import collection.JavaConverters._
 import org.apache.solr.common.util.{ NamedList, JavaBinCodec }
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import org.slf4j.LoggerFactory
 
 object HttpClient {

@@ -16,15 +16,12 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import reflect.BeanProperty
-
-import collection.JavaConverters._
+import scala.beans.BeanProperty
+import scala.collection.JavaConverters._
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{ Node, XML }
+import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
-import com.github.seratch.scalikesolr.util.JSONUtil._
-import scala.Option._
 import org.apache.solr.common.SolrDocumentList
 import com.github.seratch.scalikesolr.SolrjSolrDocument
 
@@ -42,7 +39,6 @@ object MoreLikeThis {
 
   def extract(writerType: WriterType = WriterType.Standard,
     rawBody: String = "",
-    jsonMapFromRawBody: Map[String, Option[Any]],
     rawJavabin: NamedList[Any] = null): MoreLikeThis = {
 
     writerType match {
@@ -67,29 +63,6 @@ object MoreLikeThis {
             }.toMap
           case _ => Map()
         }
-        new MoreLikeThis(
-          numFound = numFound,
-          start = start,
-          idAndRecommendations = idAndRecommendations
-        )
-      }
-      case WriterType.JSON => {
-        var numFound: Int = 0
-        var start: Int = 0
-        val moreLikeThis = toMap(jsonMapFromRawBody.get("moreLikeThis"))
-        val idAndRecommendations: Map[String, List[SolrDocument]] = moreLikeThis.keys.flatMap {
-          case id: String =>
-            val eachMlt = toMap(moreLikeThis.get(id))
-            numFound = normalizeNum(eachMlt.get("numFound").getOrElse(0).toString).toInt
-            start = normalizeNum(eachMlt.get("start").getOrElse(0).toString).toInt
-            Map(id -> toList(eachMlt.get("docs")).map {
-              case doc =>
-                new SolrDocument(writerType = WriterType.JSON, map = doc.keys.map {
-                  case field => (field, new SolrDocumentValue(doc.getOrElse(field, "").toString))
-                }.toMap)
-            })
-          case _ => None
-        }.toMap
         new MoreLikeThis(
           numFound = numFound,
           start = start,

@@ -17,11 +17,10 @@
 package com.github.seratch.scalikesolr.response.query
 
 import com.github.seratch.scalikesolr.request.common.WriterType
-import xml.{ Node, XML }
-import com.github.seratch.scalikesolr.util.JSONUtil._
-import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
+import scala.xml.{ Node, XML }
+import com.github.seratch.scalikesolr.SolrDocument
 import org.apache.solr.common.SolrDocumentList
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import org.apache.solr.common.util.NamedList
 
 case class Response(@BeanProperty val numFound: Int,
@@ -36,7 +35,6 @@ object Response {
 
   def extract(writerType: WriterType = WriterType.Standard,
     rawBody: String = "",
-    jsonMapFromRawBody: Map[String, Option[Any]],
     rawJavaBin: NamedList[Any] = null): Response = {
 
     writerType match {
@@ -49,23 +47,6 @@ object Response {
         new Response(
           (result \ "@numFound").text.toInt,
           (result \ "@start").text.toInt,
-          documents.toList
-        )
-      }
-      case WriterType.JSON => {
-        val response = toMap(jsonMapFromRawBody.get("response"))
-        val documents: Seq[SolrDocument] = toList(response.get("docs")) map {
-          case doc: Map[_, _] =>
-            new SolrDocument(
-              writerType = writerType,
-              map = doc flatMap {
-                case (key, value) => Map(key -> new SolrDocumentValue(value.toString))
-              }
-            )
-        }
-        new Response(
-          normalizeNum(response.get("numFound").getOrElse("0").toString).toInt,
-          normalizeNum(response.get("start").getOrElse("0").toString).toInt,
           documents.toList
         )
       }

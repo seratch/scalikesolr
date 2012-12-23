@@ -17,7 +17,7 @@
 package com.github.seratch.scalikesolr.request
 
 import common.WriterType
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.SolrCore
 
 case class DIHCommandRequest(@BeanProperty val core: SolrCore = SolrCore(),

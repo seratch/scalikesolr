@@ -16,30 +16,14 @@
 
 package com.github.seratch.scalikesolr
 
-import reflect.BeanProperty
-import util.{ TypeBinder, JSONUtil }
-import xml.{ Node, XML }
-import scala.util.parsing.json.JSON
+import scala.beans.BeanProperty
+import scala.xml.{ Node, XML }
+import util.TypeBinder
 
 case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.Standard,
     @BeanProperty val rawBody: String = "",
     @BeanProperty val rawJavabin: SolrjSolrDocument = new SolrjSolrDocument,
     @BeanProperty val map: Map[String, SolrDocumentValue] = Map()) {
-
-  def this(writerType: WriterType, rawBody: String) {
-    this(writerType = writerType, rawBody = rawBody, rawJavabin = new SolrjSolrDocument, map = Map())
-  }
-
-  def this(writerType: WriterType, map: Map[String, SolrDocumentValue]) {
-    this(writerType = writerType, rawBody = "", rawJavabin = new SolrjSolrDocument, map = map)
-  }
-
-  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
-    writerType match {
-      case WriterType.JSON => JSONUtil.toMap(JSON.parseFull(rawBody))
-      case _ => Map()
-    }
-  }
 
   private lazy val document: Map[String, SolrDocumentValue] = {
     if (map != null && map.size > 0) {
@@ -50,13 +34,6 @@ case class SolrDocument(@BeanProperty val writerType: WriterType = WriterType.St
         case WriterType.Standard =>
           XML.loadString(rawBody).child map {
             case elem: Node => ((elem \ "@name").toString, new SolrDocumentValue(elem.text))
-          }
-        case WriterType.JSON =>
-          jsonMapFromRawBody.keys map {
-            case key => {
-              val value = JSONUtil.normalizeNum(jsonMapFromRawBody.get(key).getOrElse("").toString)
-              (key, new SolrDocumentValue(value))
-            }
           }
         case WriterType.JavaBinary =>
           rawJavabin.getFieldNames.asScala map (e => (e.toString -> new SolrDocumentValue(rawJavabin.get(e).toString)))

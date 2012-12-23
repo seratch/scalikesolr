@@ -15,54 +15,12 @@ import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
-class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers {
+class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers with testutil.PreparingDocuments {
 
   behavior of "SolrClient#doQuery JavabinResponse"
 
   val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQueryJavabinResponseSpec]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
-
-  it should "be parepared" in {
-    val request = new UpdateRequest()
-    val doc1 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-      {"id" : "978-0641723445",
-       "cat" : ["book","hardcover"],
-       "title" : "The Lightning Thief",
-       "author" : "Rick Riordan",
-       "series_t" : "Percy Jackson and the Olympians",
-       "sequence_i" : 1,
-       "genre_s" : "fantasy",
-       "inStock" : true,
-       "price" : 12.50,
-       "pages_i" : 384,
-       "timestamp" : "2006-03-21T13:40:15.518Z"
-     }
-                """
-    )
-    val doc2 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-     {
-        "id" : "978-1423103349",
-        "cat" : ["book","paperback"],
-        "title" : "The Sea of Monsters",
-        "author" : "Rick Riordan",
-        "series_t" : "Percy Jackson and the Olympians",
-        "sequence_i" : 2,
-        "genre_s" : "fantasy",
-        "inStock" : true,
-        "price" : 6.49,
-        "pages_i" : 304,
-        "timestamp" : "2006-03-21T13:40:15.518Z"
-      }
-                """
-    )
-    request.documents = List(doc1, doc2)
-    client.doUpdateDocuments(request)
-    client.doCommit(new UpdateRequest())
-  }
 
   it should "be available" in {
     val request = new QueryRequest(
@@ -123,10 +81,6 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     }
     response.groups.groups(0).numFound should be > 0
     response.groups.groups(0).start should equal(0)
-    response.groups.groups(1).numFound should be > 0
-    response.groups.groups(1).start should equal(0)
-    response.groups.groups(2).numFound should be > 0
-    response.groups.groups(2).start should equal(0)
   }
 
   "Group params" should "be available with simple format" in {
@@ -172,7 +126,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
 
-    response.response.documents.size should equal(3)
+    response.response.documents.size should equal(1)
     response.response.documents foreach {
       case doc: SolrDocument =>
         doc.writerType should equal(WriterType.JavaBinary)
@@ -257,8 +211,8 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
   "single FilterQuery" should "be available" in {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("name:A Game of Thrones"),
-      filterQuery = FilterQuery(fq = "+name:of +id:0553573403")
+      query = Query("title:Monsters"),
+      filterQuery = FilterQuery(fq = "+title:of +author:Rick")
     )
     val response = client.doQuery(request)
     response.response.documents.size should equal(1)
@@ -267,8 +221,8 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
   "multiple FilterQuery" should "be available" in {
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
-      query = Query("name:A Game of Thrones"),
-      filterQuery = FilterQuery(multiple = Seq("name:of", "id:0553573403"))
+      query = Query("title:Monsters"),
+      filterQuery = FilterQuery(multiple = Seq("title:of", "author:Rick"))
     )
     val response = client.doQuery(request)
     response.response.documents.size should equal(1)

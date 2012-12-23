@@ -22,10 +22,10 @@ class SolrClient_doRollbackSpec extends FlatSpec with ShouldMatchers {
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
     response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
-                                               |<response>
-                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
-                                               |</response>
-                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
+                                                                                              |<response>
+                                                                                              |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
+                                                                                              |</response>
+                                                                                              | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }
 
 }

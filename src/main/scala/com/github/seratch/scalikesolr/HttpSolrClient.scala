@@ -18,7 +18,7 @@ package com.github.seratch.scalikesolr
 
 import http.HttpClient
 import java.net.URL
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import org.slf4j.LoggerFactory
 import util.{ Log, XMLStringBuilder }
 

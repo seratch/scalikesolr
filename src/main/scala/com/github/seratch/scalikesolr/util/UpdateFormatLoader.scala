@@ -16,12 +16,11 @@
 
 package com.github.seratch.scalikesolr.util
 
-import xml.{ Node, XML }
+import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
 import java.io.{ FileInputStream, File }
-
-import collection.JavaConverters._
+import scala.collection.JavaConverters._
 
 object UpdateFormatLoader {
 

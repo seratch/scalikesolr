@@ -18,14 +18,10 @@ package com.github.seratch.scalikesolr.response
 
 import parser.ResponseParser
 import query._
-import reflect.BeanProperty
-
-import util.parsing.json.JSON
-import com.github.seratch.scalikesolr.util.JSONUtil._
+import scala.beans.BeanProperty
 
 import com.github.seratch.scalikesolr.request.common._
 import com.github.seratch.scalikesolr.response.common._
-import collection.immutable.Map
 import org.apache.solr.common.util.NamedList
 
 case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.Standard,
@@ -39,18 +35,10 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
     rawJavabin
   )
 
-  private lazy val jsonMapFromRawBody: Map[String, Option[Any]] = {
-    writerType match {
-      case WriterType.JSON => toMap(JSON.parseFull(rawBody))
-      case _ => Map()
-    }
-  }
-
   @BeanProperty
   lazy val response: Response = Response.extract(
     writerType,
     rawBody,
-    jsonMapFromRawBody,
     rawJavabin
   )
 
@@ -58,7 +46,6 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   lazy val groups: Groups = Groups.extract(
     writerType,
     rawBody,
-    jsonMapFromRawBody,
     rawJavabin
   )
 
@@ -66,7 +53,6 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   lazy val highlightings: Highlightings = Highlightings.extract(
     writerType,
     rawBody,
-    jsonMapFromRawBody,
     rawJavabin
   )
 
@@ -74,7 +60,6 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   lazy val moreLikeThis: MoreLikeThis = MoreLikeThis.extract(
     writerType,
     rawBody,
-    jsonMapFromRawBody,
     rawJavabin
   )
 
@@ -82,7 +67,6 @@ case class QueryResponse(@BeanProperty val writerType: WriterType = WriterType.S
   lazy val facet: Facet = Facet.extract(
     writerType,
     rawBody,
-    jsonMapFromRawBody,
     rawJavabin
   )
 

@@ -16,12 +16,11 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{ Node, XML }
+import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
-import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
     @BeanProperty val facetFields: Map[String, SolrDocument],
@@ -30,7 +29,7 @@ case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
    in favor of the more general Range Faceting described below.
    The response structure is slightly differnet, but the funtionality is equivilent
    (except that it supports numeric fields as well as dates)
-   """, since = "Solr 3.1")@BeanProperty val facetDates: Map[String, SolrDocument],
+                                       """, since = "Solr 3.1")@BeanProperty val facetDates: Map[String, SolrDocument],
     @BeanProperty val facetRanges: Map[String, SolrDocument]) {
 
   def getFromFacetFields(name: String): SolrDocument = facetFields.getOrElse(name, null)
@@ -40,7 +39,7 @@ case class Facet(@BeanProperty val facetQueries: Map[String, SolrDocument],
    in favor of the more general Range Faceting described below.
    The response structure is slightly differnet, but the funtionality is equivilent
    (except that it supports numeric fields as well as dates)
-   """, since = "Solr 3.1") def getFromFacetDates(date: String): SolrDocument = facetDates.getOrElse(date, null)
+                        """, since = "Solr 3.1") def getFromFacetDates(date: String): SolrDocument = facetDates.getOrElse(date, null)
 
   def getFromFacetRanges(range: String): SolrDocument = facetRanges.getOrElse(range, null)
 
@@ -50,7 +49,6 @@ object Facet {
 
   def extract(writerType: WriterType = WriterType.Standard,
     rawBody: String = "",
-    jsonMapFromRawBody: Map[String, Option[Any]],
     rawJavabin: NamedList[Any] = null): Facet = {
 
     writerType match {
@@ -105,77 +103,6 @@ object Facet {
           facetRanges = facetRangesMap.toMap
         )
       }
-      case WriterType.JSON =>
-
-        type MutableHashMap[K, V] = collection.mutable.HashMap[K, V]
-        def castToList(obj: Any): List[Any] = obj.asInstanceOf[List[Any]]
-        def fromListToMap(facets: List[Any]): Map[String, SolrDocumentValue] = {
-          def parseFacetsToMap(facets: List[Any], docHashMap: MutableHashMap[String, SolrDocumentValue]): MutableHashMap[String, SolrDocumentValue] = {
-            facets.size match {
-              case 0 => docHashMap
-              case _ =>
-                val kv = facets.take(2)
-                docHashMap.update(kv(0).toString, new SolrDocumentValue(kv(1).toString))
-                parseFacetsToMap(facets.drop(2), docHashMap)
-            }
-          }
-          parseFacetsToMap(facets, new collection.mutable.HashMap[String, SolrDocumentValue]).toMap
-        }
-
-        val facetQueriesMap = new MutableHashMap[String, SolrDocument]
-        val facetFieldsMap = new MutableHashMap[String, SolrDocument]
-        val facetDatesMap = new MutableHashMap[String, SolrDocument]
-        val facetRangesMap = new MutableHashMap[String, SolrDocument]
-
-        val facetCounts = toMap(jsonMapFromRawBody.get("facet_counts"))
-        facetCounts.keys.foreach {
-          case key if key == "facet_queries" => {
-            val doc = toMap(facetCounts.get(key))
-            doc.keys.foreach {
-              case docKey =>
-                facetQueriesMap.update(docKey, new SolrDocument(
-                  writerType = WriterType.JSON,
-                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
-                ))
-            }
-          }
-          case key if key == "facet_fields" => {
-            val doc = toMap(facetCounts.get(key))
-            doc.keys.foreach {
-              case docKey =>
-                facetFieldsMap.update(docKey, new SolrDocument(
-                  writerType = WriterType.JSON,
-                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
-                ))
-            }
-          }
-          case key if key == "facet_dates" => {
-            val doc = toMap(facetCounts.get(key))
-            doc.keys.foreach {
-              case docKey =>
-                facetDatesMap.update(docKey, new SolrDocument(
-                  writerType = WriterType.JSON,
-                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
-                ))
-            }
-          }
-          case key if key == "facet_ranges" => {
-            val doc = toMap(facetCounts.get(key))
-            doc.keys.foreach {
-              case docKey =>
-                facetRangesMap.update(docKey, new SolrDocument(
-                  writerType = WriterType.JSON,
-                  map = fromListToMap(castToList(doc.getOrElse(docKey, Nil)))
-                ))
-            }
-          }
-        }
-        new Facet(
-          facetQueries = facetQueriesMap.toMap,
-          facetFields = facetFieldsMap.toMap,
-          facetDates = facetDatesMap.toMap,
-          facetRanges = facetRangesMap.toMap
-        )
 
       case WriterType.JavaBinary =>
 

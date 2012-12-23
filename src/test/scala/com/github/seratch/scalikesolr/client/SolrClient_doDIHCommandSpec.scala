@@ -15,7 +15,7 @@ class SolrClient_doDIHCommandSpec extends FlatSpec with ShouldMatchers {
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   it should "be available" in {
-    val request = new DIHCommandRequest(command = "delta-import")
+    val request = DIHCommandRequest(command = "delta-import")
     //    val response = client.doDIHCommand(request)
     //    log.debug(response.toString)
   }

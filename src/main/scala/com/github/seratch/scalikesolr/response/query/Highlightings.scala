@@ -16,12 +16,11 @@
 
 package com.github.seratch.scalikesolr.response.query
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
-import xml.{ Node, XML }
+import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument }
-import com.github.seratch.scalikesolr.util.JSONUtil._
 
 case class Highlightings(@BeanProperty val highlightings: Map[String, SolrDocument]) {
 
@@ -39,7 +38,6 @@ object Highlightings {
 
   def extract(writerType: WriterType = WriterType.Standard,
     rawBody: String = "",
-    jsonMapFromRawBody: Map[String, Option[Any]],
     rawJavaBin: NamedList[Any] = null): Highlightings = {
 
     writerType match {
@@ -57,20 +55,6 @@ object Highlightings {
                   ((lst \ "@name").text, new SolrDocument(map = element.toMap))
               }.toMap
           })
-      case WriterType.JSON =>
-        val highlighting = toMap(jsonMapFromRawBody.get("highlighting"))
-        new Highlightings(
-          highlightings = highlighting.keys.map {
-            case key =>
-              val docMap = toMap(highlighting.get(key))
-              (key, new SolrDocument(
-                writerType = WriterType.JSON,
-                map = docMap.keys.map {
-                  case docKey => (docKey, new SolrDocumentValue(docMap.getOrElse(docKey, "").toString))
-                }.toMap
-              ))
-          }.toMap
-        )
       case WriterType.JavaBinary =>
         val highlighting = rawJavaBin.get("highlighting").asInstanceOf[NamedList[Any]]
         import collection.JavaConverters._

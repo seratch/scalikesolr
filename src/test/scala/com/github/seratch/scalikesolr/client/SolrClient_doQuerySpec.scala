@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseForSimilarity, MoreLikeThisParams }
-import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, Solr }
 import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, QueryRequest }
@@ -15,56 +15,15 @@ import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
-class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
+class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers with testutil.PreparingDocuments {
 
   behavior of "SolrClient#doQuery"
 
   val log = new Log(LoggerFactory.getLogger(classOf[SolrClient_doQuerySpec]))
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
-  it should "be parepared" in {
-    val request = new UpdateRequest()
-    val doc1 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-      {"id" : "978-0641723445",
-       "cat" : ["book","hardcover"],
-       "title" : "The Lightning Thief",
-       "author" : "Rick Riordan",
-       "series_t" : "Percy Jackson and the Olympians",
-       "sequence_i" : 1,
-       "genre_s" : "fantasy",
-       "inStock" : true,
-       "price" : 12.50,
-       "pages_i" : 384,
-       "timestamp" : "2006-03-21T13:40:15.518Z"
-     }
-                """
-    )
-    val doc2 = SolrDocument(
-      writerType = WriterType.JSON,
-      rawBody = """
-     {
-        "id" : "978-1423103349",
-        "cat" : ["book","paperback"],
-        "title" : "The Sea of Monsters",
-        "author" : "Rick Riordan",
-        "series_t" : "Percy Jackson and the Olympians",
-        "sequence_i" : 2,
-        "genre_s" : "fantasy",
-        "inStock" : true,
-        "price" : 6.49,
-        "pages_i" : 304,
-        "timestamp" : "2006-03-21T13:40:15.518Z"
-      }
-                """
-    )
-    request.documents = List(doc1, doc2)
-    client.doUpdateDocuments(request)
-    client.doCommit(new UpdateRequest())
-  }
 
   it should "be available" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("id:978-1423103349"))
     val response = client.doQuery(request)
     log.debug(response.toString)
@@ -88,7 +47,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   it should "be available with multibyte queries" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("author:日本人"))
     val response = client.doQuery(request)
     response should not be null
@@ -99,7 +58,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   "Group params" should "be available" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(enabled = true, field = GroupField("author_t"))
@@ -119,14 +78,10 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
     }
     response.groups.groups(0).numFound should be > 0
     response.groups.groups(0).start should equal(0)
-    response.groups.groups(1).numFound should be > 0
-    response.groups.groups(1).start should equal(0)
-    response.groups.groups(2).numFound should be > 0
-    response.groups.groups(2).start should equal(0)
   }
 
   "Group params" should "be available with simple format" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(enabled = true, field = GroupField("author_t"), format = GroupFormat("simple"))
@@ -149,7 +104,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   "Group params" should "be available with simple format, main" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("genre_s:fantasy")
     )
     request.group = GroupParams(
@@ -165,7 +120,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
 
-    response.response.documents.size should equal(3)
+    response.response.documents.size should equal(1)
     response.response.documents foreach {
       case doc: SolrDocument =>
         doc.writerType should equal(WriterType.Standard)
@@ -175,7 +130,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   "Highlighting params" should "be available" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("author:Rick"),
       sort = Sort("page_i desc")
     )
@@ -201,7 +156,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   "MoreLikeThis params" should "be available" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("author:Rick")
     )
     request.moreLikeThis = MoreLikeThisParams(true, 3, FieldsToUseForSimilarity("body"))
@@ -221,7 +176,7 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers {
   }
 
   "Facet params" should "be available" in {
-    val request = new QueryRequest(
+    val request = QueryRequest(
       query = Query("author:Rick")
     )
     request.facet = new FacetParams(enabled = true,

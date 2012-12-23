@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr
 
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 
 case class SolrCore(@BeanProperty val name: String = "")
 

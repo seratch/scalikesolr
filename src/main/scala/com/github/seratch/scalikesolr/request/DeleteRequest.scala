@@ -18,7 +18,7 @@ package com.github.seratch.scalikesolr.request
 
 import common.WriterType
 import query.Query
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 
 import com.github.seratch.scalikesolr.SolrCore
 import collection.JavaConverters._

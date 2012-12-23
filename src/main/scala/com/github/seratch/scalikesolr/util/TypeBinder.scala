@@ -20,7 +20,7 @@ import com.github.seratch.scalikesolr.SolrDocument
 import org.joda.time.{ LocalDate, DateTime }
 import java.util.{ Date, Calendar }
 import org.slf4j.LoggerFactory
-import util.matching.Regex
+import scala.util.matching.Regex
 import java.lang.reflect.Modifier
 
 object TypeBinder {
@@ -105,7 +105,7 @@ object TypeBinder {
                 }
               }
             } catch {
-              case e => log.debug("Failed to bind type from Solr document : " + solrFieldName, e)
+              case e: Throwable => log.debug("Failed to bind type from Solr document : " + solrFieldName, e)
             }
           case _ =>
         }
