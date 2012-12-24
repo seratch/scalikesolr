@@ -30,7 +30,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
       val values = rawValue.replaceFirst("List\\(", "").replaceFirst("\\)", "")
       values.split(",").toList
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -38,7 +38,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       toListOrElse(if (defaultValue == null) Nil else defaultValue.asScala.toList).asJava
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -49,7 +49,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
         case dateTime => dateTime.toDate
       }
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -60,7 +60,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
       cal.setTime(date)
       cal
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -68,12 +68,12 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       new DateTime(rawValue)
     } catch {
-      case _: Throwable =>
+      case _: Exception =>
         try {
           val dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
           new DateTime(dateFormat.parse(rawValue))
         } catch {
-          case _: Throwable => defaultValue
+          case _: Exception => defaultValue
         }
     }
   }
@@ -82,7 +82,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       toDateTimeOrElse(null).toLocalTime
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -90,7 +90,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       toDateTimeOrElse(null).toLocalDate
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -98,7 +98,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toBoolean
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -106,7 +106,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toByte
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -114,7 +114,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toFloat
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -122,7 +122,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toDouble
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -130,7 +130,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toInt
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -138,7 +138,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toLong
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -146,7 +146,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toShort
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -154,7 +154,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toBoolean
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -162,7 +162,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toByte
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -170,7 +170,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toFloat
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -178,7 +178,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toDouble
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -186,7 +186,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toInt
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -194,7 +194,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toLong
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 
@@ -202,7 +202,7 @@ case class SolrDocumentValue(@BeanProperty val rawValue: String) {
     try {
       rawValue.toShort
     } catch {
-      case _: Throwable => defaultValue
+      case _: Exception => defaultValue
     }
   }
 

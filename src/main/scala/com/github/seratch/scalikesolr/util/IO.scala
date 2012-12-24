@@ -27,7 +27,7 @@ object IO {
       resource match {
         case null =>
         case _ => try resource.close() catch {
-          case _: Throwable =>
+          case _: Exception =>
         }
       }
     }
