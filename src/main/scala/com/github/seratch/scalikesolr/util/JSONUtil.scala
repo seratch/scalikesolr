@@ -14,28 +14,19 @@
  * governing permissions and limitations under the License.
  */
 
-package com.github.seratch.scalikesolr.request.common
+package com.github.seratch.scalikesolr.util
 
-import scala.beans.BeanProperty
+object JSONUtil {
 
-case class WriterType(@BeanProperty val wt: String = "standard") extends RequestParam {
+  def normalizeNum(num: String): String = num.replaceFirst("\\.0+$", "")
 
-  override def isEmpty() = wt == null || wt.isEmpty
+  def toMap(obj: Option[Any]): Map[String, Option[Any]] = {
+    val map = obj.getOrElse(Map())
+    map.asInstanceOf[Map[String, Option[Any]]]
+  }
 
-  override def getKey() = "wt"
-
-  override def getValue() = wt
-
-}
-
-object WriterType {
-
-  def as(wt: String) = new WriterType(wt)
-
-  val Standard = new WriterType("standard")
-
-  val JavaBinary = new WriterType("javabin")
-
-  val JSON = new WriterType("json")
+  def toList(obj: Option[Any]): List[Map[String, Option[Any]]] = {
+    obj.getOrElse(Nil).asInstanceOf[List[Map[String, Option[Any]]]]
+  }
 
 }
