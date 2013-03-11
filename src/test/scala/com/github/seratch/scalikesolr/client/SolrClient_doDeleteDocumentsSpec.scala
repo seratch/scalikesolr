@@ -28,7 +28,6 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
 
-    client.doCommit(new UpdateRequest())
   }
 
   it should "be available when specifying queries" in {
@@ -44,7 +43,6 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
 
-    client.doCommit(new UpdateRequest())
   }
 
 }

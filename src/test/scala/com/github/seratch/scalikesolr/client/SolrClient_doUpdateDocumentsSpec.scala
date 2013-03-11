@@ -53,7 +53,6 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
     )
     request.documents = List(doc1, doc2)
     val response = client.doUpdateDocuments(request)
-    client.doCommit(new UpdateRequest())
 
     response should not be null
     response.responseHeader.status should equal(0)
@@ -80,7 +79,7 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
         |0805080481,book,The Book of Three,5.99,true,Lloyd Alexander,The Chronicles of Prydain,1,fantasy
         |080508049X,book,The Black Cauldron,5.99,true,Lloyd Alexander,The Chronicles of Prydain,2,fantasy""".stripMargin)
     val response = client.doUpdateInCSV(request)
-    println(response)
+
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
@@ -141,7 +140,7 @@ class SolrClient_doUpdateDocumentsSpec extends FlatSpec with ShouldMatchers {
         |  }
         |]""".stripMargin)
     val response = client.doUpdateInJSON(request)
-    println(response)
+
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
