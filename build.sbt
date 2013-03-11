@@ -2,3 +2,4 @@ scalariformSettings
 
 testgeneratorSettings
 
+scalagSettings

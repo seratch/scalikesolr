@@ -9,12 +9,13 @@ object ScalikeSolrBuild extends Build {
     sbtPlugin := false,
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "4.0.0",
+    version := "4.0.1",
     scalaVersion := "2.10.0",
-    crossScalaVersions := Seq("2.10.0", "2.9.2"),
+    crossScalaVersions := Seq("2.10.0"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
       val _scalaVersion = "_" + (scalaVersion match {
         case "2.10.0" => "2.10.0"
+        case "2.9.3" => "2.9.2"
         case version => version
       })
       val scalatest = "scalatest" + _scalaVersion
@@ -24,8 +25,8 @@ object ScalikeSolrBuild extends Build {
         "org.joda"                 % "joda-convert"       % "1.2"             % "compile",
         "org.apache.solr"          % "solr-solrj"         % "4.0.0"           % "compile",
         "ch.qos.logback"           % "logback-classic"    % "1.0.7"           % "test",
-        "junit"                    % "junit"              % "4.10"            % "test",
-        "org.mockito"              % "mockito-all"        % "1.9.0"           % "test",
+        "junit"                    % "junit"              % "4.11"            % "test",
+        "org.mockito"              % "mockito-all"        % "1.9.5"           % "test",
         "org.scalatest"            % scalatest            % "1.8"             % "test",
         "org.scala-lang"           % "scala-compiler"     % scalaVersion      % "test"
       )
