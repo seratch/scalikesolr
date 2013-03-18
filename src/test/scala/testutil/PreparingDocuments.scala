@@ -49,7 +49,6 @@ trait PreparingDocuments {
     )
     request.documents = List(doc1, doc2)
     client.doUpdateDocuments(request)
-    client.doCommit(new UpdateRequest())
   }
 
   logger4PreparingDocuments.info("updating docuemnts...")

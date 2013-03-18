@@ -28,11 +28,10 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
 
-    client.doCommit(new UpdateRequest())
   }
 
   it should "be available when specifying queries" in {
-    val request = new DeleteRequest(queries = List(Query("something")))
+    val request = new DeleteRequest(queries = List(Query("id:123")))
     val response = client.doDeleteDocuments(request)
 
     response should not be null
@@ -44,7 +43,6 @@ class SolrClient_doDeleteDocumentsSpec extends FlatSpec with ShouldMatchers {
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
 
-    client.doCommit(new UpdateRequest())
   }
 
 }

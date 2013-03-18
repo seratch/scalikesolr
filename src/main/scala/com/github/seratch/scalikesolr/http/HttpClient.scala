@@ -55,6 +55,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
             log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
         }
         throw e
+      case e: Exception => throw e;
     }
   }
 
@@ -80,6 +81,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
             log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
         }
         throw e
+      case e: Exception => throw e;
     }
 
   }
@@ -116,9 +118,10 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         IO.using(conn.getErrorStream()) {
           case error: InputStream =>
             val body = IO.readAsString(error)
-            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+            log.info("Failed because " + e.getMessage + "! Body: [" + body + "]");
         }
         throw e
+      case e: Exception => throw e;
     }
 
   }

@@ -16,11 +16,13 @@
 
 package com.github.seratch.scalikesolr.response.parser
 
+import util.parsing.json.JSON
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.response.common.ResponseHeader
 import com.github.seratch.scalikesolr.{ SolrDocument, SolrDocumentValue }
 import scala.xml.XML
 import org.apache.solr.common.util.{ SimpleOrderedMap, NamedList }
+import com.github.seratch.scalikesolr.util.JSONUtil
 
 object ResponseParser {
 
@@ -58,6 +60,17 @@ object ResponseParser {
           responseHeader.get("QTime").toString.toInt,
           new SolrDocument(writerType = writerType, map = docMap)
         )
+      }
+      case WriterType.JSON => {
+        val jsonMap = JSONUtil.toMap(JSON.parseFull(rawBody))
+        val responseHeader = JSONUtil.toMap(jsonMap.get("responseHeader"))
+        val status = JSONUtil.normalizeNum(responseHeader.get("status").getOrElse("0").toString).toInt
+        val qTime = JSONUtil.normalizeNum(responseHeader.get("QTime").getOrElse("0").toString).toInt
+        val params = JSONUtil.toMap(responseHeader.get("params"))
+        val docMap = params.keys.map {
+          case key => (key, new SolrDocumentValue(params.getOrElse(key, "").toString))
+        }.toMap
+        new ResponseHeader(status, qTime, new SolrDocument(writerType = writerType, map = docMap))
       }
       case other => throw new UnsupportedOperationException("\"" + other.wt + "\" is currently not supported.")
     }
