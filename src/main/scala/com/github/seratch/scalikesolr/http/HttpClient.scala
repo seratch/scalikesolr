@@ -35,7 +35,7 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
   val log: Log = new Log(LoggerFactory.getLogger(classOf[HttpClient].getCanonicalName))
 
   def getAsJavabin(url: String): JavabinHttpResponse = {
-    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
     conn.setConnectTimeout(connectTimeout)
     conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
@@ -52,16 +52,17 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         IO.using(conn.getErrorStream()) {
           case error: InputStream =>
             val body = IO.readAsString(error)
-            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]")
+          case _ => log.debug("Failed because " + e.getMessage)
         }
         throw e
-      case e: Exception => throw e;
+      case e: Exception => throw e
     }
   }
 
   def get(url: String, charset: String): HttpResponse = {
 
-    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
     conn.setConnectTimeout(connectTimeout)
     conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("GET")
@@ -78,15 +79,16 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         IO.using(conn.getErrorStream()) {
           case error: InputStream =>
             val body = IO.readAsString(error)
-            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]");
+            log.debug("Failed because " + e.getMessage + "! Body: [" + body + "]")
+          case _ => log.debug("Failed because " + e.getMessage)
         }
         throw e
-      case e: Exception => throw e;
+      case e: Exception => throw e
     }
 
   }
 
-  private val POST_CONTENT_TYPE = "application/x-www-form-urlencoded";
+  private val POST_CONTENT_TYPE = "application/x-www-form-urlencoded"
 
   def post(url: String, dataBinary: String, charset: String): HttpResponse = {
     post(url, dataBinary, POST_CONTENT_TYPE, charset)
@@ -94,13 +96,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
 
   def post(url: String, dataBinary: String, contentType: String, charset: String): HttpResponse = {
 
-    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection];
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
     conn.setConnectTimeout(connectTimeout)
     conn.setReadTimeout(readTimeout)
     conn.setRequestMethod("POST")
     conn.setRequestProperty("Content-Type", contentType)
     conn.setRequestProperty("Content-Length", dataBinary.size.toString)
-    conn.setDoOutput(true);
+    conn.setDoOutput(true)
     IO.using(conn.getOutputStream) {
       os =>
         IO.using(new OutputStreamWriter(os, charset))(writer => writer.write(dataBinary))
@@ -118,10 +120,11 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
         IO.using(conn.getErrorStream()) {
           case error: InputStream =>
             val body = IO.readAsString(error)
-            log.info("Failed because " + e.getMessage + "! Body: [" + body + "]");
+            log.info("Failed because " + e.getMessage + "! Body: [" + body + "]")
+          case _ => log.debug("Failed because " + e.getMessage)
         }
         throw e
-      case e: Exception => throw e;
+      case e: Exception => throw e
     }
 
   }
