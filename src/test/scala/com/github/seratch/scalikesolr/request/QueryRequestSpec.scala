@@ -26,7 +26,7 @@ class QueryRequestSpec extends FlatSpec with ShouldMatchers {
     val writerType: WriterType = null
     val sort: Sort = null
     val startRow: StartRow = null
-    val timeoutMilliseconds: TimeoutMilliseconds = null
+    val timeoutMilliseconds: AllowedMilliseconds = null
     val version: Version = null
     val instance = new QueryRequest(core, explainOther, fieldsToReturn, filterQuery, isIndentEnabled, isDebugQueryEnabled, isEchoHandlerEnabled, isOmitHeaderEnabled, maximumRowsReturned, query, queryParserType, queryType, writerType, sort, startRow, timeoutMilliseconds, version)
     instance should not be null

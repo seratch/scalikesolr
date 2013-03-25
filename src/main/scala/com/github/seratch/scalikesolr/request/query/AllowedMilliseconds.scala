@@ -19,7 +19,7 @@ package com.github.seratch.scalikesolr.request.query
 import scala.beans.BeanProperty
 import com.github.seratch.scalikesolr.request.common.RequestParam
 
-case class TimeoutMilliseconds(@BeanProperty val timeAllowed: Long = 0) extends RequestParam {
+case class AllowedMilliseconds(@BeanProperty val timeAllowed: Long = 0) extends RequestParam {
 
   override def isEmpty() = timeAllowed <= 0
 
@@ -29,6 +29,6 @@ case class TimeoutMilliseconds(@BeanProperty val timeAllowed: Long = 0) extends 
 
 }
 
-object TimeoutMilliseconds {
-  def as(timeAllowed: Long): TimeoutMilliseconds = new TimeoutMilliseconds(timeAllowed)
+object AllowedMilliseconds {
+  def as(timeAllowed: Long): AllowedMilliseconds = new AllowedMilliseconds(timeAllowed)
 }
