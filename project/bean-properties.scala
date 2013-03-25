@@ -34,7 +34,7 @@ object ReplaceBeanPropertiesForScala29Command extends Plugin {
         "src/main/scala/com/github/seratch/scalikesolr/request/query/QueryType.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/query/Sort.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/query/StartRow.scala",
-        "src/main/scala/com/github/seratch/scalikesolr/request/query/TimeoutMilliseconds.scala",
+        "src/main/scala/com/github/seratch/scalikesolr/request/query/AllowedMilliseconds.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/query/Version.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/query/facet/FacetParams.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/query/group/GroupParams.scala",
