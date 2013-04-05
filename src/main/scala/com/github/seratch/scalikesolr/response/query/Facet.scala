@@ -17,6 +17,7 @@
 package com.github.seratch.scalikesolr.response.query
 
 import scala.beans.BeanProperty
+import scala.collection.immutable.ListMap
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
 import scala.xml.{ Node, XML }
@@ -54,10 +55,10 @@ object Facet {
     writerType match {
       case WriterType.Standard => {
 
-        val facetQueriesMap = new collection.mutable.HashMap[String, SolrDocument]
-        val facetFieldsMap = new collection.mutable.HashMap[String, SolrDocument]
-        val facetDatesMap = new collection.mutable.HashMap[String, SolrDocument]
-        val facetRangesMap = new collection.mutable.HashMap[String, SolrDocument]
+        val facetQueriesMap = new collection.mutable.LinkedHashMap[String, SolrDocument]
+        val facetFieldsMap = new collection.mutable.LinkedHashMap[String, SolrDocument]
+        val facetDatesMap = new collection.mutable.LinkedHashMap[String, SolrDocument]
+        val facetRangesMap = new collection.mutable.LinkedHashMap[String, SolrDocument]
 
         val xml = XML.loadString(rawBody)
         val facetCountsList = (xml \ "lst").filter(lst => (lst \ "@name").text == "facet_counts")
@@ -70,26 +71,26 @@ object Facet {
                   case "facet_queries" =>
                     (node \ "lst") foreach {
                       query =>
-                        val element = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetQueriesMap.update((query \ "@name").text, SolrDocument(map = element.toMap))
+                        val results = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetQueriesMap.update((query \ "@name").text, SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ results))
                     }
                   case "facet_fields" =>
                     node.child foreach {
                       field =>
-                        val element = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetFieldsMap.update((field \ "@name").text, SolrDocument(map = element.toMap))
+                        val results = field.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetFieldsMap.update((field \ "@name").text, SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ results))
                     }
                   case "facet_dates" =>
                     (node \ "lst") foreach {
                       date =>
-                        val element = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetDatesMap.update((date \ "@name").text, SolrDocument(map = element.toMap))
+                        val results = date.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetDatesMap.update((date \ "@name").text, SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ results))
                     }
                   case "facet_ranges" =>
                     (node \ "lst") foreach {
                       range =>
-                        val element = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
-                        facetRangesMap.update((range \ "@name").text, SolrDocument(map = element.toMap))
+                        val results = range.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
+                        facetRangesMap.update((range \ "@name").text, SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ results))
                     }
                   case _ =>
                 }
@@ -110,16 +111,16 @@ object Facet {
         def fromListToMap(namedList: NamedList[Any]): Map[String, SolrDocument] = {
           type MapEntry = java.util.Map.Entry[_, _]
           import collection.JavaConverters._
-          (namedList.asScala map {
+          ListMap.empty[String, SolrDocument] ++ namedList.asScala.map {
             case e: MapEntry => {
               val docKey = e.getKey.asInstanceOf[String]
               val doc = e.getValue.asInstanceOf[NamedList[Any]]
-              val map = (doc.asScala.map {
+              val map = ListMap.empty[String, SolrDocumentValue] ++ doc.asScala.map {
                 case e: MapEntry => (e.getKey -> new SolrDocumentValue(e.getValue.toString))
-              }).toMap
+              }
               (docKey.toString -> new SolrDocument(writerType = WriterType.JavaBinary, map = map))
             }
-          }).toMap
+          }
         }
 
         val facetCounts = rawJavabin.get("facet_counts").asInstanceOf[NamedList[Any]]
