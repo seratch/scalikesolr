@@ -12,15 +12,6 @@ libraryDependencies ++= Seq(
 )
 ```
 
-via ls:
-
-http://ls.implicit.ly/seratch/scalikesolr
-
-```
-ls -n scalikesolr
-ls-install scalikesolr
-```
-
 ### Maven
 
 Available on maven central repository.
@@ -29,7 +20,7 @@ Available on maven central repository.
 <dependency>
   <groupId>com.github.seratch</groupId>
   <artifactId>scalikesolr_2.10</artifactId>
-  <version>[4.0,)</version>
+  <version>[4.2,)</version>
 </dependency>
 ```
 
