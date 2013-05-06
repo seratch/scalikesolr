@@ -147,13 +147,12 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(2)
+    response.response.documents.size should equal(response.highlightings.size)
     response.response.documents foreach {
       doc: SolrDocument =>
         doc.writerType should equal(WriterType.JavaBinary)
         doc.get("id").toString should not be null
     }
-    response.highlightings.size should equal(2)
     response.highlightings.keys foreach {
       case key => {
         val value = response.highlightings.get(key).get("author").toString
@@ -174,7 +173,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(2)
+    response.response.documents.size should be > 0
 
     response.response.documents foreach {
       doc: SolrDocument =>
@@ -197,7 +196,7 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be >= 0
-    response.response.documents.size should equal(2)
+    response.response.documents.size should be > 0
 
     response.facet.facetFields.get("title") match {
       case Some(doc: SolrDocument) =>

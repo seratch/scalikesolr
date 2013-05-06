@@ -42,7 +42,9 @@ class HttpSolrClient(@BeanProperty val url: URL,
   private val LOG_PREFIX_RESP = "Response Body: "
   private val COMMA = " , "
   private val LOG_SUFFIX = "]"
-  private val CONTENT_TYPE_XML = "text/xml"
+  private val CONTENT_TYPE_XML = "application/xml; charset=utf-8"
+  private val CONTENT_TYPE_CSV = "application/csv; charset=utf-8"
+  private val CONTENT_TYPE_JSON = "application/json; charset=utf-8"
   private val UTF8 = "UTF-8"
 
   private def httpClient: HttpClient = new HttpClient(connectTimeout, readTimeout)
@@ -209,10 +211,13 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
-  override def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse = {
-    val requestUrl = basicUrl(request.core) + "/update/csv" + request.toQueryString
+  @deprecated(since = "4.0.1", message = "use #doUpdateInCSV instead.")
+  override def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse = doUpdateInCSV(request)
+
+  override def doUpdateInCSV(request: UpdateRequest): UpdateResponse = {
+    val requestUrl = basicUrl(request.core) + "/update/csv"
     logPost(requestUrl, request.requestBody)
-    val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
+    val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_CSV, UTF8).content
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
@@ -232,12 +237,13 @@ class HttpSolrClient(@BeanProperty val url: URL,
   }
 
   override def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
-    val requestUrl = basicUrl(request.core) + "/update/json" + request.toQueryString
+    val requestUrl = basicUrl(request.core) + "/update/json"
     logPost(requestUrl, request.requestBody)
-    val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_XML, UTF8).content
+    val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_JSON, UTF8).content
+    println(responseBody)
     logResponse(responseBody)
     new UpdateResponse(
-      writerType = request.writerType,
+      writerType = WriterType.JSON,
       rawBody = responseBody
     )
   }

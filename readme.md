@@ -8,30 +8,19 @@
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "[4.0,)"
+  "com.github.seratch" %% "scalikesolr" % "[4.2,)"
 )
-```
-
-via ls:
-
-http://ls.implicit.ly/seratch/scalikesolr
-
-```
-ls -n scalikesolr
-ls-install scalikesolr
 ```
 
 ### Maven
 
 Available on maven central repository.
 
-The "2.10.0" of "scalikesolr_2.10.0"(artifactId) is the Scala version to use.
-
 ```xml
 <dependency>
   <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.10.0</artifactId>
-  <version>[4.0,)</version>
+  <artifactId>scalikesolr_2.10</artifactId>
+  <version>[4.2,)</version>
 </dependency>
 ```
 
@@ -100,7 +89,6 @@ This library works fine with Java.
 ```java
 SolrClient client = Solr.httpServer(new URL("http://localhost:8983/solr")).getNewClient();
 QueryRequest request = new QueryRequest(Query.as("author:Rick")); // or new Query("author:Rick")
-request.setWriterType(WriterType.JSON());
 request.setSort(Sort.as("author desc"));
 request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
 QueryResponse response = client.doQuery(request);

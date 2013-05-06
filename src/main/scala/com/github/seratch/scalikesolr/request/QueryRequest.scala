@@ -43,7 +43,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     @BeanProperty var writerType: WriterType = WriterType(),
     @BeanProperty var sort: Sort = Sort(),
     @BeanProperty var startRow: StartRow = StartRow(),
-    @BeanProperty var timeoutMilliseconds: TimeoutMilliseconds = TimeoutMilliseconds(),
+    @BeanProperty var allowsMilliseconds: AllowedMilliseconds = AllowedMilliseconds(),
     @BeanProperty var version: Version = Version()) {
 
   @BeanProperty var echoParams: EchoParams = EchoParams()
@@ -81,7 +81,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
       writerType = WriterType(),
       sort = Sort(),
       startRow = StartRow(),
-      timeoutMilliseconds = TimeoutMilliseconds(),
+      allowsMilliseconds = AllowedMilliseconds(),
       version = Version()
     )
   }
@@ -103,7 +103,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
       writerType = WriterType(),
       sort = Sort(),
       startRow = StartRow(),
-      timeoutMilliseconds = TimeoutMilliseconds(),
+      allowsMilliseconds = AllowedMilliseconds(),
       version = Version()
     )
   }
@@ -125,7 +125,7 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     appendIfExists(buf, this.writerType)
     appendIfExists(buf, this.sort)
     appendIfExists(buf, this.startRow)
-    appendIfExists(buf, this.timeoutMilliseconds)
+    appendIfExists(buf, this.allowsMilliseconds)
     appendIfExists(buf, this.version)
     if (this.group.enabled) {
       if (buf.length > 0) buf.append("&")

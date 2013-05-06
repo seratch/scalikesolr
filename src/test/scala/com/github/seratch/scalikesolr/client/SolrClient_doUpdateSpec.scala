@@ -17,9 +17,10 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
 
   "doUpdate in XML" should "be available" in {
     val request = new UpdateRequest(
-      requestBody = "<optimize/>"
+      requestBody = "<rollback/>"
     )
     val response = client.doUpdateInXML(request)
+
     response should not be null
     response.responseHeader.status should equal(0)
     response.responseHeader.qTime should be > 0
@@ -28,16 +29,6 @@ class SolrClient_doUpdateSpec extends FlatSpec with ShouldMatchers {
                                                                                               |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int></lst>
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
-  }
-
-  it should "throw SocketTimeoutException when specifying too small connect timeout" in {
-    val client = Solr.httpServer(new URL("http://localhost:9999/solr")).newClient(
-      connectTimeout = 1,
-      readTimeout = 10000
-    )
-    intercept[ConnectException] {
-      client.doOptimize(new UpdateRequest)
-    }
   }
 
 }

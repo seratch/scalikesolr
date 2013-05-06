@@ -17,6 +17,7 @@
 package com.github.seratch.scalikesolr.response.query
 
 import scala.beans.BeanProperty
+import scala.collection.immutable.ListMap
 import scala.collection.JavaConverters._
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
@@ -55,9 +56,9 @@ object MoreLikeThis {
                 start = ((result \ "@start").text).toInt
                 val solrDocs = (result \ "doc") map {
                   doc =>
-                    new SolrDocument(map = doc.child.map {
+                    new SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ doc.child.map {
                       case field => ((field \ "@name").text, new SolrDocumentValue(field.text))
-                    }.toMap)
+                    })
                 }
                 Map((result \ "@name").text -> solrDocs.toList)
             }.toMap
@@ -83,9 +84,9 @@ object MoreLikeThis {
               case doc: SolrjSolrDocument =>
                 new SolrDocument(
                   writerType = WriterType.JavaBinary,
-                  map = doc.keySet.asScala.map {
+                  map = ListMap.empty[String, SolrDocumentValue] ++ doc.keySet.asScala.map {
                     case key => (key.toString -> new SolrDocumentValue(doc.get(key).toString))
-                  }.toMap
+                  }
                 )
             }.toList
             Map(id -> recommendations)

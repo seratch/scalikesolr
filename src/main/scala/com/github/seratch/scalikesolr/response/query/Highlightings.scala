@@ -17,6 +17,7 @@
 package com.github.seratch.scalikesolr.response.query
 
 import scala.beans.BeanProperty
+import scala.collection.immutable.ListMap
 import com.github.seratch.scalikesolr.request.common.WriterType
 import org.apache.solr.common.util.NamedList
 import scala.xml.{ Node, XML }
@@ -46,14 +47,15 @@ object Highlightings {
         val hlList = (xml \ "lst").filter(lst => (lst \ "@name").text == "highlighting")
         new Highlightings(
           highlightings = hlList.size match {
-            case 0 => Map()
+            case 0 => Map.empty[String, SolrDocument]
             case _ =>
               val hl = hlList(0)
-              (hl \ "lst").map {
+              ListMap.empty[String, SolrDocument] ++ (hl \ "lst").flatMap {
                 case lst: Node =>
                   val element = (lst \ "arr") map (arr => ((arr \ "@name").text, new SolrDocumentValue(arr.child.text)))
-                  ((lst \ "@name").text, new SolrDocument(map = element.toMap))
-              }.toMap
+                  Some((lst \ "@name").text, new SolrDocument(map = element.toMap))
+                case _ => None
+              }
           })
       case WriterType.JavaBinary =>
         val highlighting = rawJavaBin.get("highlighting").asInstanceOf[NamedList[Any]]
@@ -64,11 +66,11 @@ object Highlightings {
               val element = e.getValue.asInstanceOf[NamedList[Any]]
               (e.getKey.toString -> new SolrDocument(
                 writerType = WriterType.JavaBinary,
-                map = element.iterator.asScala.map {
+                map = ListMap.empty[String, SolrDocumentValue] ++ element.iterator.asScala.map {
                   case eachInValue: java.util.Map.Entry[_, _] =>
                     val value = eachInValue.getValue.toString.replaceFirst("^\\[", "").replaceFirst("\\]$", "")
                     (eachInValue.getKey.toString, new SolrDocumentValue(value))
-                }.toMap))
+                }))
             }
           }.toMap
         )

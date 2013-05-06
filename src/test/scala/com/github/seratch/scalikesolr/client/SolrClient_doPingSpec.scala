@@ -25,7 +25,7 @@ class SolrClient_doPingSpec extends FlatSpec with ShouldMatchers {
     response.responseHeader.qTime should be > 0
     response.rawBody.replaceAll("\r", "").replaceAll("\n", "").trim should fullyMatch regex """<\?xml version="1.0" encoding="UTF-8"\?>
                                                                                               |<response>
-                                                                                              |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int><lst name="params"><str name="echoParams">all</str><str name="rows">10</str><str name="echoParams">all</str><str name="wt">standard</str><str name="q">solrpingquery</str><str name="qt">search</str><str name="distrib">false</str></lst></lst><str name="status">OK</str>
+                                                                                              |<lst name="responseHeader"><int name="status">0</int><int name="QTime">\d+</int><lst name="params"><str name="df">text</str><str name="echoParams">all</str><str name="rows">10</str><str name="echoParams">all</str><str name="wt">standard</str><str name="q">solrpingquery</str><str name="distrib">false</str></lst></lst><str name="status">OK</str>
                                                                                               |</response>
                                                                                               | """.stripMargin.replaceAll("\r", "").replaceAll("\n", "").trim
   }

@@ -17,6 +17,7 @@
 package com.github.seratch.scalikesolr.response.query
 
 import scala.beans.BeanProperty
+import scala.collection.immutable.ListMap
 import com.github.seratch.scalikesolr.request.common.WriterType
 import scala.xml.{ Node, XML }
 import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, SolrjSolrDocument }
@@ -126,9 +127,9 @@ object Groups {
                       case doc: SolrjSolrDocument =>
                         new SolrDocument(
                           writerType = writerType,
-                          map = doc.keySet.asScala.map {
+                          map = ListMap.empty[String, SolrDocumentValue] ++ doc.keySet.asScala.map {
                             case key => (key, new SolrDocumentValue(doc.get(key).toString))
-                          }.toMap
+                          }
                         )
                     }).toList
                   ))
@@ -147,9 +148,9 @@ object Groups {
                           case doc: SolrjSolrDocument =>
                             new SolrDocument(
                               writerType = writerType,
-                              map = doc.keySet.asScala.map {
+                              map = ListMap.empty[String, SolrDocumentValue] ++ doc.keySet.asScala.map {
                                 case key => (key, new SolrDocumentValue(doc.get(key).toString))
-                              }.toMap
+                              }
                             )
                         }.toList
                       )
