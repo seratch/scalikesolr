@@ -9,7 +9,7 @@ import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, Solr }
 import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, QueryRequest }
-import com.github.seratch.scalikesolr.request.query.{ Sort, Query }
+import com.github.seratch.scalikesolr.request.query.{ Sort, Query, QueryType }
 import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.FlatSpec
@@ -55,6 +55,21 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers with testutil.
     response.responseHeader.qTime should be >= 0
     response.responseHeader.params should not be null
     log.debug(response.toString)
+  }
+
+  it should "resolve requestHandler" in {
+    val request = QueryRequest(
+      query = Query("id:978-1423103349"))
+    request.queryType = QueryType("query")
+    request.writerType = WriterType.JavaBinary
+    val response = client.doQuery(request)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+    response.responseHeader.params.get("qt").toString should equal("")
+
+    response.response.documents.size should equal(1)
   }
 
   "Group params" should "be available" in {
