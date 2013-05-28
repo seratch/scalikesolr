@@ -120,7 +120,6 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     appendIfExists(buf, this.isOmitHeaderEnabled)
     appendIfExists(buf, this.maximumRowsReturned)
     appendIfExists(buf, this.query)
-    appendIfExists(buf, this.queryType)
     appendIfExists(buf, this.queryParserType)
     appendIfExists(buf, this.writerType)
     appendIfExists(buf, this.sort)
