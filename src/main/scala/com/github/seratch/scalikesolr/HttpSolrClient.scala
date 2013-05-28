@@ -67,8 +67,10 @@ class HttpSolrClient(@BeanProperty val url: URL,
   }
 
   override def doQuery(request: QueryRequest): QueryResponse = {
+    val qt = request.queryType
+    val handler = if (qt != null && qt.isEmpty) "/select" else "/" + qt.getValue
     val queryString = request.queryString
-    val requestUrl = basicUrl(request.core) + "/select" + queryString
+    val requestUrl = basicUrl(request.core) + handler + queryString
     logGet(requestUrl)
     request.writerType match {
       case WriterType.JavaBinary =>
