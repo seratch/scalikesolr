@@ -16,7 +16,7 @@
 
 package com.github.seratch.scalikesolr
 
-import com.github.seratch.scalikesolr.http.{ HttpMethod, HttpClient }
+import com.github.seratch.scalikesolr.http._
 import java.net.{ URLEncoder, URL }
 import scala.beans.BeanProperty
 import org.slf4j.LoggerFactory
@@ -71,7 +71,7 @@ class HttpSolrClient(@BeanProperty val url: URL,
     val handler = if (qt != null && qt.isEmpty) "/select" else "/" + qt.getValue
     val queryString = request.queryString
     request.httpMethod match {
-      case HttpMethod.GET =>
+      case HttpMethod("GET") =>
         val requestUrl = basicUrl(request.core) + handler + queryString
         logGet(requestUrl)
         request.writerType match {
@@ -90,7 +90,7 @@ class HttpSolrClient(@BeanProperty val url: URL,
               rawBody = responseBody
             )
         }
-      case HttpMethod.POST =>
+      case HttpMethod("POST") =>
         val requestUrl = basicUrl(request.core) + handler
         logGet(requestUrl)
         request.writerType match {
