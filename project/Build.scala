@@ -5,11 +5,10 @@ object ScalikeSolrBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = mainSettings)
 
-  lazy val mainSettings: Seq[Project.Setting[_]] = Defaults.defaultSettings ++ Seq(
-    sbtPlugin := false,
+  lazy val mainSettings = Defaults.defaultSettings ++ Seq(
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "4.3.2-SNAPSHOT",
+    version := "4.5.0-SNAPSHOT",
     scalaVersion := "2.10.0",
     crossScalaVersions := Seq("2.10.0"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
@@ -20,15 +19,14 @@ object ScalikeSolrBuild extends Build {
       })
       val scalatest = "scalatest" + _scalaVersion
       Seq(
-        "org.slf4j"                % "slf4j-api"          % "1.7.2"           % "compile",
-        "joda-time"                % "joda-time"          % "2.1"             % "compile",
-        "org.joda"                 % "joda-convert"       % "1.2"             % "compile",
-        "org.apache.solr"          % "solr-solrj"         % "4.3.0"           % "compile",
-        "ch.qos.logback"           % "logback-classic"    % "1.0.7"           % "test",
-        "junit"                    % "junit"              % "4.11"            % "test",
-        "org.mockito"              % "mockito-all"        % "1.9.5"           % "test",
-        "org.scalatest"            % scalatest            % "1.8"             % "test",
-        "org.scala-lang"           % "scala-compiler"     % scalaVersion      % "test"
+        "org.slf4j"                %  "slf4j-api"       % "1.7.5"       % "compile",
+        "joda-time"                %  "joda-time"       % "2.3"         % "compile",
+        "org.joda"                 %  "joda-convert"    % "1.5"         % "compile",
+        "org.apache.solr"          %  "solr-solrj"      % "4.5.1"       % "compile",
+        "ch.qos.logback"           %  "logback-classic" % "1.0.13"      % "test",
+        "junit"                    %  "junit"           % "4.11"        % "test",
+        "org.mockito"              %  "mockito-all"     % "1.9.5"       % "test",
+        "org.scalatest"            %% "scalatest"       % "1.9.1"       % "test"
       )
     },
     externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository")),
