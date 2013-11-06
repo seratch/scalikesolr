@@ -15,11 +15,12 @@
  */
 package com.github.seratch.scalikesolr.http
 
-sealed trait HttpMethod
+case class HttpMethod(name: String)
 
 object HttpMethod {
 
-  case object GET extends HttpMethod
-  case object POST extends HttpMethod
+  val GET = HttpMethod("GET")
+  val POST = HttpMethod("POST")
 
 }
+
