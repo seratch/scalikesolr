@@ -95,14 +95,14 @@ class HttpSolrClient(@BeanProperty val url: URL,
         logGet(requestUrl)
         request.writerType match {
           case WriterType.JavaBinary =>
-            val rawJavaBin = httpClient.postAndReturnAsJavaBin(requestUrl, queryString).rawJavaBin
+            val rawJavaBin = httpClient.postAndReturnAsJavaBin(requestUrl, queryString.replaceAll("^\\?", "")).rawJavaBin
             logResponse(rawJavaBin.toString)
             new QueryResponse(
               writerType = request.writerType,
               rawJavabin = rawJavaBin
             )
           case _ =>
-            val responseBody = httpClient.post(requestUrl, queryString).content
+            val responseBody = httpClient.post(requestUrl, queryString.replaceAll("^\\?", "")).content
             logResponse(responseBody)
             new QueryResponse(
               writerType = request.writerType,
