@@ -8,7 +8,7 @@ object ScalikeSolrBuild extends Build {
   lazy val mainSettings = Defaults.defaultSettings ++ Seq(
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "4.5.0-SNAPSHOT",
+    version := "4.5.0",
     scalaVersion := "2.10.0",
     crossScalaVersions := Seq("2.10.0"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
