@@ -43,4 +43,6 @@ case class FilterQuery(@BeanProperty val fq: String = "",
 
 object FilterQuery {
   def as(fq: String): FilterQuery = new FilterQuery(fq)
+  def as(multiple: Seq[String]): FilterQuery = new FilterQuery(multiple = multiple)
+  def as(multiple: java.util.List[String]): FilterQuery = new FilterQuery(multiple = multiple.asScala)
 }

@@ -32,4 +32,13 @@ class QueryRequestSpec extends FlatSpec with ShouldMatchers {
     instance should not be null
   }
 
+  it should "have extraParams" in {
+    val req = new QueryRequest(new Query("*:*"))
+    req.set("foo", "bar")
+    req.set("buzz", "fizz")
+    req.remove("buzz")
+    req.extraParams.size should equal(1)
+    req.extraParams.head should equal(ExtraParam("foo", "bar"))
+  }
+
 }

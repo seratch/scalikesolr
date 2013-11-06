@@ -17,6 +17,7 @@ object ReplaceBeanPropertiesForScala29Command extends Plugin {
         "src/main/scala/com/github/seratch/scalikesolr/http/HttpClient.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/DIHCommandRequest.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/DeleteRequest.scala",
+        "src/main/scala/com/github/seratch/scalikesolr/request/QueryRequest.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/PingRequest.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/UpdateRequest.scala",
         "src/main/scala/com/github/seratch/scalikesolr/request/common/WriterType.scala",

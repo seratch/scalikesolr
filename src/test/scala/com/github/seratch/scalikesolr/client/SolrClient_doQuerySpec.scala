@@ -14,6 +14,8 @@ import com.github.seratch.scalikesolr.response.query.Group
 import com.github.seratch.scalikesolr.util.Log
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
+import com.github.seratch.scalikesolr.http.HttpMethod.POST
+import com.github.seratch.scalikesolr.http.HttpMethod
 
 class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers with testutil.PreparingDocuments {
 
@@ -23,8 +25,29 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers with testutil.
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   it should "be available" in {
-    val request = QueryRequest(
-      query = Query("id:978-1423103349"))
+    {
+      val request = new UpdateRequest()
+      request.documents = List(SolrDocument(
+        writerType = WriterType.Standard,
+        map = Map(
+          "id" -> SolrDocumentValue("978-1423103349"),
+          "cat" -> SolrDocumentValue("List(book, paperback)"),
+          "title" -> SolrDocumentValue("The Sea of Monsters"),
+          "author" -> SolrDocumentValue("Rick Riordan"),
+          "series_t" -> SolrDocumentValue("Percy Jackson and the Olympians"),
+          "sequence_i" -> SolrDocumentValue("2"),
+          "genre_s" -> SolrDocumentValue("fantasy"),
+          "inStock" -> SolrDocumentValue("true"),
+          "price" -> SolrDocumentValue("6.49"),
+          "pages_i" -> SolrDocumentValue("304"),
+          "timestamp" -> SolrDocumentValue("2006-03-21T13:40:15.518Z")
+        )
+      ))
+      client.doUpdateDocuments(request)
+      client.doCommit()
+    }
+
+    val request = QueryRequest(query = Query("id:978-1423103349"))
     val response = client.doQuery(request)
     log.debug(response.toString)
 
@@ -46,6 +69,89 @@ class SolrClient_doQuerySpec extends FlatSpec with ShouldMatchers with testutil.
     }
   }
 
+  it should "run POST queries" in {
+    {
+      val request = new UpdateRequest()
+      request.documents = List(SolrDocument(
+        writerType = WriterType.Standard,
+        map = Map(
+          "id" -> SolrDocumentValue("978-1423103350"),
+          "cat" -> SolrDocumentValue("List(book, paperback)"),
+          "title" -> SolrDocumentValue("モンスターの海"),
+          "author" -> SolrDocumentValue("Rick Riordan"),
+          "series_t" -> SolrDocumentValue("Percy Jackson and the Olympians"),
+          "sequence_i" -> SolrDocumentValue("2"),
+          "genre_s" -> SolrDocumentValue("fantasy"),
+          "inStock" -> SolrDocumentValue("true"),
+          "price" -> SolrDocumentValue("6.49"),
+          "pages_i" -> SolrDocumentValue("304"),
+          "timestamp" -> SolrDocumentValue("2006-03-21T13:40:15.518Z")
+        )
+      ))
+      client.doUpdateDocuments(request)
+      client.doCommit()
+    }
+
+    val request = QueryRequest(query = Query("id:978-1423103350"))
+    request.setHttpMethod(HttpMethod.POST)
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+
+    log.debug(response.response.documents.toString)
+    response.response.documents.size should equal(1)
+    response.response.documents foreach {
+      case doc: SolrDocument => {
+        doc.get("id").toString should equal("978-1423103350")
+        doc.get("title").toString should equal("モンスターの海")
+      }
+    }
+  }
+
+  it should "run POST binary queries" in {
+    {
+      val request = new UpdateRequest()
+      request.documents = List(SolrDocument(
+        writerType = WriterType.JavaBinary,
+        map = Map(
+          "id" -> SolrDocumentValue("978-1423103350"),
+          "cat" -> SolrDocumentValue("List(book, paperback)"),
+          "title" -> SolrDocumentValue("モンスターの海"),
+          "author" -> SolrDocumentValue("Rick Riordan"),
+          "series_t" -> SolrDocumentValue("Percy Jackson and the Olympians"),
+          "sequence_i" -> SolrDocumentValue("2"),
+          "genre_s" -> SolrDocumentValue("fantasy"),
+          "inStock" -> SolrDocumentValue("true"),
+          "price" -> SolrDocumentValue("6.49"),
+          "pages_i" -> SolrDocumentValue("304"),
+          "timestamp" -> SolrDocumentValue("2006-03-21T13:40:15.518Z")
+        )
+      ))
+      client.doUpdateDocuments(request)
+      client.doCommit()
+    }
+
+    val request = QueryRequest(query = Query("id:978-1423103350"))
+    request.setHttpMethod(HttpMethod.POST)
+    val response = client.doQuery(request)
+    log.debug(response.toString)
+
+    response should not be null
+    response.responseHeader.status should equal(0)
+    response.responseHeader.qTime should be >= 0
+
+    log.debug(response.response.documents.toString)
+    response.response.documents.size should equal(1)
+    response.response.documents foreach {
+      case doc: SolrDocument => {
+        doc.get("id").toString should equal("978-1423103350")
+        doc.get("title").toString should equal("モンスターの海")
+      }
+    }
+  }
   it should "be available with multibyte queries" in {
     val request = QueryRequest(
       query = Query("author:日本人"))

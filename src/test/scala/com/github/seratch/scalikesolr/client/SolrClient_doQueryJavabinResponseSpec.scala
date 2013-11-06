@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory
 import com.github.seratch.scalikesolr.request.common.WriterType
 import com.github.seratch.scalikesolr.request.query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.request.query.morelikethis.{ FieldsToUseForSimilarity, MoreLikeThisParams }
-import com.github.seratch.scalikesolr.{ SolrDocument, Solr }
+import com.github.seratch.scalikesolr.{ SolrDocumentValue, SolrDocument, Solr }
 import com.github.seratch.scalikesolr.request.query.facet.{ Param, Value, FacetParam, FacetParams }
 import com.github.seratch.scalikesolr.request.query.group.{ AsMainResultWhenUsingSimpleFormat, GroupFormat, GroupField, GroupParams }
 import com.github.seratch.scalikesolr.request.{ UpdateRequest, QueryRequest }
@@ -23,6 +23,28 @@ class SolrClient_doQueryJavabinResponseSpec extends FlatSpec with ShouldMatchers
   val client = Solr.httpServer(new URL("http://localhost:8983/solr")).newClient()
 
   it should "be available" in {
+    {
+      val request = new UpdateRequest()
+      request.documents = List(SolrDocument(
+        writerType = WriterType.Standard,
+        map = Map(
+          "id" -> SolrDocumentValue("978-1423103349"),
+          "cat" -> SolrDocumentValue("List(book, paperback)"),
+          "title" -> SolrDocumentValue("The Sea of Monsters"),
+          "author" -> SolrDocumentValue("Rick Riordan"),
+          "series_t" -> SolrDocumentValue("Percy Jackson and the Olympians"),
+          "sequence_i" -> SolrDocumentValue("2"),
+          "genre_s" -> SolrDocumentValue("fantasy"),
+          "inStock" -> SolrDocumentValue("true"),
+          "price" -> SolrDocumentValue("6.49"),
+          "pages_i" -> SolrDocumentValue("304"),
+          "timestamp" -> SolrDocumentValue("2006-03-21T13:40:15.518Z")
+        )
+      ))
+      client.doUpdateDocuments(request)
+      client.doCommit()
+    }
+
     val request = new QueryRequest(
       writerType = WriterType.JavaBinary,
       query = Query("id:978-1423103349"))

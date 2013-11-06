@@ -16,8 +16,8 @@
 
 package com.github.seratch.scalikesolr
 
-import http.HttpClient
-import java.net.URL
+import com.github.seratch.scalikesolr.http.{ HttpMethod, HttpClient }
+import java.net.{ URLEncoder, URL }
 import scala.beans.BeanProperty
 import org.slf4j.LoggerFactory
 import util.{ Log, XMLStringBuilder }
@@ -70,23 +70,45 @@ class HttpSolrClient(@BeanProperty val url: URL,
     val qt = request.queryType
     val handler = if (qt != null && qt.isEmpty) "/select" else "/" + qt.getValue
     val queryString = request.queryString
-    val requestUrl = basicUrl(request.core) + handler + queryString
-    logGet(requestUrl)
-    request.writerType match {
-      case WriterType.JavaBinary =>
-        val rawJavaBin = httpClient.getAsJavabin(requestUrl).rawJavaBin
-        logResponse(rawJavaBin.toString)
-        new QueryResponse(
-          writerType = request.writerType,
-          rawJavabin = rawJavaBin
-        )
-      case _ =>
-        val responseBody = httpClient.get(requestUrl, UTF8).content
-        logResponse(responseBody)
-        new QueryResponse(
-          writerType = request.writerType,
-          rawBody = responseBody
-        )
+    request.httpMethod match {
+      case HttpMethod.GET =>
+        val requestUrl = basicUrl(request.core) + handler + queryString
+        logGet(requestUrl)
+        request.writerType match {
+          case WriterType.JavaBinary =>
+            val rawJavaBin = httpClient.getAsJavabin(requestUrl).rawJavaBin
+            logResponse(rawJavaBin.toString)
+            new QueryResponse(
+              writerType = request.writerType,
+              rawJavabin = rawJavaBin
+            )
+          case _ =>
+            val responseBody = httpClient.get(requestUrl, UTF8).content
+            logResponse(responseBody)
+            new QueryResponse(
+              writerType = request.writerType,
+              rawBody = responseBody
+            )
+        }
+      case HttpMethod.POST =>
+        val requestUrl = basicUrl(request.core) + handler
+        logGet(requestUrl)
+        request.writerType match {
+          case WriterType.JavaBinary =>
+            val rawJavaBin = httpClient.postAndReturnAsJavaBin(requestUrl, queryString).rawJavaBin
+            logResponse(rawJavaBin.toString)
+            new QueryResponse(
+              writerType = request.writerType,
+              rawJavabin = rawJavaBin
+            )
+          case _ =>
+            val responseBody = httpClient.post(requestUrl, queryString).content
+            logResponse(responseBody)
+            new QueryResponse(
+              writerType = request.writerType,
+              rawBody = responseBody
+            )
+        }
     }
   }
 

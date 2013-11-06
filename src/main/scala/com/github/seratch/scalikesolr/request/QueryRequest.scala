@@ -17,7 +17,7 @@
 package com.github.seratch.scalikesolr.request
 
 import common.{ RequestParam, WriterType }
-import reflect.BeanProperty
+import scala.beans.BeanProperty
 import query._
 import distributedsearch.DistributedSearchParams
 import facet.FacetParams
@@ -27,6 +27,8 @@ import query.highlighting.HighlightingParams
 import com.github.seratch.scalikesolr.SolrCore
 import util.QueryStringUtil
 import java.net.URLEncoder
+import scala.collection.mutable
+import com.github.seratch.scalikesolr.http.HttpMethod
 
 case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     @BeanProperty var explainOther: ExplainOther = ExplainOther(),
@@ -44,7 +46,8 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
     @BeanProperty var sort: Sort = Sort(),
     @BeanProperty var startRow: StartRow = StartRow(),
     @BeanProperty var allowsMilliseconds: AllowedMilliseconds = AllowedMilliseconds(),
-    @BeanProperty var version: Version = Version()) {
+    @BeanProperty var version: Version = Version(),
+    @BeanProperty var httpMethod: HttpMethod = HttpMethod.GET) {
 
   @BeanProperty var echoParams: EchoParams = EchoParams()
 
@@ -58,11 +61,14 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
 
   @BeanProperty var shards: DistributedSearchParams = DistributedSearchParams()
 
-  private val extraParams = new collection.mutable.HashMap[String, Any]
+  val extraParams: mutable.ListBuffer[ExtraParam] = new mutable.ListBuffer[ExtraParam]
 
-  def set(key: String, value: Any) = extraParams.update(key, value)
+  def set(key: String, value: Any) = extraParams.append(ExtraParam(key, value))
 
-  def remove(key: String) = extraParams.remove(key)
+  def remove(key: String) = {
+    val index = extraParams.indexWhere(_.key == key)
+    if (index != -1) extraParams.remove(index)
+  }
 
   def this(query: Query) = {
     this(
@@ -189,12 +195,11 @@ case class QueryRequest(@BeanProperty var core: SolrCore = SolrCore(),
       buf.append(this.shards.toQueryString)
     }
     if (extraParams.size > 0) {
-      extraParams.keys.foreach {
-        key =>
-          if (buf.length > 0) buf.append("&")
-          buf.append(key)
-          buf.append("=")
-          buf.append(URLEncoder.encode(extraParams.getOrElse(key, "").toString, "UTF-8"))
+      extraParams.foreach { param =>
+        if (buf.length > 0) buf.append("&")
+        buf.append(param.key)
+        buf.append("=")
+        buf.append(URLEncoder.encode(Option(param.value).getOrElse("").toString, "UTF-8"))
       }
     }
     "?" + buf.toString
