@@ -88,13 +88,13 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
 
   }
 
-  private val POST_CONTENT_TYPE = "application/x-www-form-urlencoded"
+  val POST_CONTENT_TYPE = "application/x-www-form-urlencoded"
 
   def post(url: String, dataBinary: String, charset: String): HttpResponse = {
     post(url, dataBinary, POST_CONTENT_TYPE, charset)
   }
 
-  def post(url: String, dataBinary: String, contentType: String, charset: String): HttpResponse = {
+  def post(url: String, dataBinary: String, contentType: String = POST_CONTENT_TYPE, charset: String = "UTF-8"): HttpResponse = {
 
     val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
     conn.setConnectTimeout(connectTimeout)
@@ -114,6 +114,42 @@ class HttpClient(@BeanProperty val connectTimeout: Int = HttpClient.DEFAULT_CONN
           case (k, v) => (k, v.asScala.toList)
         }.toMap,
         getResponseContent(conn, charset)
+      )
+    } catch {
+      case e: IOException =>
+        IO.using(conn.getErrorStream()) {
+          case error: InputStream =>
+            val body = IO.readAsString(error)
+            log.info("Failed because " + e.getMessage + "! Body: [" + body + "]")
+          case _ => log.debug("Failed because " + e.getMessage)
+        }
+        throw e
+      case e: Exception => throw e
+    }
+
+  }
+
+  def postAndReturnAsJavaBin(
+    url: String, dataBinary: String, contentType: String = POST_CONTENT_TYPE, charset: String = "UTF-8"): JavabinHttpResponse = {
+
+    val conn = new URL(url).openConnection().asInstanceOf[HttpURLConnection]
+    conn.setConnectTimeout(connectTimeout)
+    conn.setReadTimeout(readTimeout)
+    conn.setRequestMethod("POST")
+    conn.setRequestProperty("Content-Type", contentType)
+    conn.setRequestProperty("Content-Length", dataBinary.size.toString)
+    conn.setDoOutput(true)
+    IO.using(conn.getOutputStream) {
+      os =>
+        IO.using(new OutputStreamWriter(os, charset))(writer => writer.write(dataBinary))
+    }
+    try {
+      new JavabinHttpResponse(
+        conn.getResponseCode,
+        conn.getHeaderFields.asScala.map {
+          case (k, v) => (k, v.asScala.toList)
+        }.toMap,
+        new JavaBinCodec().unmarshal(conn.getInputStream).asInstanceOf[NamedList[Any]]
       )
     } catch {
       case e: IOException =>
