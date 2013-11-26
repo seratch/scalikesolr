@@ -8,7 +8,7 @@ object ScalikeSolrBuild extends Build {
   lazy val mainSettings = Defaults.defaultSettings ++ Seq(
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "4.5.3-SNAPSHOT",
+    version := "4.6.0",
     scalaVersion := "2.10.0",
     crossScalaVersions := Seq("2.10.0"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
@@ -22,7 +22,7 @@ object ScalikeSolrBuild extends Build {
         "org.slf4j"                %  "slf4j-api"       % "1.7.5"       % "compile",
         "joda-time"                %  "joda-time"       % "2.3"         % "compile",
         "org.joda"                 %  "joda-convert"    % "1.5"         % "compile",
-        "org.apache.solr"          %  "solr-solrj"      % "4.5.1"       % "compile",
+        "org.apache.solr"          %  "solr-solrj"      % "4.6.0"       % "compile",
         "ch.qos.logback"           %  "logback-classic" % "1.0.13"      % "test",
         "junit"                    %  "junit"           % "4.11"        % "test",
         "org.mockito"              %  "mockito-all"     % "1.9.5"       % "test",
