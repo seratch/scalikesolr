@@ -41,13 +41,8 @@ trait SolrClient {
 
   def doPing(): PingResponse
 
-  @deprecated
-  def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse
-
   def doUpdateInCSV(request: UpdateRequest): UpdateResponse
 
   def doUpdateInXML(request: UpdateRequest): UpdateResponse
-
-  def doUpdateInJSON(request: UpdateRequest): UpdateResponse
 
 }

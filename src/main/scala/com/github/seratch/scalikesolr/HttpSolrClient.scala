@@ -44,7 +44,6 @@ class HttpSolrClient(@BeanProperty val url: URL,
   private val LOG_SUFFIX = "]"
   private val CONTENT_TYPE_XML = "application/xml; charset=utf-8"
   private val CONTENT_TYPE_CSV = "application/csv; charset=utf-8"
-  private val CONTENT_TYPE_JSON = "application/json; charset=utf-8"
   private val UTF8 = "UTF-8"
 
   private def httpClient: HttpClient = new HttpClient(connectTimeout, readTimeout)
@@ -235,9 +234,6 @@ class HttpSolrClient(@BeanProperty val url: URL,
     )
   }
 
-  @deprecated(since = "4.0.1", message = "use #doUpdateInCSV instead.")
-  override def doUpdateDocumentsInCSV(request: UpdateRequest): UpdateResponse = doUpdateInCSV(request)
-
   override def doUpdateInCSV(request: UpdateRequest): UpdateResponse = {
     val requestUrl = basicUrl(request.core) + "/update/csv"
     logPost(requestUrl, request.requestBody)
@@ -256,18 +252,6 @@ class HttpSolrClient(@BeanProperty val url: URL,
     logResponse(responseBody)
     new UpdateResponse(
       writerType = request.writerType,
-      rawBody = responseBody
-    )
-  }
-
-  override def doUpdateInJSON(request: UpdateRequest): UpdateResponse = {
-    val requestUrl = basicUrl(request.core) + "/update/json"
-    logPost(requestUrl, request.requestBody)
-    val responseBody = httpClient.post(requestUrl, request.requestBody, CONTENT_TYPE_JSON, UTF8).content
-    println(responseBody)
-    logResponse(responseBody)
-    new UpdateResponse(
-      writerType = WriterType.JSON,
       rawBody = responseBody
     )
   }
