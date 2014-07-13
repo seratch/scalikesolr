@@ -5,29 +5,28 @@ object ScalikeSolrBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = mainSettings)
 
+  val solrVersion = "4.9.0"
+
   lazy val mainSettings = Defaults.defaultSettings ++ Seq(
     organization := "com.github.seratch",
     name := "scalikesolr",
-    version := "4.6.0",
-    scalaVersion := "2.10.0",
-    crossScalaVersions := Seq("2.10.0"),
+    version := solrVersion,
+    scalaVersion := "2.10.4",
+    crossScalaVersions := Seq("2.10.4", "2.11.1"),
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
-      val _scalaVersion = "_" + (scalaVersion match {
-        case "2.10.0" => "2.10.0"
-        case "2.9.3" => "2.9.2"
-        case version => version
-      })
-      val scalatest = "scalatest" + _scalaVersion
       Seq(
-        "org.slf4j"                %  "slf4j-api"       % "1.7.5"       % "compile",
+        "org.slf4j"                %  "slf4j-api"       % "1.7.7"       % "compile",
         "joda-time"                %  "joda-time"       % "2.3"         % "compile",
-        "org.joda"                 %  "joda-convert"    % "1.5"         % "compile",
-        "org.apache.solr"          %  "solr-solrj"      % "4.6.0"       % "compile",
-        "ch.qos.logback"           %  "logback-classic" % "1.0.13"      % "test",
+        "org.joda"                 %  "joda-convert"    % "1.6"         % "compile",
+        "org.apache.solr"          %  "solr-solrj"      % solrVersion   % "compile",
+        "ch.qos.logback"           %  "logback-classic" % "1.1.2"       % "test",
         "junit"                    %  "junit"           % "4.11"        % "test",
         "org.mockito"              %  "mockito-all"     % "1.9.5"       % "test",
-        "org.scalatest"            %% "scalatest"       % "1.9.1"       % "test"
-      )
+        "org.scalatest"            %% "scalatest"       % "2.2.0"       % "test"
+      ) ++ (scalaVersion match {
+        case v if v.startsWith("2.11.") => Seq("org.scala-lang.modules" % "scala-xml_2.11" % "1.0.2" % "compile")
+        case _ => Seq()
+      })
     },
     externalResolvers ~= (_.filter(_.name != "Scala-Tools Maven2 Repository")),
     publishTo <<= version { (v: String) =>

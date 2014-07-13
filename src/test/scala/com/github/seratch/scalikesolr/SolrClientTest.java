@@ -25,8 +25,6 @@ public class SolrClientTest {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    WriterType JSON = WriterType.as("json");
-
     SolrClient client;
 
     @Before
@@ -65,20 +63,6 @@ public class SolrClientTest {
         assertThat(response.getFacet(), is(notNullValue()));
         List<SolrDocument> documents = response.getResponse().getDocumentsInJava();
         log.debug(response.toString());
-    }
-
-    @Test
-    public void doQuery_JSON() throws Exception {
-        QueryRequest request = new QueryRequest(new Query("author:Rick"));
-        request.setWriterType(JSON);
-        request.setSort(Sort.as("author desc"));
-        request.setMoreLikeThis(MoreLikeThisParams.as(true, 3, FieldsToUseForSimilarity.as("title")));
-        QueryResponse response = client.doQuery(request);
-        assertThat(response.getResponseHeader(), is(notNullValue()));
-        assertThat(response.getResponse(), is(notNullValue()));
-        assertThat(response.getHighlightings(), is(notNullValue()));
-        assertThat(response.getMoreLikeThis(), is(notNullValue()));
-        assertThat(response.getFacet(), is(notNullValue()));
     }
 
     @Ignore
@@ -138,16 +122,6 @@ public class SolrClientTest {
         UpdateRequest request = new UpdateRequest();
         request.setRequestBody("<optimize/>");
         UpdateResponse response = client.doUpdateInXML(request);
-        assertThat(response.responseHeader(), is(notNullValue()));
-    }
-
-    @Test
-    public void doUpdateInJSON() throws Exception {
-        UpdateRequest request = new UpdateRequest();
-        request.setRequestBody("{ \"optimize\": { \"waitFlush\":false, \"waitSearcher\":false } }");
-        request.setWriterType(JSON);
-        request.setAdditionalQueryString("&indent=on");
-        UpdateResponse response = client.doUpdateInJSON(request);
         assertThat(response.responseHeader(), is(notNullValue()));
     }
 
