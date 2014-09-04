@@ -8,7 +8,7 @@
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "4.9.0"
+  "com.github.seratch" %% "scalikesolr" % "4.10.0"
 )
 ```
 
