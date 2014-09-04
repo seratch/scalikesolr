@@ -69,7 +69,7 @@ object Facet {
               case node: Node =>
                 (node \ "@name").text match {
                   case "facet_queries" =>
-                    (node \ "lst") foreach {
+                    node.child foreach {
                       query =>
                         val results = query.child map (value => ((value \ "@name").text, SolrDocumentValue(value.text)))
                         facetQueriesMap.update((query \ "@name").text, SolrDocument(map = ListMap.empty[String, SolrDocumentValue] ++ results))
