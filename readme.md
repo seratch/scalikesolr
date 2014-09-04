@@ -8,7 +8,7 @@
 
 ```scala
 libraryDependencies ++= Seq(
-  "com.github.seratch" %% "scalikesolr" % "[4.5,)"
+  "com.github.seratch" %% "scalikesolr" % "4.10.0"
 )
 ```
 
@@ -19,8 +19,8 @@ Available on maven central repository.
 ```xml
 <dependency>
   <groupId>com.github.seratch</groupId>
-  <artifactId>scalikesolr_2.10</artifactId>
-  <version>[4.5,)</version>
+  <artifactId>scalikesolr_2.11</artifactId>
+  <version>4.9.0</version>
 </dependency>
 ```
 
