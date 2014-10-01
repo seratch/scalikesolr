@@ -25,7 +25,7 @@ import org.apache.solr.common.util.{ NamedList, SimpleOrderedMap }
 import org.apache.solr.common.SolrDocumentList
 
 case class Groups(@BeanProperty val matches: Int = 0,
-                  @BeanProperty val ngroups: Int = 0,
+    @BeanProperty val ngroups: Int = 0,
     @BeanProperty val groups: List[Group]) {
 
   def getGroupsInJava(): java.util.List[Group] = java.util.Arrays.asList(groups.toArray: _*)
