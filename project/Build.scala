@@ -5,7 +5,7 @@ object ScalikeSolrBuild extends Build {
 
   lazy val root = Project("root", file("."), settings = mainSettings)
 
-  val solrVersion = "4.10.0"
+  val solrVersion = "4.10.1"
 
   lazy val mainSettings = Seq(
     organization := "com.github.seratch",
@@ -16,12 +16,12 @@ object ScalikeSolrBuild extends Build {
     libraryDependencies <++= (scalaVersion) { scalaVersion =>
       Seq(
         "org.slf4j"                %  "slf4j-api"       % "1.7.7"       % "compile",
-        "joda-time"                %  "joda-time"       % "2.4"         % "compile",
+        "joda-time"                %  "joda-time"       % "2.5"         % "compile",
         "org.joda"                 %  "joda-convert"    % "1.7"         % "compile",
         "org.apache.solr"          %  "solr-solrj"      % solrVersion   % "compile",
         "ch.qos.logback"           %  "logback-classic" % "1.1.2"       % "test",
         "junit"                    %  "junit"           % "4.11"        % "test",
-        "org.mockito"              %  "mockito-all"     % "1.9.5"       % "test",
+        "org.mockito"              %  "mockito-all"     % "1.10.8"       % "test",
         "org.scalatest"            %% "scalatest"       % "2.2.2"       % "test"
       ) ++ (scalaVersion match {
         case v if v.startsWith("2.11.") => Seq("org.scala-lang.modules" % "scala-xml_2.11" % "1.0.2" % "compile")
