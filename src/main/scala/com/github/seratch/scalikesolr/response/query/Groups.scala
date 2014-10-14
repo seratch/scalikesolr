@@ -25,6 +25,7 @@ import org.apache.solr.common.util.{ NamedList, SimpleOrderedMap }
 import org.apache.solr.common.SolrDocumentList
 
 case class Groups(@BeanProperty val matches: Int = 0,
+    @BeanProperty val ngroups: Int = 0,
     @BeanProperty val groups: List[Group]) {
 
   def getGroupsInJava(): java.util.List[Group] = java.util.Arrays.asList(groups.toArray: _*)
@@ -47,6 +48,7 @@ object Groups {
     writerType match {
       case WriterType.Standard => {
         var matches: Int = 0
+        var ngroups: Int = 0
         val empty: List[Group] = Nil
         val xml = XML.loadString(rawBody)
         val groupedList = (xml \ "lst").filter(lst => (lst \ "@name").text == "grouped")
@@ -56,6 +58,7 @@ object Groups {
             (groupedList.head \ "lst") flatMap {
               case lst: Node =>
                 matches = (lst \ "int").filter(i => (i \ "@name").text == "matches").apply(0).text.toInt
+                ngroups = (lst \ "int").filter(i => (i \ "@name").text == "ngroups").apply(0).text.toInt
                 val arrList = (lst \ "arr").filter(lst => (lst \ "@name").text == "groups")
                 arrList.size match {
                   case 0 =>
@@ -96,6 +99,7 @@ object Groups {
         }
         new Groups(
           matches = matches,
+          ngroups = ngroups,
           groups = groups.toList
         )
       }
@@ -105,6 +109,7 @@ object Groups {
         import collection.JavaConverters._
 
         var matches: Int = 0
+        var ngroups: Int = 0
         var groups: List[Group] = Nil
 
         val grouped = rawJavaBin.get("grouped").asInstanceOf[SimpleOrderedMap[Any]]
@@ -116,6 +121,7 @@ object Groups {
               val groupedValue = e.getValue.asInstanceOf[NamedList[Any]]
               groupedValue.asScala foreach {
                 case e: MapEntry if e.getKey == "matches" => matches = e.getValue.toString.toInt
+                case e: MapEntry if e.getKey == "ngroups" => ngroups = e.getValue.toString.toInt
                 case e: MapEntry if e.getKey == "doclist" =>
                   // group.format=simple
                   val doclist = e.getValue.asInstanceOf[SolrDocumentList]
@@ -160,6 +166,7 @@ object Groups {
         }
         new Groups(
           matches = matches,
+          ngroups = ngroups,
           groups = groups
         )
       }
