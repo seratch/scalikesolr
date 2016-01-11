@@ -1,3 +1,7 @@
+# Important Notice
+
+This library is no longer actively maintained. If you'd like to reuse the implementation, please fork this repository or ask me to add you to the collaborators (I can still work on releasing libs onto sonatype and Maven central).
+
 # ScalikeSolr : Apache Solr Client for Scala/Java
 
 "ScalikeSolr" is a simple Solr client library for Scala. And it also works fine with Java.
